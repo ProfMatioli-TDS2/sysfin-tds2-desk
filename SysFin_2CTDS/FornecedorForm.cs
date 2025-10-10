@@ -3,8 +3,10 @@ using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Models;
 using System;
 using System.Windows.Forms;
+using System.Linq; // Adicionado para usar LINQ
 
 namespace SysFin_2CTDS.View {
+
     public partial class FornecedorForm : Form {
         private readonly FornecedorController _fornecedorController;
         private Fornecedor _fornecedorSelecionado;
@@ -26,11 +28,13 @@ namespace SysFin_2CTDS.View {
             dgvFornecedores.Columns.Add("Nome", "Nome");
             dgvFornecedores.Columns.Add("Cnpj", "CNPJ");
             dgvFornecedores.Columns.Add("Email", "E-mail");
+            dgvFornecedores.Columns.Add("Telefone", "Telefone"); // Adicionada a coluna Telefone
 
             dgvFornecedores.Columns["Id"].DataPropertyName = "Id";
             dgvFornecedores.Columns["Nome"].DataPropertyName = "Nome";
             dgvFornecedores.Columns["Cnpj"].DataPropertyName = "Cnpj";
             dgvFornecedores.Columns["Email"].DataPropertyName = "Email";
+            dgvFornecedores.Columns["Telefone"].DataPropertyName = "Telefone"; // Mapeamento da propriedade Telefone
 
             dgvFornecedores.DataSource = _fornecedorController.GetAll();
         }
@@ -56,29 +60,32 @@ namespace SysFin_2CTDS.View {
             fornecedor.Email = txtEmail.Text;
             fornecedor.Telefone = txtTelefone.Text;
 
-            if(_fornecedorController.Save(fornecedor)) {
+            var errors = _fornecedorController.Save(fornecedor);
+
+            if(errors.Any()) {
+                MessageBox.Show(string.Join("\n", errors), "Erros de Validação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            } else {
                 MessageBox.Show("Fornecedor salvo com sucesso!");
                 LimparFormulario();
                 CarregarFornecedores();
-            } else {
-                MessageBox.Show("Falha ao salvar o fornecedor. Verifique os dados e tente novamente.");
             }
         }
 
         private void btnExcluir_Click(object sender, EventArgs e) {
             if(_fornecedorSelecionado != null) {
-                var result = MessageBox.Show("Tem certeza que deseja excluir este fornecedor?", "Confirmação", MessageBoxButtons.YesNo);
+                var result = MessageBox.Show("Tem certeza que deseja excluir este fornecedor?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if(result == DialogResult.Yes) {
                     if(_fornecedorController.Delete(_fornecedorSelecionado.Id)) {
                         MessageBox.Show("Fornecedor excluído com sucesso!");
                         LimparFormulario();
                         CarregarFornecedores();
                     } else {
-                        MessageBox.Show("Falha ao excluir o fornecedor.");
+                        MessageBox.Show("Falha ao excluir o fornecedor. Verifique se há dependências ou tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             } else {
-                MessageBox.Show("Selecione um fornecedor para excluir.");
+                MessageBox.Show("Selecione um fornecedor para excluir.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
