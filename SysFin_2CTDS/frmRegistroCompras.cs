@@ -69,7 +69,7 @@ namespace SysFin_2CTDS.View
             // {
             //     MessageBox.Show("Por favor, selecione um produto.");
             //     return;
-            // }
+            // } teste
 
             if (numQuantidade.Value <= 0)
             {
