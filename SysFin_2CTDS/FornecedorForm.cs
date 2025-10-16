@@ -1,9 +1,9 @@
 ﻿using SysFin_2CTDS.Controller;
-using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using System.Linq; // Adicionado para usar LINQ
 
 namespace SysFin_2CTDS.View
 {
@@ -11,11 +11,15 @@ namespace SysFin_2CTDS.View
     {
         private readonly FornecedorController _fornecedorController;
         private Fornecedor _fornecedorSelecionado;
+        private string _currentOrderBy = "nome"; // Padrão de ordenação inicial
+        private string _currentDirection = "ASC"; // Padrão de direção inicial
 
         public FornecedorForm()
         {
             InitializeComponent();
             _fornecedorController = new FornecedorController();
+            // Configura o DataGridView para permitir ordenação por clique no cabeçalho
+            dgvFornecedores.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(dgvFornecedores_ColumnHeaderMouseClick);
         }
 
         private void FornecedorForm_Load(object sender, EventArgs e)
@@ -26,21 +30,23 @@ namespace SysFin_2CTDS.View
         private void CarregarFornecedores()
         {
             dgvFornecedores.AutoGenerateColumns = false;
-            dgvFornecedores.Columns.Clear();
+            if (dgvFornecedores.Columns.Count == 0)
+            {
+                dgvFornecedores.Columns.Add("Id", "ID");
+                dgvFornecedores.Columns.Add("Nome", "Nome");
+                dgvFornecedores.Columns.Add("Cnpj", "CNPJ");
+                dgvFornecedores.Columns.Add("Email", "E-mail");
+                dgvFornecedores.Columns.Add("Telefone", "Telefone");
 
-            dgvFornecedores.Columns.Add("Id", "ID");
-            dgvFornecedores.Columns.Add("Nome", "Nome");
-            dgvFornecedores.Columns.Add("Cnpj", "CNPJ");
-            dgvFornecedores.Columns.Add("Email", "E-mail");
-            dgvFornecedores.Columns.Add("Telefone", "Telefone"); // Adicionada a coluna Telefone
+                dgvFornecedores.Columns["Id"].DataPropertyName = "Id";
+                dgvFornecedores.Columns["Nome"].DataPropertyName = "Nome";
+                dgvFornecedores.Columns["Cnpj"].DataPropertyName = "Cnpj";
+                dgvFornecedores.Columns["Email"].DataPropertyName = "Email";
+                dgvFornecedores.Columns["Telefone"].DataPropertyName = "Telefone";
+            }
 
-            dgvFornecedores.Columns["Id"].DataPropertyName = "Id";
-            dgvFornecedores.Columns["Nome"].DataPropertyName = "Nome";
-            dgvFornecedores.Columns["Cnpj"].DataPropertyName = "Cnpj";
-            dgvFornecedores.Columns["Email"].DataPropertyName = "Email";
-            dgvFornecedores.Columns["Telefone"].DataPropertyName = "Telefone"; // Mapeamento da propriedade Telefone
-
-            dgvFornecedores.DataSource = _fornecedorController.GetAll();
+            // Chama o controller com os parâmetros de ordenação atuais
+            dgvFornecedores.DataSource = _fornecedorController.GetAll(_currentOrderBy, _currentDirection);
         }
 
         private void LimparFormulario()
@@ -49,7 +55,7 @@ namespace SysFin_2CTDS.View
             txtNome.Clear();
             txtCnpj.Clear();
             txtEmail.Clear();
-            txtTelefone.Clear();
+            mtbTelefone.Clear(); // MODIFICADO
             dgvFornecedores.ClearSelection();
             txtNome.Focus();
         }
@@ -65,7 +71,7 @@ namespace SysFin_2CTDS.View
             fornecedor.Nome = txtNome.Text;
             fornecedor.Cnpj = txtCnpj.Text;
             fornecedor.Email = txtEmail.Text;
-            fornecedor.Telefone = txtTelefone.Text;
+            fornecedor.Telefone = mtbTelefone.Text.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", ""); // MODIFICADO para remover máscara antes de salvar
 
             var errors = _fornecedorController.Save(fornecedor);
 
@@ -117,9 +123,41 @@ namespace SysFin_2CTDS.View
                     txtNome.Text = _fornecedorSelecionado.Nome;
                     txtCnpj.Text = _fornecedorSelecionado.Cnpj;
                     txtEmail.Text = _fornecedorSelecionado.Email;
-                    txtTelefone.Text = _fornecedorSelecionado.Telefone;
+                    mtbTelefone.Text = _fornecedorSelecionado.Telefone; // MODIFICADO
                 }
             }
+        }
+
+        private void dgvFornecedores_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string clickedColumnName = dgvFornecedores.Columns[e.ColumnIndex].DataPropertyName;
+
+            if (string.IsNullOrEmpty(clickedColumnName))
+            {
+                clickedColumnName = dgvFornecedores.Columns[e.ColumnIndex].Name;
+            }
+
+            string columnToOrderBy = clickedColumnName.ToLower() switch
+            {
+                "id" => "id",
+                "nome" => "nome",
+                "cnpj" => "cnpj",
+                "email" => "email",
+                "telefone" => "telefone",
+                _ => "nome",
+            };
+
+            if (_currentOrderBy == columnToOrderBy)
+            {
+                _currentDirection = (_currentDirection == "ASC") ? "DESC" : "ASC";
+            }
+            else
+            {
+                _currentOrderBy = columnToOrderBy;
+                _currentDirection = "ASC";
+            }
+
+            CarregarFornecedores();
         }
     }
 }
