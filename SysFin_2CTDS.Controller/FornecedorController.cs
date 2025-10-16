@@ -6,13 +6,6 @@ using SysFin_2CTDS.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Linq; // Adicionado para usar LINQ
 
-<<<<<<< Updated upstream
-namespace SysFin_2CTDS.Controller {
-    /// <summary>
-    /// Classe responsável pela lógica de negócio e acesso a dados para a entidade Fornecedor.
-    /// </summary>
-    public class FornecedorController {
-=======
 namespace SysFin_2CTDS.Controller
 {
     /// <summary>
@@ -20,24 +13,16 @@ namespace SysFin_2CTDS.Controller
     /// </summary>
     public class FornecedorController
     {
->>>>>>> Stashed changes
         /// <summary>
         /// Obtém todos os fornecedores do banco de dados, ordenados por nome.
         /// </summary>
         /// <returns>Uma lista de objetos Fornecedor.</returns>
-<<<<<<< Updated upstream
-        public List<Fornecedor> GetAll() {
-            var fornecedores = new List<Fornecedor>();
-            // 'using' garante que a conexão com o banco será fechada automaticamente
-            using(var connection = Database.GetConnection()) {
-=======
         public List<Fornecedor> GetAll()
         {
             var fornecedores = new List<Fornecedor>();
             // 'using' garante que a conexão com o banco será fechada automaticamente
             using (var connection = Database.GetConnection())
             {
->>>>>>> Stashed changes
                 var command = new SqlCommand("SELECT * FROM fornecedores ORDER BY nome", connection);
                 connection.Open();
                 using (var reader = command.ExecuteReader())
@@ -64,12 +49,8 @@ namespace SysFin_2CTDS.Controller
         /// </summary>
         /// <param name="fornecedor">O objeto Fornecedor a ser salvo.</param>
         /// <returns>Uma lista de strings contendo mensagens de erro de validação. Se a lista estiver vazia, a operação foi bem-sucedida.</returns>
-<<<<<<< Updated upstream
-        public List<string> Save(Fornecedor fornecedor) {
-=======
         public List<string> Save(Fornecedor fornecedor)
         {
->>>>>>> Stashed changes
             var errors = new List<string>();
 
             // Validação do modelo antes de tentar salvar no banco de dados
@@ -77,49 +58,31 @@ namespace SysFin_2CTDS.Controller
             var validationResults = new List<ValidationResult>();
             bool isValid = Validator.TryValidateObject(fornecedor, validationContext, validationResults, validateAllProperties: true);
 
-<<<<<<< Updated upstream
-            if(!isValid) {
-                foreach(var validationResult in validationResults) {
-=======
             if (!isValid)
             {
                 foreach (var validationResult in validationResults)
                 {
->>>>>>> Stashed changes
                     errors.Add(validationResult.ErrorMessage);
                 }
                 return errors;
             }
 
-<<<<<<< Updated upstream
-            try {
-                using(var connection = Database.GetConnection()) {
-=======
             try
             {
                 using (var connection = Database.GetConnection())
                 {
->>>>>>> Stashed changes
                     connection.Open();
                     SqlCommand command;
 
                     // Se o ID for maior que 0, significa que é uma atualização (UPDATE)
-<<<<<<< Updated upstream
-                    if(fornecedor.Id > 0) {
-=======
                     if (fornecedor.Id > 0)
                     {
->>>>>>> Stashed changes
                         command = new SqlCommand("UPDATE fornecedores SET nome = @nome, cnpj = @cnpj, email = @email, telefone = @telefone WHERE id = @id", connection);
                         command.Parameters.AddWithValue("@id", fornecedor.Id);
                     }
                     // Caso contrário, é uma inserção (INSERT)
-<<<<<<< Updated upstream
-                    else {
-=======
                     else
                     {
->>>>>>> Stashed changes
                         command = new SqlCommand("INSERT INTO fornecedores (nome, cnpj, email, telefone) VALUES (@nome, @cnpj, @email, @telefone)", connection);
                     }
 
@@ -130,15 +93,6 @@ namespace SysFin_2CTDS.Controller
                     command.Parameters.AddWithValue("@telefone", fornecedor.Telefone);
 
                     // ExecuteNonQuery retorna o número de linhas afetadas
-<<<<<<< Updated upstream
-                    if(command.ExecuteNonQuery() <= 0) {
-                        errors.Add("Falha ao salvar o fornecedor no banco de dados.");
-                    }
-                }
-            } catch(SqlException ex) {
-                errors.Add($"Erro de banco de dados ao salvar fornecedor: {ex.Message}");
-            } catch(System.Exception ex) {
-=======
                     if (command.ExecuteNonQuery() <= 0)
                     {
                         errors.Add("Falha ao salvar o fornecedor no banco de dados.");
@@ -151,7 +105,6 @@ namespace SysFin_2CTDS.Controller
             }
             catch (System.Exception ex)
             {
->>>>>>> Stashed changes
                 errors.Add($"Ocorreu um erro inesperado ao salvar fornecedor: {ex.Message}");
             }
 
@@ -163,29 +116,17 @@ namespace SysFin_2CTDS.Controller
         /// </summary>
         /// <param name="id">O ID do fornecedor a ser excluído.</param>
         /// <returns>Verdadeiro se a exclusão foi bem-sucedida, falso caso contrário.</returns>
-<<<<<<< Updated upstream
-        public bool Delete(int id) {
-            try {
-                using(var connection = Database.GetConnection()) {
-=======
         public bool Delete(int id)
         {
             try
             {
                 using (var connection = Database.GetConnection())
                 {
->>>>>>> Stashed changes
                     var command = new SqlCommand("DELETE FROM fornecedores WHERE id = @id", connection);
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
                     return command.ExecuteNonQuery() > 0;
                 }
-<<<<<<< Updated upstream
-            } catch(SqlException ex) {
-                System.Console.WriteLine($"Erro de banco de dados ao excluir fornecedor: {ex.Message}");
-                return false;
-            } catch(System.Exception ex) {
-=======
             }
             catch (SqlException ex)
             {
@@ -194,7 +135,6 @@ namespace SysFin_2CTDS.Controller
             }
             catch (System.Exception ex)
             {
->>>>>>> Stashed changes
                 System.Console.WriteLine($"Ocorreu um erro inesperado ao excluir fornecedor: {ex.Message}");
                 return false;
             }

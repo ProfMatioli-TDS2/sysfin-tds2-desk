@@ -5,16 +5,10 @@ using System;
 using System.Windows.Forms;
 using System.Linq; // Adicionado para usar LINQ
 
-<<<<<<< Updated upstream
-namespace SysFin_2CTDS.View {
-
-    public partial class FornecedorForm : Form {
-=======
 namespace SysFin_2CTDS.View
 {
     public partial class FornecedorForm : Form
     {
->>>>>>> Stashed changes
         private readonly FornecedorController _fornecedorController;
         private Fornecedor _fornecedorSelecionado;
 
@@ -75,40 +69,18 @@ namespace SysFin_2CTDS.View
 
             var errors = _fornecedorController.Save(fornecedor);
 
-<<<<<<< Updated upstream
-            if(errors.Any()) {
-                MessageBox.Show(string.Join("\n", errors), "Erros de Validação", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            } else {
-=======
             if (errors.Any())
             {
                 MessageBox.Show(string.Join("\n", errors), "Erros de Validação", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
->>>>>>> Stashed changes
                 MessageBox.Show("Fornecedor salvo com sucesso!");
                 LimparFormulario();
                 CarregarFornecedores();
             }
         }
 
-<<<<<<< Updated upstream
-        private void btnExcluir_Click(object sender, EventArgs e) {
-            if(_fornecedorSelecionado != null) {
-                var result = MessageBox.Show("Tem certeza que deseja excluir este fornecedor?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if(result == DialogResult.Yes) {
-                    if(_fornecedorController.Delete(_fornecedorSelecionado.Id)) {
-                        MessageBox.Show("Fornecedor excluído com sucesso!");
-                        LimparFormulario();
-                        CarregarFornecedores();
-                    } else {
-                        MessageBox.Show("Falha ao excluir o fornecedor. Verifique se há dependências ou tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            } else {
-=======
         private void btnExcluir_Click(object sender, EventArgs e)
         {
             if (_fornecedorSelecionado != null)
@@ -130,7 +102,6 @@ namespace SysFin_2CTDS.View
             }
             else
             {
->>>>>>> Stashed changes
                 MessageBox.Show("Selecione um fornecedor para excluir.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
