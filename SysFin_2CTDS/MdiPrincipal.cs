@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-
-namespace SysFin_2CTDS.View {
+namespace SysFin_2CTDS.View
+{
     public partial class MdiPrincipal : Form
     {
         public MdiPrincipal()
@@ -32,13 +32,11 @@ namespace SysFin_2CTDS.View {
             MessageBox.Show("Funcionalidade para visualizar cadastros ainda não implementada.", "Em Desenvolvimento", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void produtoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void relatórioPorPeríodoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frmCadastroProduto = new frmCadastroProduto();
-            frmCadastroProduto.MdiParent = this;
-            frmCadastroProduto.Show();
+            var formRelatorio = new frmRelatorioCompras();
+            formRelatorio.MdiParent = this;
+            formRelatorio.Show();
         }
     }
 }
-
-

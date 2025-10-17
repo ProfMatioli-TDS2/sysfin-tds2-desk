@@ -1,5 +1,7 @@
-﻿namespace SysFin_2CTDS.View {
-    partial class MdiPrincipal {
+namespace SysFin_2CTDS.View
+{
+    partial class MdiPrincipal
+    {
         /// <summary>
         /// Variável de designer necessária.
         /// </summary>
@@ -9,8 +11,10 @@
         /// Limpar os recursos que estão sendo usados.
         /// </summary>
         /// <param name="disposing">true se for necessário descartar os recursos gerenciados; caso contrário, false.</param>
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -33,6 +37,8 @@
             comprasToolStripMenuItem = new ToolStripMenuItem();
             vendasToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
+            relatórioPorPeríodoToolStripMenuItem = new ToolStripMenuItem();
+            produtoToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -83,6 +89,7 @@
             // 
             // comprasToolStripMenuItem
             // 
+            comprasToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { relatórioPorPeríodoToolStripMenuItem });
             comprasToolStripMenuItem.Name = "comprasToolStripMenuItem";
             comprasToolStripMenuItem.Size = new Size(67, 20);
             comprasToolStripMenuItem.Text = "Compras";
@@ -101,6 +108,19 @@
             statusStrip1.Size = new Size(933, 22);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
+            // 
+            // relatórioPorPeríodoToolStripMenuItem
+            // 
+            relatórioPorPeríodoToolStripMenuItem.Name = "relatórioPorPeríodoToolStripMenuItem";
+            relatórioPorPeríodoToolStripMenuItem.Size = new Size(186, 22);
+            relatórioPorPeríodoToolStripMenuItem.Text = "Relatório por Período";
+            relatórioPorPeríodoToolStripMenuItem.Click += relatórioPorPeríodoToolStripMenuItem_Click;
+            // 
+            // produtoToolStripMenuItem
+            // 
+            produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
+            produtoToolStripMenuItem.Size = new Size(180, 22);
+            produtoToolStripMenuItem.Text = "Produto";
             // 
             // MdiPrincipal
             // 
@@ -131,7 +151,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripMenuItem fornecedoresToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem visualizarCadastrosToolStripMenuItem;
+        private ToolStripMenuItem relatórioPorPeríodoToolStripMenuItem;
         private ToolStripMenuItem produtoToolStripMenuItem;
     }
 }
-
