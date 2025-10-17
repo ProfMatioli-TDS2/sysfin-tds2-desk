@@ -1,5 +1,7 @@
+using SysFin_2CTDS.View;
 using System;
 using System.Windows.Forms;
+
 
 namespace SysFin_2CTDS.View {
     internal static class Program {
@@ -9,6 +11,7 @@ namespace SysFin_2CTDS.View {
             Application.SetCompatibleTextRenderingDefault(false);
             // Alteramos a linha abaixo para iniciar nosso MDI Principal
             Application.Run(new MdiPrincipal());
+            Application.Run(new frmListagemProdutos());
         }
     }
 }

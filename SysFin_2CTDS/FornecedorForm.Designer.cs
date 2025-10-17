@@ -1,9 +1,13 @@
-﻿namespace SysFin_2CTDS.View {
-    partial class FornecedorForm {
+﻿namespace SysFin_2CTDS.View
+{
+    partial class FornecedorForm
+    {
         private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -11,10 +15,11 @@
 
         #region Windows Form Designer generated code
 
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.dgvFornecedores = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtTelefone = new System.Windows.Forms.TextBox();
+            this.mtbTelefone = new System.Windows.Forms.MaskedTextBox(); // MODIFICADO
             this.label4 = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -45,7 +50,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.txtTelefone);
+            this.groupBox1.Controls.Add(this.mtbTelefone); // MODIFICADO
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.txtEmail);
             this.groupBox1.Controls.Add(this.label3);
@@ -60,12 +65,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Dados do Fornecedor";
             // 
-            // txtTelefone
+            // mtbTelefone
             // 
-            this.txtTelefone.Location = new System.Drawing.Point(455, 87);
-            this.txtTelefone.Name = "txtTelefone";
-            this.txtTelefone.Size = new System.Drawing.Size(306, 20);
-            this.txtTelefone.TabIndex = 7;
+            this.mtbTelefone.Location = new System.Drawing.Point(455, 87);
+            this.mtbTelefone.Mask = "(99) 00000-0000"; // MODIFICADO
+            this.mtbTelefone.Name = "mtbTelefone";
+            this.mtbTelefone.Size = new System.Drawing.Size(306, 20);
+            this.mtbTelefone.TabIndex = 7;
             // 
             // label4
             // 
@@ -178,7 +184,7 @@
 
         private System.Windows.Forms.DataGridView dgvFornecedores;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox txtTelefone;
+        private System.Windows.Forms.MaskedTextBox mtbTelefone; // MODIFICADO
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label3;
