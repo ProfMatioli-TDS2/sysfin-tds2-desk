@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Model.Data; 
 using SysFin_2CTDS.Models;    
 using System;

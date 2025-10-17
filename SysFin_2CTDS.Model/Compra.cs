@@ -31,5 +31,18 @@ namespace SysFin_2CTDS.Model
                     return Quantidade * ValorUnitario;
                 }
             }
+
+        public DateTime DataCompra {
+            get;
+            set;
         }
+        public string NomeFornecedor {
+            get;
+            set;
+        }
+        public decimal ValorTotal {
+            get;
+            set;
+        }
+    }
     }

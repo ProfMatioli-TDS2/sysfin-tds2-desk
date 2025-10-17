@@ -1,4 +1,5 @@
 ﻿using SysFin_2CTDS.Controller;
+using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Models;
 using System;
 using System.Collections.Generic;
