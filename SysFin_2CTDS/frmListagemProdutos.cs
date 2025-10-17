@@ -154,5 +154,10 @@ namespace SysFin_2CTDS.View
                 }
             }
         }
+
+        private void txtBusca_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
