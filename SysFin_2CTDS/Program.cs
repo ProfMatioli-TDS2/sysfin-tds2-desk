@@ -10,8 +10,7 @@ namespace SysFin_2CTDS.View {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // Alteramos a linha abaixo para iniciar nosso MDI Principal
-            Application.Run(new MdiPrincipal());
-            Application.Run(new frmListagemProdutos());
+            Application.Run(new MdiPrincipal());            
         }
     }
 }
