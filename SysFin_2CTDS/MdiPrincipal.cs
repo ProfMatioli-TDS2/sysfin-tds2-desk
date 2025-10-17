@@ -21,6 +21,15 @@ namespace SysFin_2CTDS.View
         // Evento de clique para o item de menu "Fornecedores"
         private void fornecedoresToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form is FornecedorForm)
+                {
+                    form.Focus(); // Traz o formulário já aberto para frente
+                    return;       // Cancela a abertura de uma nova instância
+                }
+            }
+
             var fornecedorForm = new FornecedorForm();
             fornecedorForm.MdiParent = this;
             fornecedorForm.Show();
