@@ -9,8 +9,7 @@ namespace SysFin_2CTDS.View {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            Application.Run(new MdiPrincipal());            
+            Application.Run(new MdiPrincipal());
         }
     }
 }
