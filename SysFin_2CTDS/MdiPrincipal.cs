@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
-
 namespace SysFin_2CTDS.View
 {
     public partial class MdiPrincipal : Form
@@ -32,7 +31,12 @@ namespace SysFin_2CTDS.View
             // TODO: No futuro, este botão abrirá o formulário de visualização.
             MessageBox.Show("Funcionalidade para visualizar cadastros ainda não implementada.", "Em Desenvolvimento", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void relatórioPorPeríodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var formRelatorio = new frmRelatorioCompras();
+            formRelatorio.MdiParent = this;
+            formRelatorio.Show();
+        }
     }
 }
-
-

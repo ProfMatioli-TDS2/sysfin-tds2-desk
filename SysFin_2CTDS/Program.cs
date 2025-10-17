@@ -9,7 +9,7 @@ namespace SysFin_2CTDS.View {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmRegistroCompras());
+            Application.Run(new MdiPrincipal());
         }
     }
 }
