@@ -11,167 +11,243 @@
 
         #region Windows Form Designer generated code
 
-        private void InitializeComponent() {
-            this.dgvClientes = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtTelefone = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCpfCnpj = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtNome = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnNovo = new System.Windows.Forms.Button();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            dgvClientes = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
+            colNome = new DataGridViewTextBoxColumn();
+            colCpfCnpj = new DataGridViewTextBoxColumn();
+            colEmail = new DataGridViewTextBoxColumn();
+            colTelefone = new DataGridViewTextBoxColumn();
+            groupBox1 = new GroupBox();
+            txtTelefone = new TextBox();
+            label4 = new Label();
+            txtEmail = new TextBox();
+            label3 = new Label();
+            txtCpfCnpj = new TextBox();
+            label2 = new Label();
+            txtNome = new TextBox();
+            label1 = new Label();
+            btnNovo = new Button();
+            btnSalvar = new Button();
+            btnExcluir = new Button();
+            label5 = new Label();
+            txtBuscaNome = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
             // 
             // dgvClientes
             // 
-            this.dgvClientes.AllowUserToAddRows = false;
-            this.dgvClientes.AllowUserToDeleteRows = false;
-            this.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvClientes.Location = new System.Drawing.Point(12, 188);
-            this.dgvClientes.MultiSelect = false;
-            this.dgvClientes.Name = "dgvClientes";
-            this.dgvClientes.ReadOnly = true;
-            this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientes.Size = new System.Drawing.Size(776, 250);
-            this.dgvClientes.TabIndex = 0;
-            this.dgvClientes.SelectionChanged += new System.EventHandler(this.dgvClientes_SelectionChanged);
+            dgvClientes.AllowUserToAddRows = false;
+            dgvClientes.AllowUserToDeleteRows = false;
+            dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colCpfCnpj, colEmail, colTelefone });
+            dgvClientes.Location = new Point(14, 217);
+            dgvClientes.Margin = new Padding(4, 3, 4, 3);
+            dgvClientes.MultiSelect = false;
+            dgvClientes.Name = "dgvClientes";
+            dgvClientes.ReadOnly = true;
+            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClientes.Size = new Size(905, 288);
+            dgvClientes.TabIndex = 0;
+            dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "Id";
+            colId.HeaderText = "ID";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            // 
+            // colNome
+            // 
+            colNome.DataPropertyName = "Nome";
+            colNome.HeaderText = "Nome";
+            colNome.Name = "colNome";
+            colNome.ReadOnly = true;
+            // 
+            // colCpfCnpj
+            // 
+            colCpfCnpj.DataPropertyName = "CpfCnpj";
+            colCpfCnpj.HeaderText = "CPF/CNPJ";
+            colCpfCnpj.Name = "colCpfCnpj";
+            colCpfCnpj.ReadOnly = true;
+            // 
+            // colEmail
+            // 
+            colEmail.DataPropertyName = "Email";
+            colEmail.HeaderText = "E-mail";
+            colEmail.Name = "colEmail";
+            colEmail.ReadOnly = true;
+            // 
+            // colTelefone
+            // 
+            colTelefone.DataPropertyName = "Telefone";
+            colTelefone.HeaderText = "Telefone";
+            colTelefone.Name = "colTelefone";
+            colTelefone.ReadOnly = true;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.txtTelefone);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.txtEmail);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.txtCpfCnpj);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.txtNome);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 128);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Dados do Cliente";
+            groupBox1.Controls.Add(txtBuscaNome);
+            groupBox1.Controls.Add(label5);
+            groupBox1.Controls.Add(txtTelefone);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(txtEmail);
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(txtCpfCnpj);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(txtNome);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Location = new Point(14, 14);
+            groupBox1.Margin = new Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new Padding(4, 3, 4, 3);
+            groupBox1.Size = new Size(905, 159);
+            groupBox1.TabIndex = 1;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Dados do Cliente";
             // 
             // txtTelefone
             // 
-            this.txtTelefone.Location = new System.Drawing.Point(455, 87);
-            this.txtTelefone.Name = "txtTelefone";
-            this.txtTelefone.Size = new System.Drawing.Size(306, 20);
-            this.txtTelefone.TabIndex = 7;
+            txtTelefone.Location = new Point(531, 100);
+            txtTelefone.Margin = new Padding(4, 3, 4, 3);
+            txtTelefone.Name = "txtTelefone";
+            txtTelefone.Size = new Size(356, 23);
+            txtTelefone.TabIndex = 7;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(452, 71);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Telefone";
+            label4.AutoSize = true;
+            label4.Location = new Point(527, 82);
+            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(52, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Telefone";
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(15, 87);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(418, 20);
-            this.txtEmail.TabIndex = 5;
+            txtEmail.Location = new Point(18, 100);
+            txtEmail.Margin = new Padding(4, 3, 4, 3);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(487, 23);
+            txtEmail.TabIndex = 5;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 71);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "E-mail";
+            label3.AutoSize = true;
+            label3.Location = new Point(14, 82);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(41, 15);
+            label3.TabIndex = 4;
+            label3.Text = "E-mail";
             // 
             // txtCpfCnpj
             // 
-            this.txtCpfCnpj.Location = new System.Drawing.Point(455, 41);
-            this.txtCpfCnpj.Name = "txtCpfCnpj";
-            this.txtCpfCnpj.Size = new System.Drawing.Size(306, 20);
-            this.txtCpfCnpj.TabIndex = 3;
+            txtCpfCnpj.Location = new Point(531, 47);
+            txtCpfCnpj.Margin = new Padding(4, 3, 4, 3);
+            txtCpfCnpj.Name = "txtCpfCnpj";
+            txtCpfCnpj.Size = new Size(356, 23);
+            txtCpfCnpj.TabIndex = 3;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(452, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "CPF/CNPJ";
+            label2.AutoSize = true;
+            label2.Location = new Point(527, 29);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(60, 15);
+            label2.TabIndex = 2;
+            label2.Text = "CPF/CNPJ";
             // 
             // txtNome
             // 
-            this.txtNome.Location = new System.Drawing.Point(15, 41);
-            this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(418, 20);
-            this.txtNome.TabIndex = 1;
+            txtNome.Location = new Point(18, 47);
+            txtNome.Margin = new Padding(4, 3, 4, 3);
+            txtNome.Name = "txtNome";
+            txtNome.Size = new Size(487, 23);
+            txtNome.TabIndex = 1;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Nome";
+            label1.AutoSize = true;
+            label1.Location = new Point(14, 29);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(40, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Nome";
             // 
             // btnNovo
             // 
-            this.btnNovo.Location = new System.Drawing.Point(549, 146);
-            this.btnNovo.Name = "btnNovo";
-            this.btnNovo.Size = new System.Drawing.Size(75, 23);
-            this.btnNovo.TabIndex = 2;
-            this.btnNovo.Text = "Novo";
-            this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
+            btnNovo.Location = new Point(640, 184);
+            btnNovo.Margin = new Padding(4, 3, 4, 3);
+            btnNovo.Name = "btnNovo";
+            btnNovo.Size = new Size(88, 27);
+            btnNovo.TabIndex = 2;
+            btnNovo.Text = "Novo";
+            btnNovo.UseVisualStyleBackColor = true;
+            btnNovo.Click += btnNovo_Click;
             // 
             // btnSalvar
             // 
-            this.btnSalvar.Location = new System.Drawing.Point(630, 146);
-            this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(75, 23);
-            this.btnSalvar.TabIndex = 3;
-            this.btnSalvar.Text = "Salvar";
-            this.btnSalvar.UseVisualStyleBackColor = true;
-            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            btnSalvar.Location = new Point(736, 184);
+            btnSalvar.Margin = new Padding(4, 3, 4, 3);
+            btnSalvar.Name = "btnSalvar";
+            btnSalvar.Size = new Size(88, 27);
+            btnSalvar.TabIndex = 3;
+            btnSalvar.Text = "Salvar";
+            btnSalvar.UseVisualStyleBackColor = true;
+            btnSalvar.Click += btnSalvar_Click;
             // 
             // btnExcluir
             // 
-            this.btnExcluir.Location = new System.Drawing.Point(711, 146);
-            this.btnExcluir.Name = "btnExcluir";
-            this.btnExcluir.Size = new System.Drawing.Size(75, 23);
-            this.btnExcluir.TabIndex = 4;
-            this.btnExcluir.Text = "Excluir";
-            this.btnExcluir.UseVisualStyleBackColor = true;
-            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            btnExcluir.Location = new Point(831, 184);
+            btnExcluir.Margin = new Padding(4, 3, 4, 3);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(88, 27);
+            btnExcluir.TabIndex = 4;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = true;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(14, 132);
+            label5.Name = "label5";
+            label5.Size = new Size(102, 15);
+            label5.TabIndex = 8;
+            label5.Text = "Buscar por Nome:";
+            // 
+            // txtBuscaNome
+            // 
+            txtBuscaNome.Location = new Point(122, 128);
+            txtBuscaNome.Name = "txtBuscaNome";
+            txtBuscaNome.Size = new Size(383, 23);
+            txtBuscaNome.TabIndex = 0;
             // 
             // ClienteForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnExcluir);
-            this.Controls.Add(this.btnSalvar);
-            this.Controls.Add(this.btnNovo);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.dgvClientes);
-            this.Name = "ClienteForm";
-            this.Text = "Gestão de Clientes";
-            this.Load += new System.EventHandler(this.ClienteForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(933, 519);
+            Controls.Add(btnExcluir);
+            Controls.Add(btnSalvar);
+            Controls.Add(btnNovo);
+            Controls.Add(groupBox1);
+            Controls.Add(dgvClientes);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ClienteForm";
+            Text = "Gestão de Clientes";
+            Load += ClienteForm_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -189,5 +265,12 @@
         private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnExcluir;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colNome;
+        private DataGridViewTextBoxColumn colCpfCnpj;
+        private DataGridViewTextBoxColumn colEmail;
+        private DataGridViewTextBoxColumn colTelefone;
+        private Label label5;
+        private TextBox txtBuscaNome;
     }
 }
