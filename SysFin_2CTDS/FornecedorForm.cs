@@ -269,7 +269,16 @@ namespace SysFin_2CTDS.View
 
         private void btnGerarRelatorio_Click_1(object sender, EventArgs e)
         {
+            SaveFileDialog salvar = new SaveFileDialog();
+            salvar.Filter = "Arquivo PDF (*.pdf)|*.pdf";
+            salvar.FileName = "Relatorio_Fornecedores.pdf";
 
+            if (salvar.ShowDialog() == DialogResult.OK)
+            {
+                _fornecedorController.GerarRelatorioPDF(salvar.FileName);
+                MessageBox.Show("Relatório gerado com sucesso!", "PDF", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
+
     }
 }

@@ -1,10 +1,15 @@
-﻿using SysFin_2CTDS.Model;
-using SysFin_2CTDS.Model.Data;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.Data.SqlClient;
+using SysFin_2CTDS.Model;
+using SysFin_2CTDS.Model.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace SysFin_2CTDS.Controller
 {
@@ -147,5 +152,74 @@ namespace SysFin_2CTDS.Controller
                 return false;
             }
         }
+
+
+
+        public string GerarRelatorioPDF(string caminho)
+        {
+            var fornecedores = GetAll("nome", "ASC");
+
+            Document doc = new Document(PageSize.A4);
+            PdfWriter.GetInstance(doc, new FileStream(caminho, FileMode.Create));
+            doc.Open();
+
+            var fonteTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
+            var fonteSubtitulo = FontFactory.GetFont(FontFactory.HELVETICA, 10, Font.BOLD);
+            var fonteCorpo = FontFactory.GetFont(FontFactory.HELVETICA, 8);
+
+            // Título centralizado
+            Paragraph titulo = new Paragraph("Relatório de Fornecedores", fonteTitulo);
+            titulo.Alignment = Element.ALIGN_CENTER;
+            doc.Add(titulo);
+
+            doc.Add(new Paragraph("\n")); // Espaço entre título e tabela
+
+            PdfPTable tabela = new PdfPTable(5);
+            tabela.WidthPercentage = 100;
+            tabela.SpacingBefore = 10f;
+            tabela.SpacingAfter = 10f;
+            tabela.SetWidths(new float[] { 10, 25, 25, 25, 15 });
+
+            // Cabeçalhos
+            tabela.AddCell(new PdfPCell(new Phrase("ID", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Nome", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("CNPJ", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("E-mail", fonteSubtitulo)));
+            tabela.AddCell(new PdfPCell(new Phrase("Telefone", fonteSubtitulo)));
+
+            foreach (var f in fornecedores)
+            {
+                string cnpjFormatado = string.IsNullOrWhiteSpace(f.Cnpj) || f.Cnpj.Length != 14
+                    ? f.Cnpj ?? ""
+                    : Convert.ToUInt64(f.Cnpj).ToString(@"00\.000\.000\/0000\-00");
+
+                string telefoneFormatado = string.IsNullOrWhiteSpace(f.Telefone)
+                    ? ""
+                    : f.Telefone.Length == 11
+                        ? Convert.ToUInt64(f.Telefone).ToString(@"(00) 00000\-0000")
+                        : Convert.ToUInt64(f.Telefone).ToString(@"(00) 0000\-0000");
+
+                tabela.AddCell(new PdfPCell(new Phrase(f.Id.ToString(), fonteCorpo)));
+                tabela.AddCell(new PdfPCell(new Phrase(f.Nome ?? "", fonteCorpo)));
+                tabela.AddCell(new PdfPCell(new Phrase(cnpjFormatado, fonteCorpo)));
+                tabela.AddCell(new PdfPCell(new Phrase(f.Email ?? "", fonteCorpo)));
+                tabela.AddCell(new PdfPCell(new Phrase(telefoneFormatado, fonteCorpo)));
+            }
+
+            doc.Add(tabela);
+
+            // Rodapé com data de geração, alinhado à direita
+            Paragraph rodape = new Paragraph($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", fonteCorpo);
+            rodape.Alignment = Element.ALIGN_RIGHT;
+            doc.Add(new Paragraph("\n")); // Espaço extra
+            doc.Add(rodape);
+
+            doc.Close();
+
+            return caminho;
+        }
+
+
+
     }
 }
