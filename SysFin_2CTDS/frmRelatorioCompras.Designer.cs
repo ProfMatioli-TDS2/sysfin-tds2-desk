@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             groupBox1 = new GroupBox();
-            label1 = new Label();
-            label2 = new Label();
-            dtpDataInicial = new DateTimePicker();
-            dtpDataFinal = new DateTimePicker();
             btnGerarRelatorio = new Button();
+            dtpDataFinal = new DateTimePicker();
+            dtpDataInicial = new DateTimePicker();
+            label2 = new Label();
+            label1 = new Label();
             dgvResultados = new DataGridView();
             lblTotalCompras = new Label();
             lblValorTotal = new Label();
@@ -48,21 +48,38 @@
             groupBox1.Controls.Add(dtpDataInicial);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
-            groupBox1.Location = new Point(12, 12);
+            groupBox1.Location = new Point(18, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(295, 164);
+            groupBox1.Size = new Size(513, 164);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Filtros do Relatório";
             // 
-            // label1
+            // btnGerarRelatorio
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 52);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Data Inicial:";
+            btnGerarRelatorio.Location = new Point(6, 120);
+            btnGerarRelatorio.Name = "btnGerarRelatorio";
+            btnGerarRelatorio.Size = new Size(102, 23);
+            btnGerarRelatorio.TabIndex = 4;
+            btnGerarRelatorio.Text = "Gerar Relatório";
+            btnGerarRelatorio.UseVisualStyleBackColor = true;
+            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
+            // 
+            // dtpDataFinal
+            // 
+            dtpDataFinal.Format = DateTimePickerFormat.Short;
+            dtpDataFinal.Location = new Point(80, 78);
+            dtpDataFinal.Name = "dtpDataFinal";
+            dtpDataFinal.Size = new Size(200, 23);
+            dtpDataFinal.TabIndex = 3;
+            // 
+            // dtpDataInicial
+            // 
+            dtpDataInicial.Format = DateTimePickerFormat.Short;
+            dtpDataInicial.Location = new Point(80, 46);
+            dtpDataInicial.Name = "dtpDataInicial";
+            dtpDataInicial.Size = new Size(200, 23);
+            dtpDataInicial.TabIndex = 2;
             // 
             // label2
             // 
@@ -73,30 +90,14 @@
             label2.TabIndex = 1;
             label2.Text = "Data Final:";
             // 
-            // dtpDataInicial
+            // label1
             // 
-            dtpDataInicial.Format = DateTimePickerFormat.Short;
-            dtpDataInicial.Location = new Point(80, 46);
-            dtpDataInicial.Name = "dtpDataInicial";
-            dtpDataInicial.Size = new Size(200, 23);
-            dtpDataInicial.TabIndex = 2;
-            // 
-            // dtpDataFinal
-            // 
-            dtpDataFinal.Format = DateTimePickerFormat.Short;
-            dtpDataFinal.Location = new Point(80, 78);
-            dtpDataFinal.Name = "dtpDataFinal";
-            dtpDataFinal.Size = new Size(200, 23);
-            dtpDataFinal.TabIndex = 3;
-            // 
-            // btnGerarRelatorio
-            // 
-            btnGerarRelatorio.Location = new Point(6, 120);
-            btnGerarRelatorio.Name = "btnGerarRelatorio";
-            btnGerarRelatorio.Size = new Size(102, 23);
-            btnGerarRelatorio.TabIndex = 4;
-            btnGerarRelatorio.Text = "Gerar Relatório";
-            btnGerarRelatorio.UseVisualStyleBackColor = true;
+            label1.AutoSize = true;
+            label1.Location = new Point(6, 52);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Data Inicial:";
             // 
             // dgvResultados
             // 
@@ -104,17 +105,17 @@
             dgvResultados.AllowUserToDeleteRows = false;
             dgvResultados.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvResultados.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvResultados.Location = new Point(12, 193);
+            dgvResultados.Location = new Point(18, 182);
             dgvResultados.Name = "dgvResultados";
             dgvResultados.ReadOnly = true;
             dgvResultados.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvResultados.Size = new Size(295, 150);
+            dgvResultados.Size = new Size(513, 185);
             dgvResultados.TabIndex = 1;
             // 
             // lblTotalCompras
             // 
             lblTotalCompras.AutoSize = true;
-            lblTotalCompras.Location = new Point(18, 370);
+            lblTotalCompras.Location = new Point(18, 380);
             lblTotalCompras.Name = "lblTotalCompras";
             lblTotalCompras.Size = new Size(112, 15);
             lblTotalCompras.TabIndex = 2;
