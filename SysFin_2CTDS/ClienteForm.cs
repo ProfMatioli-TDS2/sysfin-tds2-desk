@@ -25,11 +25,14 @@ namespace SysFin_2CTDS.View
             CarregarClientes();
         }
 
+        /// <summary>
+        /// Carrega clientes com filtro PARCIAL (LIKE) - usado pela busca dinâmica
+        /// </summary>
         private void CarregarClientes()
         {
             // Pega o texto atual do campo de busca.
-            // Certifique-se de que o TextBox de busca no Designer se chama 'txtBuscaNome'
-            string filtro = txtBuscaNome.Text;
+            // MUDANÇA AQUI: Adicionado .Trim() para remover espaços
+            string filtro = txtBuscaNome.Text.Trim();
 
             // Configura a grade para não gerar colunas automaticamente
             dgvClientes.AutoGenerateColumns = false;
@@ -37,7 +40,7 @@ namespace SysFin_2CTDS.View
             // Boa prática: limpar o DataSource antes de reatribuir
             dgvClientes.DataSource = null;
 
-            // Passa o filtro para o controller
+            // Passa o filtro para o controller (que usa LIKE)
             dgvClientes.DataSource = _clienteController.GetAll(filtro);
         }
 
@@ -198,12 +201,36 @@ namespace SysFin_2CTDS.View
 
         /// <summary>
         /// Este evento é disparado toda vez que o usuário digita no campo de busca.
+        /// (Busca parcial / LIKE)
         /// </summary>
         private void txtBuscaNome_TextChanged(object sender, EventArgs e)
         {
             // Apenas chama o método CarregarClientes, 
             // que já sabe como ler o filtro e atualizar a grade.
             CarregarClientes();
+        }
+
+        /// <summary>
+        /// Evento de clique para o PictureBox da lupa (se você o adicionou).
+        /// (Busca EXATA / =)
+        /// </summary>
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            // MUDANÇA AQUI: Adicionado .Trim() para remover espaços
+            string filtroExato = txtBuscaNome.Text.Trim();
+
+            // Se o campo de busca estiver vazio, recarrega todos (mesmo comportamento do TextChanged)
+            if (string.IsNullOrWhiteSpace(filtroExato))
+            {
+                CarregarClientes();
+                return;
+            }
+
+            // Limpa o DataSource
+            dgvClientes.DataSource = null;
+
+            // Chama o novo método do controller para busca exata
+            dgvClientes.DataSource = _clienteController.GetByExactName(filtroExato);
         }
 
         #region Métodos de Validação
@@ -239,6 +266,54 @@ namespace SysFin_2CTDS.View
         }
 
         #endregion
+
+        private void btnGerarRelatorio_Click(object sender, EventArgs e)
+        {
+            // 1. Tenta pegar os dados da grade (que podem estar filtrados)
+            var clientes = dgvClientes.DataSource as List<Cliente>;
+            if (clientes == null || clientes.Count == 0)
+            {
+                MessageBox.Show("Não há clientes para gerar o relatório.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // 2. Configura a caixa de diálogo "Salvar Como"
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Arquivo PDF (*.pdf)|*.pdf";
+            sfd.FileName = $"Relatorio_Clientes_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+            sfd.Title = "Salvar Relatório de Clientes";
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    // 3. CHAMA O CONTROLLER para fazer o trabalho
+                    bool sucesso = _clienteController.GerarRelatorioPDF(clientes, sfd.FileName);
+
+                    // 4. Verifica o resultado
+                    if (sucesso)
+                    {
+                        MessageBox.Show("Relatório gerado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Opcional: Abrir o PDF gerado
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                        {
+                            FileName = sfd.FileName,
+                            UseShellExecute = true
+                        });
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ocorreu um erro ao gerar o PDF. Verifique se o arquivo já está aberto ou se você tem permissão para salvar no local.", "Erro ao Gerar PDF", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Pega erros inesperados (ex: falta de permissão para salvar)
+                    MessageBox.Show("Ocorreu um erro inesperado: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }
 

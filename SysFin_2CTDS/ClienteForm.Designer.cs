@@ -20,6 +20,7 @@
             colEmail = new DataGridViewTextBoxColumn();
             colTelefone = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
+            btnGerarRelatorio = new Button();
             txtTelefone = new TextBox();
             label4 = new Label();
             txtEmail = new TextBox();
@@ -28,13 +29,15 @@
             label2 = new Label();
             txtNome = new TextBox();
             label1 = new Label();
+            txtBuscaNome = new TextBox();
+            label5 = new Label();
             btnNovo = new Button();
             btnSalvar = new Button();
             btnExcluir = new Button();
-            label5 = new Label();
-            txtBuscaNome = new TextBox();
+            pictureBox1 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // dgvClientes
@@ -90,8 +93,6 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(txtBuscaNome);
-            groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(txtTelefone);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(txtEmail);
@@ -104,10 +105,23 @@
             groupBox1.Margin = new Padding(4, 3, 4, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(4, 3, 4, 3);
-            groupBox1.Size = new Size(905, 159);
+            groupBox1.Size = new Size(905, 161);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Dados do Cliente";
+            // 
+            // btnGerarRelatorio
+            // 
+            btnGerarRelatorio.BackColor = Color.MediumOrchid;
+            btnGerarRelatorio.FlatStyle = FlatStyle.Flat;
+            btnGerarRelatorio.ForeColor = Color.White;
+            btnGerarRelatorio.Location = new Point(831, 181);
+            btnGerarRelatorio.Name = "btnGerarRelatorio";
+            btnGerarRelatorio.Size = new Size(88, 27);
+            btnGerarRelatorio.TabIndex = 10;
+            btnGerarRelatorio.Text = "Relatório";
+            btnGerarRelatorio.UseVisualStyleBackColor = false;
+            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
             // 
             // txtTelefone
             // 
@@ -123,9 +137,9 @@
             label4.Location = new Point(527, 82);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-            label4.Size = new Size(52, 15);
+            label4.Size = new Size(55, 15);
             label4.TabIndex = 6;
-            label4.Text = "Telefone";
+            label4.Text = "Telefone:";
             // 
             // txtEmail
             // 
@@ -141,9 +155,9 @@
             label3.Location = new Point(14, 82);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new Size(41, 15);
+            label3.Size = new Size(44, 15);
             label3.TabIndex = 4;
-            label3.Text = "E-mail";
+            label3.Text = "E-mail:";
             // 
             // txtCpfCnpj
             // 
@@ -159,9 +173,9 @@
             label2.Location = new Point(527, 29);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(60, 15);
+            label2.Size = new Size(63, 15);
             label2.TabIndex = 2;
-            label2.Text = "CPF/CNPJ";
+            label2.Text = "CPF/CNPJ:";
             // 
             // txtNome
             // 
@@ -177,65 +191,93 @@
             label1.Location = new Point(14, 29);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(40, 15);
+            label1.Size = new Size(43, 15);
             label1.TabIndex = 0;
-            label1.Text = "Nome";
+            label1.Text = "Nome:";
             // 
-            // btnNovo
+            // txtBuscaNome
             // 
-            btnNovo.Location = new Point(640, 184);
-            btnNovo.Margin = new Padding(4, 3, 4, 3);
-            btnNovo.Name = "btnNovo";
-            btnNovo.Size = new Size(88, 27);
-            btnNovo.TabIndex = 2;
-            btnNovo.Text = "Novo";
-            btnNovo.UseVisualStyleBackColor = true;
-            btnNovo.Click += btnNovo_Click;
-            // 
-            // btnSalvar
-            // 
-            btnSalvar.Location = new Point(736, 184);
-            btnSalvar.Margin = new Padding(4, 3, 4, 3);
-            btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(88, 27);
-            btnSalvar.TabIndex = 3;
-            btnSalvar.Text = "Salvar";
-            btnSalvar.UseVisualStyleBackColor = true;
-            btnSalvar.Click += btnSalvar_Click;
-            // 
-            // btnExcluir
-            // 
-            btnExcluir.Location = new Point(831, 184);
-            btnExcluir.Margin = new Padding(4, 3, 4, 3);
-            btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(88, 27);
-            btnExcluir.TabIndex = 4;
-            btnExcluir.Text = "Excluir";
-            btnExcluir.UseVisualStyleBackColor = true;
-            btnExcluir.Click += btnExcluir_Click;
+            txtBuscaNome.Location = new Point(136, 181);
+            txtBuscaNome.Name = "txtBuscaNome";
+            txtBuscaNome.Size = new Size(323, 23);
+            txtBuscaNome.TabIndex = 0;
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(14, 132);
+            label5.Location = new Point(28, 184);
             label5.Name = "label5";
             label5.Size = new Size(102, 15);
             label5.TabIndex = 8;
             label5.Text = "Buscar por Nome:";
             // 
-            // txtBuscaNome
+            // btnNovo
             // 
-            txtBuscaNome.Location = new Point(122, 128);
-            txtBuscaNome.Name = "txtBuscaNome";
-            txtBuscaNome.Size = new Size(383, 23);
-            txtBuscaNome.TabIndex = 0;
+            btnNovo.BackColor = Color.CornflowerBlue;
+            btnNovo.FlatAppearance.BorderSize = 0;
+            btnNovo.FlatStyle = FlatStyle.Flat;
+            btnNovo.ForeColor = Color.White;
+            btnNovo.Location = new Point(526, 181);
+            btnNovo.Margin = new Padding(4, 3, 4, 3);
+            btnNovo.Name = "btnNovo";
+            btnNovo.Size = new Size(88, 27);
+            btnNovo.TabIndex = 2;
+            btnNovo.Text = "Novo";
+            btnNovo.UseVisualStyleBackColor = false;
+            btnNovo.Click += btnNovo_Click;
+            // 
+            // btnSalvar
+            // 
+            btnSalvar.BackColor = Color.MediumSeaGreen;
+            btnSalvar.FlatAppearance.BorderSize = 0;
+            btnSalvar.FlatStyle = FlatStyle.Flat;
+            btnSalvar.ForeColor = Color.White;
+            btnSalvar.Location = new Point(627, 181);
+            btnSalvar.Margin = new Padding(4, 3, 4, 3);
+            btnSalvar.Name = "btnSalvar";
+            btnSalvar.Size = new Size(88, 27);
+            btnSalvar.TabIndex = 3;
+            btnSalvar.Text = "Salvar";
+            btnSalvar.UseVisualStyleBackColor = false;
+            btnSalvar.Click += btnSalvar_Click;
+            // 
+            // btnExcluir
+            // 
+            btnExcluir.BackColor = Color.Crimson;
+            btnExcluir.FlatAppearance.BorderSize = 0;
+            btnExcluir.FlatStyle = FlatStyle.Flat;
+            btnExcluir.ForeColor = Color.White;
+            btnExcluir.Location = new Point(733, 181);
+            btnExcluir.Margin = new Padding(4, 3, 4, 3);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(88, 27);
+            btnExcluir.TabIndex = 4;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = false;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Cursor = Cursors.Hand;
+            pictureBox1.Image = Properties.Resources.icons8_magnifying_glass_50;
+            pictureBox1.Location = new Point(465, 181);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(40, 23);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // ClienteForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(933, 519);
+            Controls.Add(btnGerarRelatorio);
+            Controls.Add(pictureBox1);
+            Controls.Add(txtBuscaNome);
             Controls.Add(btnExcluir);
+            Controls.Add(label5);
             Controls.Add(btnSalvar);
             Controls.Add(btnNovo);
             Controls.Add(groupBox1);
@@ -247,7 +289,9 @@
             ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -272,5 +316,7 @@
         private DataGridViewTextBoxColumn colTelefone;
         private Label label5;
         private TextBox txtBuscaNome;
+        private PictureBox pictureBox1;
+        private Button btnGerarRelatorio;
     }
 }
