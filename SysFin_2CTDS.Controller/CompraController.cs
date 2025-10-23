@@ -9,6 +9,42 @@ namespace SysFin_2CTDS.Controller
 {
     public class CompraController
     {
+
+
+        public void OperacaoCompra()
+        {
+            var itensCompra = new List<Compra>();  
+            decimal valorTotal = 0;
+
+            foreach (var item in itensCompra)
+            {
+                var compraItem = new Compra
+                {
+                    ProdutoId = item.ProdutoId,
+                    ProdutoNome = item.ProdutoNome,
+                    Quantidade = item.Quantidade,
+                    ValorUnitario = item.ValorUnitario,
+                    Subtotal = item.Quantidade * item.ValorUnitario
+                };
+                valorTotal += compraItem.Subtotal;
+                itensCompra.Add(compraItem);
+            }
+
+            int fornecedorId = 1;
+
+            try
+            {
+                bool sucesso = Compra.RegistrarCompra(itensCompra, fornecedorId, valorTotal);
+                MessageBox.Show("Compra registrada com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Falha ao registrar a compra: " + ex.Message);
+            }
+
+        }
+
+
         /// <summary>
         /// Obtém todas as compras realizadas em um determinado período.
         /// </summary>
