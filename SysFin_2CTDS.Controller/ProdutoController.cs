@@ -198,7 +198,7 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 8. MÉTODO AUXILIAR PARA MAPEAR O PRODUTO
+        // 8. MÉTODO AUXILIAR PARA MAPEAR OS PRODUTOS
         private Produto MapearProduto(SqlDataReader reader)
         {
             return new Produto
