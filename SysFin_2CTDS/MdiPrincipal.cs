@@ -38,5 +38,19 @@ namespace SysFin_2CTDS.View
             formRelatorio.MdiParent = this;
             formRelatorio.Show();
         }
+
+        private void produtoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frmCadastroProduto = new frmCadastroProduto();
+            frmCadastroProduto.MdiParent = this;
+            frmCadastroProduto.Show();
+        }
+
+        private void visualizarProdutosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frmListagemProdutos = new frmListagemProdutos();
+            frmListagemProdutos.MdiParent = this;
+            frmListagemProdutos.Show();
+        }
     }
 }

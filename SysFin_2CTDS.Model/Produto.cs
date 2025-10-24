@@ -24,7 +24,7 @@ namespace SysFin_2CTDS.Model
         {
             get; set;
         }
-        public int Estoque
+        public int EstoqueAtual
         {
             get; set;
         }

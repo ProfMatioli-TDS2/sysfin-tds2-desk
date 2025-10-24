@@ -35,16 +35,17 @@ namespace SysFin_2CTDS.View
             visualizarCadastrosToolStripMenuItem = new ToolStripMenuItem();
             produtoToolStripMenuItem = new ToolStripMenuItem();
             comprasToolStripMenuItem = new ToolStripMenuItem();
+            relatórioPorPeríodoToolStripMenuItem = new ToolStripMenuItem();
             vendasToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
-            relatórioPorPeríodoToolStripMenuItem = new ToolStripMenuItem();
-            produtoToolStripMenuItem = new ToolStripMenuItem();
+            produtosToolStripMenuItem = new ToolStripMenuItem();
+            visualizarProdutosToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { cadastrosToolStripMenuItem, comprasToolStripMenuItem, vendasToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { cadastrosToolStripMenuItem, comprasToolStripMenuItem, vendasToolStripMenuItem, produtosToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
@@ -62,29 +63,30 @@ namespace SysFin_2CTDS.View
             // clientesToolStripMenuItem
             // 
             clientesToolStripMenuItem.Name = "clientesToolStripMenuItem";
-            clientesToolStripMenuItem.Size = new Size(180, 22);
+            clientesToolStripMenuItem.Size = new Size(178, 22);
             clientesToolStripMenuItem.Text = "Clientes";
             clientesToolStripMenuItem.Click += clientesToolStripMenuItem_Click;
             // 
             // fornecedoresToolStripMenuItem
             // 
             fornecedoresToolStripMenuItem.Name = "fornecedoresToolStripMenuItem";
-            fornecedoresToolStripMenuItem.Size = new Size(180, 22);
+            fornecedoresToolStripMenuItem.Size = new Size(178, 22);
             fornecedoresToolStripMenuItem.Text = "Fornecedores";
             fornecedoresToolStripMenuItem.Click += fornecedoresToolStripMenuItem_Click;
             // 
             // visualizarCadastrosToolStripMenuItem
             // 
             visualizarCadastrosToolStripMenuItem.Name = "visualizarCadastrosToolStripMenuItem";
-            visualizarCadastrosToolStripMenuItem.Size = new Size(180, 22);
+            visualizarCadastrosToolStripMenuItem.Size = new Size(178, 22);
             visualizarCadastrosToolStripMenuItem.Text = "Visualizar Cadastros";
             visualizarCadastrosToolStripMenuItem.Click += visualizarCadastrosToolStripMenuItem_Click;
             // 
             // produtoToolStripMenuItem
             // 
             produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(180, 22);
-            produtoToolStripMenuItem.Text = "Produto";            
+            produtoToolStripMenuItem.Size = new Size(178, 22);
+            produtoToolStripMenuItem.Text = "Produto";
+            produtoToolStripMenuItem.Click += produtoToolStripMenuItem_Click;
             // 
             // comprasToolStripMenuItem
             // 
@@ -92,6 +94,13 @@ namespace SysFin_2CTDS.View
             comprasToolStripMenuItem.Name = "comprasToolStripMenuItem";
             comprasToolStripMenuItem.Size = new Size(67, 20);
             comprasToolStripMenuItem.Text = "Compras";
+            // 
+            // relatórioPorPeríodoToolStripMenuItem
+            // 
+            relatórioPorPeríodoToolStripMenuItem.Name = "relatórioPorPeríodoToolStripMenuItem";
+            relatórioPorPeríodoToolStripMenuItem.Size = new Size(186, 22);
+            relatórioPorPeríodoToolStripMenuItem.Text = "Relatório por Período";
+            relatórioPorPeríodoToolStripMenuItem.Click += relatórioPorPeríodoToolStripMenuItem_Click;
             // 
             // vendasToolStripMenuItem
             // 
@@ -108,18 +117,19 @@ namespace SysFin_2CTDS.View
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
-            // relatórioPorPeríodoToolStripMenuItem
+            // produtosToolStripMenuItem
             // 
-            relatórioPorPeríodoToolStripMenuItem.Name = "relatórioPorPeríodoToolStripMenuItem";
-            relatórioPorPeríodoToolStripMenuItem.Size = new Size(186, 22);
-            relatórioPorPeríodoToolStripMenuItem.Text = "Relatório por Período";
-            relatórioPorPeríodoToolStripMenuItem.Click += relatórioPorPeríodoToolStripMenuItem_Click;
+            produtosToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { visualizarProdutosToolStripMenuItem });
+            produtosToolStripMenuItem.Name = "produtosToolStripMenuItem";
+            produtosToolStripMenuItem.Size = new Size(67, 20);
+            produtosToolStripMenuItem.Text = "Produtos";
             // 
-            // produtoToolStripMenuItem
+            // visualizarProdutosToolStripMenuItem
             // 
-            produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(180, 22);
-            produtoToolStripMenuItem.Text = "Produto";
+            visualizarProdutosToolStripMenuItem.Name = "visualizarProdutosToolStripMenuItem";
+            visualizarProdutosToolStripMenuItem.Size = new Size(180, 22);
+            visualizarProdutosToolStripMenuItem.Text = "Visualizar produtos";
+            visualizarProdutosToolStripMenuItem.Click += visualizarProdutosToolStripMenuItem_Click;
             // 
             // MdiPrincipal
             // 
@@ -152,5 +162,7 @@ namespace SysFin_2CTDS.View
         private System.Windows.Forms.ToolStripMenuItem visualizarCadastrosToolStripMenuItem;
         private ToolStripMenuItem relatórioPorPeríodoToolStripMenuItem;
         private ToolStripMenuItem produtoToolStripMenuItem;
+        private ToolStripMenuItem produtosToolStripMenuItem;
+        private ToolStripMenuItem visualizarProdutosToolStripMenuItem;
     }
 }
