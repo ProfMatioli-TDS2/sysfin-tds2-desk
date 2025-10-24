@@ -99,6 +99,7 @@
             // 
             numPrecoVenda.DecimalPlaces = 2;
             numPrecoVenda.Location = new Point(158, 133);
+            numPrecoVenda.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numPrecoVenda.Name = "numPrecoVenda";
             numPrecoVenda.Size = new Size(120, 23);
             numPrecoVenda.TabIndex = 6;
@@ -106,6 +107,7 @@
             // numEstoque
             // 
             numEstoque.Location = new Point(150, 184);
+            numEstoque.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numEstoque.Name = "numEstoque";
             numEstoque.Size = new Size(120, 23);
             numEstoque.TabIndex = 7;
