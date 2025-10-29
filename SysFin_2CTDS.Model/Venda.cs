@@ -1,12 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SysFin_2CTDS.Model
+namespace SysFin_2CTDS.Models
 {
-    internal class Venda
+    public class Venda
     {
+        public int Id { get; set; }
+        public int IdCliente { get; set; }
+        public DateTime DataVenda { get; set; }
+        public decimal ValorTotal { get; set; }
+        public List<ItemVenda> Itens { get; set; }
+
+        public Venda()
+        {
+            Itens = new List<ItemVenda>();
+        }
     }
 }
