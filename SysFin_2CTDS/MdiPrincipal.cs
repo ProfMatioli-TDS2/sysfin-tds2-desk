@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
-namespace SysFin_2CTDS.View
-{
+
+namespace SysFin_2CTDS.View {
     public partial class MdiPrincipal : Form
     {
         public MdiPrincipal()
@@ -20,15 +20,6 @@ namespace SysFin_2CTDS.View
         // Evento de clique para o item de menu "Fornecedores"
         private void fornecedoresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (Form form in this.MdiChildren)
-            {
-                if (form is FornecedorForm)
-                {
-                    form.Focus(); // Traz o formulário já aberto para frente
-                    return;       // Cancela a abertura de uma nova instância
-                }
-            }
-
             var fornecedorForm = new FornecedorForm();
             fornecedorForm.MdiParent = this;
             fornecedorForm.Show();
@@ -41,11 +32,11 @@ namespace SysFin_2CTDS.View
             MessageBox.Show("Funcionalidade para visualizar cadastros ainda não implementada.", "Em Desenvolvimento", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void relatórioPorPeríodoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void estoqueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var formRelatorio = new frmRelatorioCompras();
-            formRelatorio.MdiParent = this;
-            formRelatorio.Show();
+            var estoqueForm = new EstoqueForm();
+            estoqueForm.MdiParent = this;
+            estoqueForm.Show();
         }
     }
 }

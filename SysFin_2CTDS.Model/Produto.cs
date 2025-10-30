@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +24,7 @@ namespace SysFin_2CTDS.Model
         {
             get; set;
         }
-        public int Estoque
+        public int EstoqueAtual
         {
             get; set;
         }
