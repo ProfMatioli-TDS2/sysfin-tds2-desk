@@ -17,166 +17,195 @@
 
         private void InitializeComponent()
         {
-            this.dgvFornecedores = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.mtbTelefone = new System.Windows.Forms.MaskedTextBox(); // MODIFICADO
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCnpj = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtNome = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnNovo = new System.Windows.Forms.Button();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvFornecedores)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
+            dgvFornecedores = new DataGridView();
+            groupBox1 = new GroupBox();
+            mtbTelefone = new MaskedTextBox();
+            label4 = new Label();
+            txtEmail = new TextBox();
+            label3 = new Label();
+            mtbCnpj = new MaskedTextBox();
+            label2 = new Label();
+            txtNome = new TextBox();
+            label1 = new Label();
+            btnNovo = new Button();
+            btnSalvar = new Button();
+            btnExcluir = new Button();
+            btnGerarRelatorio = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvFornecedores).BeginInit();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
             // 
             // dgvFornecedores
             // 
-            this.dgvFornecedores.AllowUserToAddRows = false;
-            this.dgvFornecedores.AllowUserToDeleteRows = false;
-            this.dgvFornecedores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvFornecedores.Location = new System.Drawing.Point(12, 188);
-            this.dgvFornecedores.MultiSelect = false;
-            this.dgvFornecedores.Name = "dgvFornecedores";
-            this.dgvFornecedores.ReadOnly = true;
-            this.dgvFornecedores.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFornecedores.Size = new System.Drawing.Size(776, 250);
-            this.dgvFornecedores.TabIndex = 0;
-            this.dgvFornecedores.SelectionChanged += new System.EventHandler(this.dgvFornecedores_SelectionChanged);
+            dgvFornecedores.AllowUserToAddRows = false;
+            dgvFornecedores.AllowUserToDeleteRows = false;
+            dgvFornecedores.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvFornecedores.Location = new Point(16, 289);
+            dgvFornecedores.Margin = new Padding(4, 5, 4, 5);
+            dgvFornecedores.MultiSelect = false;
+            dgvFornecedores.Name = "dgvFornecedores";
+            dgvFornecedores.ReadOnly = true;
+            dgvFornecedores.RowHeadersWidth = 51;
+            dgvFornecedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvFornecedores.Size = new Size(1035, 385);
+            dgvFornecedores.TabIndex = 0;
+            dgvFornecedores.SelectionChanged += dgvFornecedores_SelectionChanged;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.mtbTelefone); // MODIFICADO
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.txtEmail);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.txtCnpj);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.txtNome);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 128);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Dados do Fornecedor";
+            groupBox1.Controls.Add(mtbTelefone);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(txtEmail);
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(mtbCnpj);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(txtNome);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Location = new Point(16, 18);
+            groupBox1.Margin = new Padding(4, 5, 4, 5);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new Padding(4, 5, 4, 5);
+            groupBox1.Size = new Size(1035, 197);
+            groupBox1.TabIndex = 1;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Dados do Fornecedor";
             // 
             // mtbTelefone
             // 
-            this.mtbTelefone.Location = new System.Drawing.Point(455, 87);
-            this.mtbTelefone.Mask = "(99) 00000-0000"; // MODIFICADO
-            this.mtbTelefone.Name = "mtbTelefone";
-            this.mtbTelefone.Size = new System.Drawing.Size(306, 20);
-            this.mtbTelefone.TabIndex = 7;
+            mtbTelefone.Location = new Point(607, 134);
+            mtbTelefone.Margin = new Padding(4, 5, 4, 5);
+            mtbTelefone.Mask = "(99) 00000-0000";
+            mtbTelefone.Name = "mtbTelefone";
+            mtbTelefone.Size = new Size(407, 27);
+            mtbTelefone.TabIndex = 7;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(452, 71);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Telefone";
+            label4.AutoSize = true;
+            label4.Location = new Point(603, 109);
+            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(66, 20);
+            label4.TabIndex = 6;
+            label4.Text = "Telefone";
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(15, 87);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(418, 20);
-            this.txtEmail.TabIndex = 5;
+            txtEmail.Location = new Point(20, 134);
+            txtEmail.Margin = new Padding(4, 5, 4, 5);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(556, 27);
+            txtEmail.TabIndex = 5;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 71);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "E-mail";
+            label3.AutoSize = true;
+            label3.Location = new Point(16, 109);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(52, 20);
+            label3.TabIndex = 4;
+            label3.Text = "E-mail";
             // 
-            // txtCnpj
+            // mtbCnpj
             // 
-            this.txtCnpj.Location = new System.Drawing.Point(455, 41);
-            this.txtCnpj.Name = "txtCnpj";
-            this.txtCnpj.Size = new System.Drawing.Size(306, 20);
-            this.txtCnpj.TabIndex = 3;
+            mtbCnpj.Location = new Point(607, 63);
+            mtbCnpj.Margin = new Padding(4, 5, 4, 5);
+            mtbCnpj.Mask = "99.999.999/9999-99";
+            mtbCnpj.Name = "mtbCnpj";
+            mtbCnpj.Size = new Size(407, 27);
+            mtbCnpj.TabIndex = 3;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(452, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "CNPJ";
+            label2.AutoSize = true;
+            label2.Location = new Point(603, 38);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(41, 20);
+            label2.TabIndex = 2;
+            label2.Text = "CNPJ";
             // 
             // txtNome
             // 
-            this.txtNome.Location = new System.Drawing.Point(15, 41);
-            this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(418, 20);
-            this.txtNome.TabIndex = 1;
+            txtNome.Location = new Point(20, 63);
+            txtNome.Margin = new Padding(4, 5, 4, 5);
+            txtNome.Name = "txtNome";
+            txtNome.Size = new Size(556, 27);
+            txtNome.TabIndex = 1;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Nome";
+            label1.AutoSize = true;
+            label1.Location = new Point(16, 38);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(50, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Nome";
             // 
             // btnNovo
             // 
-            this.btnNovo.Location = new System.Drawing.Point(549, 146);
-            this.btnNovo.Name = "btnNovo";
-            this.btnNovo.Size = new System.Drawing.Size(75, 23);
-            this.btnNovo.TabIndex = 2;
-            this.btnNovo.Text = "Novo";
-            this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
+            btnNovo.Location = new Point(732, 225);
+            btnNovo.Margin = new Padding(4, 5, 4, 5);
+            btnNovo.Name = "btnNovo";
+            btnNovo.Size = new Size(100, 35);
+            btnNovo.TabIndex = 2;
+            btnNovo.Text = "Novo";
+            btnNovo.UseVisualStyleBackColor = true;
+            btnNovo.Click += btnNovo_Click;
             // 
             // btnSalvar
             // 
-            this.btnSalvar.Location = new System.Drawing.Point(630, 146);
-            this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(75, 23);
-            this.btnSalvar.TabIndex = 3;
-            this.btnSalvar.Text = "Salvar";
-            this.btnSalvar.UseVisualStyleBackColor = true;
-            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            btnSalvar.Location = new Point(840, 225);
+            btnSalvar.Margin = new Padding(4, 5, 4, 5);
+            btnSalvar.Name = "btnSalvar";
+            btnSalvar.Size = new Size(100, 35);
+            btnSalvar.TabIndex = 3;
+            btnSalvar.Text = "Salvar";
+            btnSalvar.UseVisualStyleBackColor = true;
+            btnSalvar.Click += btnSalvar_Click;
             // 
             // btnExcluir
             // 
-            this.btnExcluir.Location = new System.Drawing.Point(711, 146);
-            this.btnExcluir.Name = "btnExcluir";
-            this.btnExcluir.Size = new System.Drawing.Size(75, 23);
-            this.btnExcluir.TabIndex = 4;
-            this.btnExcluir.Text = "Excluir";
-            this.btnExcluir.UseVisualStyleBackColor = true;
-            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            btnExcluir.Location = new Point(948, 225);
+            btnExcluir.Margin = new Padding(4, 5, 4, 5);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(100, 35);
+            btnExcluir.TabIndex = 4;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = true;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // btnGerarRelatorio
+            // 
+            btnGerarRelatorio.Location = new Point(623, 225);
+            btnGerarRelatorio.Name = "btnGerarRelatorio";
+            btnGerarRelatorio.Size = new Size(102, 35);
+            btnGerarRelatorio.TabIndex = 5;
+            btnGerarRelatorio.Text = "Relatório";
+            btnGerarRelatorio.UseVisualStyleBackColor = true;
+            btnGerarRelatorio.Click += btnGerarRelatorio_Click_1;
             // 
             // FornecedorForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnExcluir);
-            this.Controls.Add(this.btnSalvar);
-            this.Controls.Add(this.btnNovo);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.dgvFornecedores);
-            this.Name = "FornecedorForm";
-            this.Text = "Gestão de Fornecedores";
-            this.Load += new System.EventHandler(this.FornecedorForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvFornecedores)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1067, 692);
+            Controls.Add(btnGerarRelatorio);
+            Controls.Add(btnExcluir);
+            Controls.Add(btnSalvar);
+            Controls.Add(btnNovo);
+            Controls.Add(groupBox1);
+            Controls.Add(dgvFornecedores);
+            Margin = new Padding(4, 5, 4, 5);
+            Name = "FornecedorForm";
+            Text = "Gestão de Fornecedores";
+            Load += FornecedorForm_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvFornecedores).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
 
         }
 
@@ -184,16 +213,17 @@
 
         private System.Windows.Forms.DataGridView dgvFornecedores;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.MaskedTextBox mtbTelefone; // MODIFICADO
+        private System.Windows.Forms.MaskedTextBox mtbTelefone;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtCnpj;
+        private System.Windows.Forms.MaskedTextBox mtbCnpj; // Alterado para MaskedTextBox
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtNome;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnExcluir;
+        private Button btnGerarRelatorio;
     }
 }
