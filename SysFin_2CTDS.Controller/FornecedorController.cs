@@ -66,10 +66,15 @@ namespace SysFin_2CTDS.Controller
                 errors.Add("O CNPJ informado é inválido.");
             }
 
-            if (!string.IsNullOrWhiteSpace(fornecedor.Email) && !new EmailAddressAttribute().IsValid(fornecedor.Email))
+            if (string.IsNullOrWhiteSpace(fornecedor.Email))
+            {
+                errors.Add("O campo de e-mail é obrigatório.");
+            }
+            else if (!new EmailAddressAttribute().IsValid(fornecedor.Email))
             {
                 errors.Add("O e-mail informado não é válido.");
             }
+
 
             var telefoneNumerico = new string((fornecedor.Telefone ?? "").Where(char.IsDigit).ToArray());
             if (telefoneNumerico.Length < 10 || telefoneNumerico.Length > 11)
