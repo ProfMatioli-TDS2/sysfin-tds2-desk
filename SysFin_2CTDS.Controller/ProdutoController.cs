@@ -1,8 +1,9 @@
-using SysFin_2CTDS.Model;
-using SysFin_2CTDS.Model.Data;
-using Microsoft.Data.SqlClient;
+ï»¿using SysFin_2CTDS.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SysFin_2CTDS.Controller
 {
@@ -32,7 +33,7 @@ namespace SysFin_2CTDS.Controller
                         }
                         else
                         {
-                            return "Nenhuma linha foi afetada. O produto não foi cadastrado.";
+                            return "Nenhuma linha foi afetada. O produto nï¿½o foi cadastrado.";
                         }
                     }
                     catch (Exception ex)
@@ -43,7 +44,7 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 3. MÉTODO PARA LISTAR OS PRODUTOS DO BANCO
+        // 3. Mï¿½TODO PARA LISTAR OS PRODUTOS DO BANCO
         public List<Produto> ListarProdutos()
         {
             var produtos = new List<Produto>();
@@ -73,7 +74,7 @@ namespace SysFin_2CTDS.Controller
             return produtos;
         }
 
-        // 4. MÉTODO PARA LISTAR PRODUTOS POR NOME (BUSCA)
+        // 4. Mï¿½TODO PARA LISTAR PRODUTOS POR NOME (BUSCA)
         public List<Produto> ListarProdutosPorNome(string termoBusca)
         {
             if (string.IsNullOrWhiteSpace(termoBusca))
@@ -110,7 +111,7 @@ namespace SysFin_2CTDS.Controller
             return produtos;
         }
 
-        // 5. MÉTODO PARA EXCLUIR PRODUTO
+        // 5. Mï¿½TODO PARA EXCLUIR PRODUTO
         public bool ExcluirProduto(int id)
         {
             using (var connection = Database.GetConnection())
@@ -133,7 +134,7 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 6. MÉTODO PARA BUSCAR UM PRODUTO ÚNICO POR ID
+        // 6. Mï¿½TODO PARA BUSCAR UM PRODUTO ï¿½NICO POR ID
         public Produto BuscarProdutoPorId(int id)
         {
             using (var connection = Database.GetConnection())
@@ -162,7 +163,7 @@ namespace SysFin_2CTDS.Controller
             return null;
         }
 
-        // 7. MÉTODO PARA ATUALIZAR O PRODUTO
+        // 7. Mï¿½TODO PARA ATUALIZAR O PRODUTO
         public string AtualizarProduto(int id, string nome, string descricao, decimal precoVenda)
         {
             using (var connection = Database.GetConnection())
@@ -187,7 +188,7 @@ namespace SysFin_2CTDS.Controller
                         }
                         else
                         {
-                            return "Produto não encontrado. A atualização falhou.";
+                            return "Produto nï¿½o encontrado. A atualizaï¿½ï¿½o falhou.";
                         }
                     }
                     catch (Exception ex)
@@ -198,7 +199,7 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 8. MÉTODO AUXILIAR PARA MAPEAR OS PRODUTOS
+        // 8. Mï¿½TODO AUXILIAR PARA MAPEAR OS PRODUTOS
         private Produto MapearProduto(SqlDataReader reader)
         {
             return new Produto

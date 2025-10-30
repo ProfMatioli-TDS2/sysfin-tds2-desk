@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View {
@@ -40,4 +40,3 @@ namespace SysFin_2CTDS.View {
         }
     }
 }
-

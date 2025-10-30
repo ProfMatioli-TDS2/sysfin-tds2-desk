@@ -1,5 +1,7 @@
-﻿namespace SysFin_2CTDS.View {
-    partial class MdiPrincipal {
+namespace SysFin_2CTDS.View
+{
+    partial class MdiPrincipal
+    {
         /// <summary>
         /// Variável de designer necessária.
         /// </summary>
@@ -9,8 +11,10 @@
         /// Limpar os recursos que estão sendo usados.
         /// </summary>
         /// <param name="disposing">true se for necessário descartar os recursos gerenciados; caso contrário, false.</param>
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -135,4 +139,3 @@
         private ToolStripMenuItem estoqueToolStripMenuItem;
     }
 }
-
