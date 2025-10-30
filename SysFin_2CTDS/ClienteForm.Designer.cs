@@ -20,15 +20,15 @@
             colEmail = new DataGridViewTextBoxColumn();
             colTelefone = new DataGridViewTextBoxColumn();
             groupBox1 = new GroupBox();
-            btnGerarRelatorio = new Button();
-            txtTelefone = new TextBox();
+            mtbCpfCnpj = new MaskedTextBox();
+            mtbTelefone = new MaskedTextBox();
             label4 = new Label();
             txtEmail = new TextBox();
             label3 = new Label();
-            txtCpfCnpj = new TextBox();
             label2 = new Label();
             txtNome = new TextBox();
             label1 = new Label();
+            btnGerarRelatorio = new Button();
             txtBuscaNome = new TextBox();
             label5 = new Label();
             btnNovo = new Button();
@@ -93,11 +93,11 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(txtTelefone);
+            groupBox1.Controls.Add(mtbCpfCnpj);
+            groupBox1.Controls.Add(mtbTelefone);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(txtEmail);
             groupBox1.Controls.Add(label3);
-            groupBox1.Controls.Add(txtCpfCnpj);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(txtNome);
             groupBox1.Controls.Add(label1);
@@ -110,26 +110,25 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Dados do Cliente";
             // 
-            // btnGerarRelatorio
+            // mtbCpfCnpj
             // 
-            btnGerarRelatorio.BackColor = Color.MediumOrchid;
-            btnGerarRelatorio.FlatStyle = FlatStyle.Flat;
-            btnGerarRelatorio.ForeColor = Color.White;
-            btnGerarRelatorio.Location = new Point(831, 181);
-            btnGerarRelatorio.Name = "btnGerarRelatorio";
-            btnGerarRelatorio.Size = new Size(88, 27);
-            btnGerarRelatorio.TabIndex = 10;
-            btnGerarRelatorio.Text = "Relatório";
-            btnGerarRelatorio.UseVisualStyleBackColor = false;
-            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
+            mtbCpfCnpj.Location = new Point(531, 47);
+            mtbCpfCnpj.Name = "mtbCpfCnpj";
+            mtbCpfCnpj.Size = new Size(356, 23);
+            mtbCpfCnpj.TabIndex = 9;
+            mtbCpfCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbCpfCnpj.KeyPress += mtbCpfCnpj_KeyPress;
+            mtbCpfCnpj.KeyUp += mtbCpfCnpj_KeyUp;
             // 
-            // txtTelefone
+            // mtbTelefone
             // 
-            txtTelefone.Location = new Point(531, 100);
-            txtTelefone.Margin = new Padding(4, 3, 4, 3);
-            txtTelefone.Name = "txtTelefone";
-            txtTelefone.Size = new Size(356, 23);
-            txtTelefone.TabIndex = 7;
+            mtbTelefone.Location = new Point(531, 100);
+            mtbTelefone.Name = "mtbTelefone";
+            mtbTelefone.Size = new Size(356, 23);
+            mtbTelefone.TabIndex = 8;
+            mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbTelefone.KeyPress += mtbTelefone_KeyPress;
+            mtbTelefone.KeyUp += mtbTelefone_KeyUp;
             // 
             // label4
             // 
@@ -159,14 +158,6 @@
             label3.TabIndex = 4;
             label3.Text = "E-mail:";
             // 
-            // txtCpfCnpj
-            // 
-            txtCpfCnpj.Location = new Point(531, 47);
-            txtCpfCnpj.Margin = new Padding(4, 3, 4, 3);
-            txtCpfCnpj.Name = "txtCpfCnpj";
-            txtCpfCnpj.Size = new Size(356, 23);
-            txtCpfCnpj.TabIndex = 3;
-            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -194,6 +185,19 @@
             label1.Size = new Size(43, 15);
             label1.TabIndex = 0;
             label1.Text = "Nome:";
+            // 
+            // btnGerarRelatorio
+            // 
+            btnGerarRelatorio.BackColor = Color.MediumOrchid;
+            btnGerarRelatorio.FlatStyle = FlatStyle.Flat;
+            btnGerarRelatorio.ForeColor = Color.White;
+            btnGerarRelatorio.Location = new Point(831, 181);
+            btnGerarRelatorio.Name = "btnGerarRelatorio";
+            btnGerarRelatorio.Size = new Size(88, 27);
+            btnGerarRelatorio.TabIndex = 10;
+            btnGerarRelatorio.Text = "Relatório";
+            btnGerarRelatorio.UseVisualStyleBackColor = false;
+            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
             // 
             // txtBuscaNome
             // 
@@ -298,11 +302,9 @@
 
         private System.Windows.Forms.DataGridView dgvClientes;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox txtTelefone;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtCpfCnpj;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtNome;
         private System.Windows.Forms.Label label1;
@@ -318,5 +320,7 @@
         private TextBox txtBuscaNome;
         private PictureBox pictureBox1;
         private Button btnGerarRelatorio;
+        private MaskedTextBox mtbTelefone;
+        private MaskedTextBox mtbCpfCnpj;
     }
 }

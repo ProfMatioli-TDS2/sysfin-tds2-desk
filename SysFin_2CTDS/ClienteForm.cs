@@ -1,46 +1,52 @@
 ﻿using SysFin_2CTDS.Controller;
-using SysFin_2CTDS.Models; // Supondo que a classe Cliente está neste namespace
+using SysFin_2CTDS.Models;
 using System;
-using System.Text.RegularExpressions; // Namespace necessário para usar Expressões Regulares (Regex)
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.IO;
+using System.Diagnostics;
+using System.Linq;
 
 namespace SysFin_2CTDS.View
 {
     public partial class ClienteForm : Form
     {
-        // Instância do controller que contém a lógica de negócio
         private readonly ClienteController _clienteController;
-        // Armazena o cliente atualmente selecionado na grade
         private Cliente _clienteSelecionado;
+
+        // Máscaras padrão
+        private const string MascaraCpf = "000\\.000\\.000\\-00";
+        private const string MascaraCnpj = "00\\.000\\.000\\/0000\\-00";
+        private const string MascaraTelFixo = "\\(00\\) 0000\\-0000";
+        private const string MascaraTelCel = "\\(00\\) 00000\\-0000";
+
+        // Flags para controlar mudança de máscara
+        private bool _mudandoMascaraCpf = false;
+        private bool _mudandoMascaraTel = false;
 
         public ClienteForm()
         {
             InitializeComponent();
-            // Inicializa o controller
             _clienteController = new ClienteController();
         }
 
         private void ClienteForm_Load(object sender, EventArgs e)
         {
             CarregarClientes();
+            // Define o TextMaskFormat programaticamente
+            mtbCpfCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            // Define máscaras iniciais
+            mtbCpfCnpj.Mask = MascaraCpf;
+            mtbTelefone.Mask = MascaraTelFixo;
         }
 
-        /// <summary>
-        /// Carrega clientes com filtro PARCIAL (LIKE) - usado pela busca dinâmica
-        /// </summary>
         private void CarregarClientes()
         {
-            // Pega o texto atual do campo de busca.
-            // MUDANÇA AQUI: Adicionado .Trim() para remover espaços
             string filtro = txtBuscaNome.Text.Trim();
-
-            // Configura a grade para não gerar colunas automaticamente
             dgvClientes.AutoGenerateColumns = false;
-
-            // Boa prática: limpar o DataSource antes de reatribuir
             dgvClientes.DataSource = null;
-
-            // Passa o filtro para o controller (que usa LIKE)
             dgvClientes.DataSource = _clienteController.GetAll(filtro);
         }
 
@@ -48,35 +54,30 @@ namespace SysFin_2CTDS.View
         {
             _clienteSelecionado = null;
             txtNome.Clear();
-            txtCpfCnpj.Clear();
+            mtbCpfCnpj.Clear();
             txtEmail.Clear();
-            txtTelefone.Clear();
-            // A limpeza da seleção agora é feita nos métodos de clique dos botões
+            mtbTelefone.Clear();
+            // Reseta as máscaras para o padrão ao limpar
+            mtbCpfCnpj.Mask = MascaraCpf;
+            mtbTelefone.Mask = MascaraTelFixo;
             txtNome.Focus();
         }
 
         private void btnNovo_Click(object sender, EventArgs e)
         {
-            // 1. DESLIGA o "ouvinte" do evento para evitar que ele dispare
             dgvClientes.SelectionChanged -= dgvClientes_SelectionChanged;
 
-            // 2. Faz toda a sua lógica de limpeza e recarga
             LimparFormulario();
             txtBuscaNome.Clear();
-            CarregarClientes(); // Recarrega a grade (agora sem filtro)
-            dgvClientes.ClearSelection(); // Limpa a seleção sem disparar o evento
+            CarregarClientes();
+            dgvClientes.ClearSelection();
 
-            // 3. RELIGA o "ouvinte" do evento para o funcionamento normal
             dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
-
-            // 4. Coloca o foco de volta no campo de nome
             txtNome.Focus();
         }
 
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            // --- INÍCIO DA VALIDAÇÃO ---
-
             if (string.IsNullOrWhiteSpace(txtNome.Text))
             {
                 MessageBox.Show("O campo Nome é obrigatório.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -84,69 +85,61 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(txtCpfCnpj.Text))
+            string cpfCnpjApenasNumeros = mtbCpfCnpj.Text;
+
+            if (string.IsNullOrWhiteSpace(cpfCnpjApenasNumeros))
             {
                 MessageBox.Show("O campo CPF/CNPJ é obrigatório.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCpfCnpj.Focus();
+                mtbCpfCnpj.Focus();
                 return;
             }
 
-            if (!IsValidCpfCnpj(txtCpfCnpj.Text))
+            if (!ClienteController.IsValidCpfCnpj(cpfCnpjApenasNumeros))
             {
-                MessageBox.Show("O CPF/CNPJ é inválido. Um CPF deve conter 11 dígitos e um CNPJ 14 dígitos.", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCpfCnpj.Focus();
+                MessageBox.Show("O CPF/CNPJ preenchido parece inválido (deve ter 11 ou 14 dígitos).", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                mtbCpfCnpj.Focus();
                 return;
             }
 
-            if (!IsValidEmail(txtEmail.Text))
+            if (!ClienteController.IsValidEmail(txtEmail.Text))
             {
                 MessageBox.Show("O formato do e-mail é inválido.", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Focus();
                 return;
             }
 
-            if (!IsValidTelefone(txtTelefone.Text))
+            string telefoneApenasNumeros = mtbTelefone.Text;
+
+            if (!string.IsNullOrEmpty(telefoneApenasNumeros) && !ClienteController.IsValidTelefone(telefoneApenasNumeros))
             {
-                MessageBox.Show("O telefone é inválido. O número deve conter 10 ou 11 dígitos (incluindo DDD).", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtTelefone.Focus();
+                MessageBox.Show("O telefone preenchido parece inválido (deve ter 10 ou 11 dígitos).", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                mtbTelefone.Focus();
                 return;
             }
 
-            // --- FIM DA VALIDAÇÃO ---
-
-            // --- NOVA VALIDAÇÃO DE DUPLICIDADE ---
-            var cpfCnpjLimpo = Regex.Replace(txtCpfCnpj.Text, @"[^\d]", "");
-            // Pega o ID do cliente atual. Se for um novo cliente, _clienteSelecionado é nulo, então o ID será 0.
             int clienteIdAtual = _clienteSelecionado?.Id ?? 0;
 
-            if (_clienteController.CpfCnpjExists(cpfCnpjLimpo, clienteIdAtual))
+            if (_clienteController.CpfCnpjExists(cpfCnpjApenasNumeros, clienteIdAtual))
             {
                 MessageBox.Show("O CPF/CNPJ informado já está cadastrado para outro cliente.", "CPF/CNPJ Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtCpfCnpj.Focus();
-                return; // Impede o salvamento
+                mtbCpfCnpj.Focus();
+                return;
             }
-            // --- FIM DA NOVA VALIDAÇÃO ---
-
 
             var cliente = _clienteSelecionado ?? new Cliente();
             cliente.Nome = txtNome.Text;
-            cliente.CpfCnpj = cpfCnpjLimpo; // Reutiliza a variável que já limpamos
+            cliente.CpfCnpj = cpfCnpjApenasNumeros;
             cliente.Email = txtEmail.Text;
-            cliente.Telefone = txtTelefone.Text;
+            cliente.Telefone = telefoneApenasNumeros;
 
             if (_clienteController.Save(cliente))
             {
                 MessageBox.Show("Cliente salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // 1. DESLIGA o evento para não re-preencher o formulário
                 dgvClientes.SelectionChanged -= dgvClientes_SelectionChanged;
-
-                // 2. Limpa e recarrega
                 LimparFormulario();
                 CarregarClientes();
                 dgvClientes.ClearSelection();
-
-                // 3. RELIGA o evento
                 dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
             }
             else
@@ -182,94 +175,60 @@ namespace SysFin_2CTDS.View
 
         private void dgvClientes_SelectionChanged(object sender, EventArgs e)
         {
-            // Verifica se há alguma linha selecionada
             if (dgvClientes.SelectedRows.Count > 0)
             {
-                // Pega o objeto Cliente associado à linha selecionada
                 _clienteSelecionado = dgvClientes.SelectedRows[0].DataBoundItem as Cliente;
 
                 if (_clienteSelecionado != null)
                 {
-                    // Preenche os campos do formulário com os dados do cliente selecionado
                     txtNome.Text = _clienteSelecionado.Nome;
-                    txtCpfCnpj.Text = _clienteSelecionado.CpfCnpj;
+                    mtbCpfCnpj.Text = _clienteSelecionado.CpfCnpj;
                     txtEmail.Text = _clienteSelecionado.Email;
-                    txtTelefone.Text = _clienteSelecionado.Telefone;
+                    mtbTelefone.Text = _clienteSelecionado.Telefone;
+
+                    BeginInvoke(new Action(() => AjustarMascaraCpfCnpjCarregamento()));
+                    BeginInvoke(new Action(() => AjustarMascaraTelefoneCarregamento()));
+                }
+            }
+            else
+            {
+                if (_clienteSelecionado != null)
+                {
+                    txtNome.Clear();
+                    mtbCpfCnpj.Clear();
+                    txtEmail.Clear();
+                    mtbTelefone.Clear();
+                    _clienteSelecionado = null;
+
+                    if (mtbCpfCnpj.Mask != MascaraCpf)
+                        mtbCpfCnpj.Mask = MascaraCpf;
+                    if (mtbTelefone.Mask != MascaraTelFixo)
+                        mtbTelefone.Mask = MascaraTelFixo;
                 }
             }
         }
 
-        /// <summary>
-        /// Este evento é disparado toda vez que o usuário digita no campo de busca.
-        /// (Busca parcial / LIKE)
-        /// </summary>
         private void txtBuscaNome_TextChanged(object sender, EventArgs e)
         {
-            // Apenas chama o método CarregarClientes, 
-            // que já sabe como ler o filtro e atualizar a grade.
             CarregarClientes();
         }
 
-        /// <summary>
-        /// Evento de clique para o PictureBox da lupa (se você o adicionou).
-        /// (Busca EXATA / =)
-        /// </summary>
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            // MUDANÇA AQUI: Adicionado .Trim() para remover espaços
             string filtroExato = txtBuscaNome.Text.Trim();
 
-            // Se o campo de busca estiver vazio, recarrega todos (mesmo comportamento do TextChanged)
             if (string.IsNullOrWhiteSpace(filtroExato))
             {
                 CarregarClientes();
                 return;
             }
 
-            // Limpa o DataSource
             dgvClientes.DataSource = null;
-
-            // Chama o novo método do controller para busca exata
             dgvClientes.DataSource = _clienteController.GetByExactName(filtroExato);
         }
 
-        #region Métodos de Validação
-
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return true;
-            }
-            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        }
-
-        private bool IsValidCpfCnpj(string cpfCnpj)
-        {
-            var apenasNumeros = Regex.Replace(cpfCnpj, @"[^\d]", "");
-
-            if (apenasNumeros.Length == 11 || apenasNumeros.Length == 14)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool IsValidTelefone(string telefone)
-        {
-            if (string.IsNullOrWhiteSpace(telefone))
-            {
-                return true;
-            }
-            var apenasNumeros = Regex.Replace(telefone, @"[^\d]", "");
-            return apenasNumeros.Length == 10 || apenasNumeros.Length == 11;
-        }
-
-        #endregion
-
         private void btnGerarRelatorio_Click(object sender, EventArgs e)
         {
-            // 1. Tenta pegar os dados da grade (que podem estar filtrados)
             var clientes = dgvClientes.DataSource as List<Cliente>;
             if (clientes == null || clientes.Count == 0)
             {
@@ -277,7 +236,6 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // 2. Configura a caixa de diálogo "Salvar Como"
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Arquivo PDF (*.pdf)|*.pdf";
             sfd.FileName = $"Relatorio_Clientes_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
@@ -287,16 +245,12 @@ namespace SysFin_2CTDS.View
             {
                 try
                 {
-                    // 3. CHAMA O CONTROLLER para fazer o trabalho
                     bool sucesso = _clienteController.GerarRelatorioPDF(clientes, sfd.FileName);
 
-                    // 4. Verifica o resultado
                     if (sucesso)
                     {
                         MessageBox.Show("Relatório gerado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // Opcional: Abrir o PDF gerado
-                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+                        Process.Start(new ProcessStartInfo()
                         {
                             FileName = sfd.FileName,
                             UseShellExecute = true
@@ -304,16 +258,172 @@ namespace SysFin_2CTDS.View
                     }
                     else
                     {
-                        MessageBox.Show("Ocorreu um erro ao gerar o PDF. Verifique se o arquivo já está aberto ou se você tem permissão para salvar no local.", "Erro ao Gerar PDF", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Ocorreu um erro ao gerar o PDF.", "Erro ao Gerar PDF", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                }
+                catch (IOException ioEx)
+                {
+                    MessageBox.Show("Erro de I/O: " + ioEx.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {
-                    // Pega erros inesperados (ex: falta de permissão para salvar)
                     MessageBox.Show("Ocorreu um erro inesperado: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
+        // ========== MÁSCARAS DINÂMICAS - CPF/CNPJ ==========
+
+        private void mtbCpfCnpj_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permite apenas números e backspace
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Se está digitando um número (não backspace)
+            // E já tem 11 dígitos na máscara de CPF
+            // E o cursor está no final
+            // Troca para CNPJ ANTES de processar a tecla
+            if (char.IsDigit(e.KeyChar) &&
+                mtbCpfCnpj.Mask == MascaraCpf &&
+                mtbCpfCnpj.Text.Length == 11 &&
+                mtbCpfCnpj.SelectionStart >= mtbCpfCnpj.Text.Length - 1)
+            {
+                _mudandoMascaraCpf = true;
+                string numeros = mtbCpfCnpj.Text;
+                mtbCpfCnpj.Mask = MascaraCnpj;
+                mtbCpfCnpj.Text = numeros;
+                mtbCpfCnpj.Select(mtbCpfCnpj.TextLength, 0);
+                _mudandoMascaraCpf = false;
+            }
+        }
+
+        private void mtbCpfCnpj_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Ajusta máscara ao apagar (backspace)
+            if (e.KeyCode == Keys.Back)
+            {
+                AjustarMascaraCpfCnpjAposApagar();
+            }
+        }
+
+        private void AjustarMascaraCpfCnpjAposApagar()
+        {
+            if (_mudandoMascaraCpf)
+                return;
+
+            string numeros = mtbCpfCnpj.Text;
+
+            // Se está na máscara de CNPJ mas tem menos de 12 dígitos, volta para CPF
+            if (mtbCpfCnpj.Mask == MascaraCnpj && numeros.Length < 12)
+            {
+                _mudandoMascaraCpf = true;
+                mtbCpfCnpj.Mask = MascaraCpf;
+                mtbCpfCnpj.Text = numeros;
+
+                BeginInvoke(new Action(() =>
+                {
+                    mtbCpfCnpj.Select(mtbCpfCnpj.TextLength, 0);
+                    _mudandoMascaraCpf = false;
+                }));
+            }
+        }
+
+        private void AjustarMascaraCpfCnpjCarregamento()
+        {
+            string numeros = mtbCpfCnpj.Text;
+
+            // Ao carregar dados, define a máscara correta baseado no tamanho
+            if (numeros.Length > 11)
+            {
+                mtbCpfCnpj.Mask = MascaraCnpj;
+            }
+            else
+            {
+                mtbCpfCnpj.Mask = MascaraCpf;
+            }
+
+            mtbCpfCnpj.Text = numeros;
+        }
+
+        // ========== MÁSCARAS DINÂMICAS - TELEFONE ==========
+
+        private void mtbTelefone_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permite apenas números e backspace
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Se está digitando um número
+            // E já tem 10 dígitos na máscara de fixo
+            // E o cursor está no final
+            // Troca para celular ANTES de processar a tecla
+            if (char.IsDigit(e.KeyChar) &&
+                mtbTelefone.Mask == MascaraTelFixo &&
+                mtbTelefone.Text.Length == 10 &&
+                mtbTelefone.SelectionStart >= mtbTelefone.Text.Length - 1)
+            {
+                _mudandoMascaraTel = true;
+                string numeros = mtbTelefone.Text;
+                mtbTelefone.Mask = MascaraTelCel;
+                mtbTelefone.Text = numeros;
+                mtbTelefone.Select(mtbTelefone.TextLength, 0);
+                _mudandoMascaraTel = false;
+            }
+        }
+
+        private void mtbTelefone_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Ajusta máscara ao apagar (backspace)
+            if (e.KeyCode == Keys.Back)
+            {
+                AjustarMascaraTelefoneAposApagar();
+            }
+        }
+
+        private void AjustarMascaraTelefoneAposApagar()
+        {
+            if (_mudandoMascaraTel)
+                return;
+
+            string numeros = mtbTelefone.Text;
+
+            // Se está na máscara de celular mas tem menos de 11 dígitos, volta para fixo
+            if (mtbTelefone.Mask == MascaraTelCel && numeros.Length < 11)
+            {
+                _mudandoMascaraTel = true;
+                mtbTelefone.Mask = MascaraTelFixo;
+                mtbTelefone.Text = numeros;
+
+                BeginInvoke(new Action(() =>
+                {
+                    mtbTelefone.Select(mtbTelefone.TextLength, 0);
+                    _mudandoMascaraTel = false;
+                }));
+            }
+        }
+
+        private void AjustarMascaraTelefoneCarregamento()
+        {
+            string numeros = mtbTelefone.Text;
+
+            // Ao carregar dados, define a máscara correta baseado no tamanho
+            if (numeros.Length >= 11)
+            {
+                mtbTelefone.Mask = MascaraTelCel;
+            }
+            else
+            {
+                mtbTelefone.Mask = MascaraTelFixo;
+            }
+
+            mtbTelefone.Text = numeros;
+        }
     }
 }
-

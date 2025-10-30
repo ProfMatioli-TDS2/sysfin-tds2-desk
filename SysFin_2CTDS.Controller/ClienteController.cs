@@ -7,6 +7,7 @@ using System;
 using System.IO; // Necessário para FileStream
 using iTextSharp.text; // Necessário para Document, Paragraph, etc.
 using iTextSharp.text.pdf; // Necessário para PdfWriter e PdfPTable
+using System.Text.RegularExpressions; // Necessário para a validação
 
 namespace SysFin_2CTDS.Controller
 {
@@ -148,14 +149,9 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // --- NOVA LÓGICA DE RELATÓRIO MOVIDA PARA O CONTROLLER ---
-
         /// <summary>
         /// Gera um documento PDF com a lista de clientes fornecida.
         /// </summary>
-        /// <param name="clientes">A lista de clientes para o relatório.</param>
-        /// <param name="caminhoArquivo">O caminho completo onde o PDF deve ser salvo.</param>
-        /// <returns>Verdadeiro se o PDF foi gerado com sucesso, falso caso contrário.</returns>
         public bool GerarRelatorioPDF(List<Cliente> clientes, string caminhoArquivo)
         {
             try
@@ -201,9 +197,9 @@ namespace SysFin_2CTDS.Controller
 
                 return true; // Sucesso
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Em um app real, você logaria o erro (ex. Console.WriteLine(ex.Message))
+                // Em um app real, você logaria o erro
                 return false; // Falha
             }
         }
@@ -221,5 +217,55 @@ namespace SysFin_2CTDS.Controller
             celula.Padding = 6;
             tabela.AddCell(celula);
         }
+
+        #region Métodos de Validação (Movidos da View)
+
+        /// <summary>
+        /// Valida um endereço de e-mail. Permite que o campo esteja vazio.
+        /// </summary>
+        public static bool IsValidEmail(string email)
+        {
+            // Se o email for opcional e estiver vazio, consideramos válido.
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return true;
+            }
+            // Expressão regular que verifica o formato "texto@texto.texto"
+            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        }
+
+        /// <summary>
+        /// Valida um CPF (11 dígitos) ou CNPJ (14 dígitos).
+        /// </summary>
+        public static bool IsValidCpfCnpj(string cpfCnpj)
+        {
+            // Remove caracteres não numéricos (pontos, traços, barras) para contar apenas os dígitos.
+            var apenasNumeros = Regex.Replace(cpfCnpj, @"[^\d]", "");
+
+            // Verifica se a quantidade de dígitos corresponde a um CPF ou a um CNPJ.
+            if (apenasNumeros.Length == 11 || apenasNumeros.Length == 14)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Valida um número de telefone (10 ou 11 dígitos). Permite que o campo esteja vazio.
+        /// </summary>
+        public static bool IsValidTelefone(string telefone)
+        {
+            // Se o telefone for opcional e estiver vazio, consideramos válido.
+            if (string.IsNullOrWhiteSpace(telefone))
+            {
+                return true;
+            }
+            var apenasNumeros = Regex.Replace(telefone, @"[^\d]", "");
+            // Verifica se a quantidade de dígitos corresponde a um telefone fixo com DDD ou celular com DDD.
+            return apenasNumeros.Length == 10 || apenasNumeros.Length == 11;
+        }
+
+        #endregion
     }
 }
+

@@ -44,49 +44,53 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(32, 81);
+            label1.Font = new Font("Segoe UI", 12F);
+            label1.Location = new Point(32, 85);
             label1.Name = "label1";
-            label1.Size = new Size(64, 15);
+            label1.Size = new Size(84, 21);
             label1.TabIndex = 0;
             label1.Text = "Descrição: ";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(41, 38);
+            label2.Font = new Font("Segoe UI", 12F);
+            label2.Location = new Point(32, 40);
             label2.Name = "label2";
-            label2.Size = new Size(43, 15);
+            label2.Size = new Size(56, 21);
             label2.TabIndex = 1;
             label2.Text = "Nome:";
             // 
             // label3
             // 
             label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F);
             label3.Location = new Point(32, 184);
             label3.Name = "label3";
-            label3.Size = new Size(86, 15);
+            label3.Size = new Size(112, 21);
             label3.TabIndex = 2;
             label3.Text = "Estoque Inicial:";
             // 
             // label4
             // 
             label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 12F);
             label4.Location = new Point(32, 135);
             label4.Name = "label4";
-            label4.Size = new Size(91, 15);
+            label4.Size = new Size(120, 21);
             label4.TabIndex = 3;
             label4.Text = "Preço de Venda:";
             // 
             // txtNome
             // 
-            txtNome.Location = new Point(102, 30);
+            txtNome.Location = new Point(94, 38);
             txtNome.Name = "txtNome";
             txtNome.Size = new Size(130, 23);
             txtNome.TabIndex = 4;
             // 
             // txtDescricao
             // 
-            txtDescricao.Location = new Point(102, 73);
+            txtDescricao.Location = new Point(122, 83);
             txtDescricao.Name = "txtDescricao";
             txtDescricao.Size = new Size(271, 23);
             txtDescricao.TabIndex = 5;
@@ -94,23 +98,24 @@
             // numPrecoVenda
             // 
             numPrecoVenda.DecimalPlaces = 2;
-            numPrecoVenda.Location = new Point(141, 133);
+            numPrecoVenda.Location = new Point(158, 133);
             numPrecoVenda.Name = "numPrecoVenda";
             numPrecoVenda.Size = new Size(120, 23);
             numPrecoVenda.TabIndex = 6;
             // 
             // numEstoque
             // 
-            numEstoque.Location = new Point(141, 182);
+            numEstoque.Location = new Point(150, 184);
             numEstoque.Name = "numEstoque";
             numEstoque.Size = new Size(120, 23);
             numEstoque.TabIndex = 7;
             // 
             // btnSalvar
             // 
-            btnSalvar.Location = new Point(102, 228);
+            btnSalvar.Font = new Font("Segoe UI", 12F);
+            btnSalvar.Location = new Point(142, 242);
             btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(75, 23);
+            btnSalvar.Size = new Size(119, 45);
             btnSalvar.TabIndex = 8;
             btnSalvar.Text = "Salvar";
             btnSalvar.UseVisualStyleBackColor = true;

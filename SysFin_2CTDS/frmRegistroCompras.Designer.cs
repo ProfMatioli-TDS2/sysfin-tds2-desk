@@ -62,7 +62,7 @@
             cboFornecedor.FormattingEnabled = true;
             cboFornecedor.Location = new Point(88, 6);
             cboFornecedor.Name = "cboFornecedor";
-            cboFornecedor.Size = new Size(175, 23);
+            cboFornecedor.Size = new Size(307, 23);
             cboFornecedor.TabIndex = 1;
             // 
             // grpItem
