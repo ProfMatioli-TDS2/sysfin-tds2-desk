@@ -13,5 +13,9 @@ namespace SysFin_2CTDS.Views {
         private void tsbFechar_Click(object sender, EventArgs e) {
             this.Close();
         }
+
+        private void dgvDados_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+
+        }
     }
 }
