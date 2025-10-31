@@ -3,55 +3,78 @@ using SysFin_2CTDS.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks; // Adicionado
 using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View
 {
     public partial class EstoqueForm : Form
     {
-        private ProdutoController produtoController = new ProdutoController();
+        private readonly ProdutoController produtoController;
         private const int ESTOQUE_MINIMO = 100;
 
         public EstoqueForm()
         {
             InitializeComponent();
+            // MUDANÇA: Inicializa o controller
+            produtoController = new ProdutoController();
         }
 
-        private void EstoqueForm_Load(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void EstoqueForm_Load(object? sender, EventArgs e)
         {
-            CarregarEstoque();
+            // MUDANÇA: 'await'
+            await CarregarEstoque();
         }
 
-        private void btnAtualizar_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnAtualizar_Click(object? sender, EventArgs e)
         {
-            CarregarEstoque();
+            // MUDANÇA: 'await'
+            await CarregarEstoque();
         }
 
-        private void CarregarEstoque()
+        // MUDANÇA: 'async Task'
+        private async Task CarregarEstoque()
         {
             try
             {
-                List<Produto> produtos = produtoController.ListarProdutos();
+                // MUDANÇA: Chamada Async
+                List<Produto> produtos = await produtoController.ListarProdutosAsync();
 
                 dgvEstoque.DataSource = null;
                 dgvEstoque.DataSource = produtos;
 
-                // Exibe apenas colunas relevantes
-                dgvEstoque.Columns["Id"].Visible = false;
-                dgvEstoque.Columns["Descricao"].Visible = false;
-                dgvEstoque.Columns["PrecoVenda"].Visible = false;
+                // ---- INÍCIO DA CORREÇÃO ----
+                // Verifica se o DataSource (produtos) não estava vazio.
+                // Se estiver vazio, dgvEstoque.Columns.Count será 0 e causará o erro.
+                if (dgvEstoque.Columns.Count > 0)
+                {
+                    // Exibe apenas colunas relevantes
+                    dgvEstoque.Columns["Id"].Visible = false;
+                    dgvEstoque.Columns["Descricao"].Visible = false;
+                    dgvEstoque.Columns["PrecoVenda"].Visible = false;
 
-                dgvEstoque.Columns["Nome"].HeaderText = "Nome do Produto";
-                dgvEstoque.Columns["EstoqueAtual"].HeaderText = "Estoque Atual";
+                    // MUDANÇA: Verifica se a coluna "Estoque" (duplicada) existe antes de mexer
+                    if (dgvEstoque.Columns.Contains("Estoque"))
+                    {
+                        dgvEstoque.Columns["Estoque"].Visible = false;
+                    }
 
-                // Formatação visual
-                dgvEstoque.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                dgvEstoque.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                dgvEstoque.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-                dgvEstoque.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(230, 230, 230);
-                dgvEstoque.EnableHeadersVisualStyles = false;
+                    dgvEstoque.Columns["Nome"].HeaderText = "Nome do Produto";
+                    dgvEstoque.Columns["EstoqueAtual"].HeaderText = "Estoque Atual";
 
-                DestacarEstoqueBaixo();
+                    // Formatação visual
+                    dgvEstoque.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                    dgvEstoque.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    dgvEstoque.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                    dgvEstoque.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(230, 230, 230);
+                    dgvEstoque.EnableHeadersVisualStyles = false;
+
+                    // Mover o destaque para dentro do IF
+                    DestacarEstoqueBaixo();
+                }
+                // ---- FIM DA CORREÇÃO ----
             }
             catch (Exception ex)
             {
@@ -84,3 +107,4 @@ namespace SysFin_2CTDS.View
         }
     }
 }
+
