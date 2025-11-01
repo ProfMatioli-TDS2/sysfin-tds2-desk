@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
-using System.Windows.Forms;
+using Microsoft.Data.SqlClient;
 
 namespace SysFin_2CTDS.Model
 {
@@ -14,7 +13,7 @@ namespace SysFin_2CTDS.Model
         {
             get; set;
         }
-        public string ProdutoNome
+        public string? ProdutoNome
         {
             get; set;
         }
@@ -39,14 +38,8 @@ namespace SysFin_2CTDS.Model
         {
             get; set;
         }
-        public string NomeFornecedor
-        {
-            get; set;
-        }
-        public decimal ValorTotal
-        {
-            get; set;
-        }
+        public string? NomeFornecedor { get; set; }
+        public decimal ValorTotal { get; set; }
 
         private static string connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;AttachDbFileName=|DataDirectory|\Database\BancoDados.mdf;";
 
@@ -103,8 +96,7 @@ namespace SysFin_2CTDS.Model
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    MessageBox.Show("Erro ao registrar a compra: " + ex.Message);
-                    return false;
+                    throw new Exception("Erro ao registrar a compra: " + ex.Message, ex);
                 }
             }
         }

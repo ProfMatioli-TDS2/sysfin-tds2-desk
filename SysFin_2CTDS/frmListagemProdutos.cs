@@ -1,114 +1,117 @@
-﻿using SysFin_2CTDS.Controller; // Não se esqueça de adicionar
+﻿using SysFin_2CTDS.Controller;
+using SysFin_2CTDS.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; // Adicionado
 using System.Windows.Forms;
-
 
 namespace SysFin_2CTDS.View
 {
     public partial class frmListagemProdutos : Form
     {
+        // MUDANÇA: Controllers movidos para campos da classe
+        private readonly ProdutoController _produtoController;
+        private readonly RelatorioController _relatorioController;
+
         public frmListagemProdutos()
         {
             InitializeComponent();
+            // MUDANÇA: Inicializa os controllers
+            _produtoController = new ProdutoController();
+            _relatorioController = new RelatorioController();
         }
 
-        // Método que carrega os dados no DataGridView
-        private void CarregarProdutos()
+        // MUDANÇA: 'async void'
+        private async void CarregarProdutos()
         {
-            ProdutoController controller = new ProdutoController();
-            dgvProdutos.DataSource = null; // Limpa a grid para evitar duplicação
-            dgvProdutos.DataSource = controller.ListarProdutos();
+            try
+            {
+                dgvProdutos.DataSource = null;
+                // MUDANÇA: Chamada Async
+                dgvProdutos.DataSource = await _produtoController.ListarProdutosAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar produtos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void frmListagemProdutos_Load(object sender, EventArgs e)
+        private void frmListagemProdutos_Load(object? sender, EventArgs e)
         {
-            // Quando o formulário carregar, chama o método para preencher a lista
             CarregarProdutos();
         }
 
-        private void btnAtualizar_Click(object sender, EventArgs e)
+        private void btnAtualizar_Click(object? sender, EventArgs e)
         {
-            // O botão atualizar também chama o método
             CarregarProdutos();
         }
 
-        private void btnNovo_Click(object sender, EventArgs e)
+        private void btnNovo_Click(object? sender, EventArgs e)
         {
-            // Cria e exibe o formulário de cadastro
-            frmCadastroProduto telaCadastro = new frmCadastroProduto();
-            telaCadastro.ShowDialog(); // ShowDialog trava esta tela até que a de cadastro seja fechada
-
-            // Após fechar a tela de cadastro, atualizamos a lista para ver o novo item
+            // O formulário de cadastro (modal) não precisa ser async
+            using (frmCadastroProduto telaCadastro = new frmCadastroProduto())
+            {
+                telaCadastro.ShowDialog();
+            }
             CarregarProdutos();
         }
 
-        // Adicione este método de evento no arquivo frmListagemProdutos.cs
-
-        private void btnBuscar_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnBuscar_Click(object? sender, EventArgs e)
         {
-            // 1. Pega o texto digitado pelo usuário
-            string termoBusca = txtBusca.Text;
-
-            // 2. Instancia o controller
-            ProdutoController controller = new ProdutoController();
-
-            // 3. Chama o novo método de busca do controller
-            List<Model.Produto> resultados = controller.ListarProdutosPorNome(termoBusca);
-
-            // 4. Atualiza o DataGridView com os resultados da busca
-            dgvProdutos.DataSource = null;
-            dgvProdutos.DataSource = resultados;
+            try
+            {
+                string termoBusca = txtBusca.Text;
+                // MUDANÇA: Chamada Async
+                List<Model.Produto> resultados = await _produtoController.ListarProdutosPorNomeAsync(termoBusca);
+                dgvProdutos.DataSource = null;
+                dgvProdutos.DataSource = resultados;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao buscar produtos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        // Adicione este método de evento no arquivo frmListagemProdutos.cs
-
-        private void btnExcluir_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnExcluir_Click(object? sender, EventArgs e)
         {
-            // 1. Verifica se há alguma linha selecionada no DataGridView
             if (dgvProdutos.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Por favor, selecione um produto para excluir.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Para a execução do método aqui
+                return;
             }
 
-            // 2. Pede confirmação ao usuário
             DialogResult resultadoConfirmacao = MessageBox.Show("Tem certeza que deseja excluir o produto selecionado?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (resultadoConfirmacao == DialogResult.Yes)
             {
-                // 3. Obtém o ID do produto da linha selecionada
-                // A célula "Id" é acessada pelo nome da propriedade na classe Produto
-                int idSelecionado = (int)dgvProdutos.SelectedRows[0].Cells["Id"].Value;
-
-                // 4. Instancia o controller
-                ProdutoController controller = new ProdutoController();
-
-                // 5. Chama o método de exclusão
-                bool sucesso = controller.ExcluirProduto(idSelecionado);
-
-                // 6. Verifica o resultado e atualiza a tela
-                if (sucesso)
+                try
                 {
-                    MessageBox.Show("Produto excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    CarregarProdutos(); // Atualiza a grid para remover a linha
+                    // MUDANÇA: Convert.ToInt32 (para nulos)
+                    int idSelecionado = Convert.ToInt32(dgvProdutos.SelectedRows[0].Cells["Id"].Value);
+
+                    // MUDANÇA: Chamada Async
+                    bool sucesso = await _produtoController.ExcluirProdutoAsync(idSelecionado);
+
+                    if (sucesso)
+                    {
+                        MessageBox.Show("Produto excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CarregarProdutos();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Não foi possível encontrar o produto para excluir.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Não foi possível encontrar o produto para excluir.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Erro ao excluir: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        // Adicione este método de evento em frmListagemProdutos.cs
-
-        private void btnEditar_Click(object sender, EventArgs e)
+        private void btnEditar_Click(object? sender, EventArgs e)
         {
             if (dgvProdutos.SelectedRows.Count == 0)
             {
@@ -116,48 +119,59 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // Pega o ID da linha selecionada
-            int idSelecionado = (int)dgvProdutos.SelectedRows[0].Cells["Id"].Value;
+            // MUDANÇA: Convert.ToInt32 (para nulos)
+            int idSelecionado = Convert.ToInt32(dgvProdutos.SelectedRows[0].Cells["Id"].Value);
 
-            // Cria a tela de cadastro usando o NOVO CONSTRUTOR, passando o ID
-            frmCadastroProduto telaEdicao = new frmCadastroProduto(idSelecionado);
-            telaEdicao.ShowDialog();
+            using (frmCadastroProduto telaEdicao = new frmCadastroProduto(idSelecionado))
+            {
+                telaEdicao.ShowDialog();
+            }
 
-            // Após fechar a tela de edição, atualiza a lista
             CarregarProdutos();
         }
 
-        private void btnRelatorio_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnRelatorio_Click(object? sender, EventArgs e)
         {
-            RelatorioController relatorioController = new RelatorioController();
+            SaveFileDialog salvar = new SaveFileDialog();
+            salvar.Filter = "Arquivo PDF (*.pdf)|*.pdf";
+            salvar.FileName = "Relatorio_Produtos.pdf";
 
-            // Chama o método que gera o PDF e retorna o caminho do arquivo
-            string resultado = relatorioController.GerarRelatorioProdutos();
-
-            // Verifica se o resultado é um caminho (sucesso) ou uma mensagem de erro
-            if (resultado.StartsWith("ERRO:"))
+            if (salvar.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(resultado, "Erro ao Gerar Relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show("Relatório gerado com sucesso!\nSalvo em: " + resultado, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Opcional: Tenta abrir o arquivo PDF gerado
                 try
                 {
-                    System.Diagnostics.Process.Start(resultado);
+                    // MUDANÇA: Chamada Async
+                    await _relatorioController.GerarRelatorioProdutosAsync(salvar.FileName);
+
+                    MessageBox.Show("Relatório gerado com sucesso!\nSalvo em: " + salvar.FileName, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Opcional: Tenta abrir o arquivo PDF gerado
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(salvar.FileName) { UseShellExecute = true });
+                    }
+                    catch (Exception exOpen)
+                    {
+                        MessageBox.Show("Não foi possível abrir o arquivo PDF automaticamente.\nErro: " + exOpen.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Não foi possível abrir o arquivo PDF automaticamente.\nErro: " + ex.Message, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // Captura o erro do Controller (ex: "Não há produtos")
+                    MessageBox.Show(ex.Message, "Erro ao Gerar Relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void txtBusca_TextChanged(object sender, EventArgs e)
+        private void txtBusca_TextChanged(object? sender, EventArgs e)
         {
-
+            // Se o texto for apagado, busca tudo
+            if (string.IsNullOrWhiteSpace(txtBusca.Text))
+            {
+                CarregarProdutos();
+            }
         }
     }
 }
+

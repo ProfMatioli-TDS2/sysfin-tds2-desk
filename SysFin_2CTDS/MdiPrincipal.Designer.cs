@@ -28,116 +28,109 @@ namespace SysFin_2CTDS.View
         /// </summary>
         private void InitializeComponent()
         {
-            menuStrip1 = new MenuStrip();
-            cadastrosToolStripMenuItem = new ToolStripMenuItem();
-            clientesToolStripMenuItem = new ToolStripMenuItem();
-            fornecedoresToolStripMenuItem = new ToolStripMenuItem();
-            visualizarCadastrosToolStripMenuItem = new ToolStripMenuItem();
-            produtoToolStripMenuItem = new ToolStripMenuItem();
-            comprasToolStripMenuItem = new ToolStripMenuItem();
-            vendasToolStripMenuItem = new ToolStripMenuItem();
-            statusStrip1 = new StatusStrip();
-            relatórioPorPeríodoToolStripMenuItem = new ToolStripMenuItem();
-            produtoToolStripMenuItem = new ToolStripMenuItem();
+            menuStrip1 = new System.Windows.Forms.MenuStrip();
+            cadastrosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            clientesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            fornecedoresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            // MUDANÇA: Alterado o nome da variável e o texto
+            produtosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            comprasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            vendasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            estoqueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            statusStrip1 = new System.Windows.Forms.StatusStrip();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { cadastrosToolStripMenuItem, comprasToolStripMenuItem, vendasToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cadastrosToolStripMenuItem, comprasToolStripMenuItem, vendasToolStripMenuItem, estoqueToolStripMenuItem });
+            menuStrip1.Location = new System.Drawing.Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(933, 24);
+            menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
+            menuStrip1.Size = new System.Drawing.Size(933, 24);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
             // cadastrosToolStripMenuItem
             // 
-            cadastrosToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { clientesToolStripMenuItem, fornecedoresToolStripMenuItem, visualizarCadastrosToolStripMenuItem, produtoToolStripMenuItem });
+            // MUDANÇA: Adicionado 'produtosToolStripMenuItem'
+            cadastrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { clientesToolStripMenuItem, fornecedoresToolStripMenuItem, produtosToolStripMenuItem });
             cadastrosToolStripMenuItem.Name = "cadastrosToolStripMenuItem";
-            cadastrosToolStripMenuItem.Size = new Size(71, 20);
+            cadastrosToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
             cadastrosToolStripMenuItem.Text = "Cadastros";
             // 
             // clientesToolStripMenuItem
             // 
             clientesToolStripMenuItem.Name = "clientesToolStripMenuItem";
-            clientesToolStripMenuItem.Size = new Size(180, 22);
+            clientesToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // MUDANÇA: Size
             clientesToolStripMenuItem.Text = "Clientes";
             clientesToolStripMenuItem.Click += clientesToolStripMenuItem_Click;
             // 
             // fornecedoresToolStripMenuItem
             // 
             fornecedoresToolStripMenuItem.Name = "fornecedoresToolStripMenuItem";
-            fornecedoresToolStripMenuItem.Size = new Size(180, 22);
+            fornecedoresToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // MUDANÇA: Size
             fornecedoresToolStripMenuItem.Text = "Fornecedores";
             fornecedoresToolStripMenuItem.Click += fornecedoresToolStripMenuItem_Click;
             // 
-            // visualizarCadastrosToolStripMenuItem
+            // produtosToolStripMenuItem
             // 
-            visualizarCadastrosToolStripMenuItem.Name = "visualizarCadastrosToolStripMenuItem";
-            visualizarCadastrosToolStripMenuItem.Size = new Size(180, 22);
-            visualizarCadastrosToolStripMenuItem.Text = "Visualizar Cadastros";
-            visualizarCadastrosToolStripMenuItem.Click += visualizarCadastrosToolStripMenuItem_Click;
-            // 
-            // produtoToolStripMenuItem
-            // 
-            produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(180, 22);
-            produtoToolStripMenuItem.Text = "Produto";            
+            // MUDANÇA: Este era o 'visualizarCadastrosToolStripMenuItem'
+            produtosToolStripMenuItem.Name = "produtosToolStripMenuItem";
+            produtosToolStripMenuItem.Size = new System.Drawing.Size(180, 22); // MUDANÇA: Size
+            produtosToolStripMenuItem.Text = "Produtos"; // MUDANÇA: Texto
+            produtosToolStripMenuItem.Click += produtosToolStripMenuItem_Click; // MUDANÇA: Evento
             // 
             // comprasToolStripMenuItem
             // 
-            comprasToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { relatórioPorPeríodoToolStripMenuItem });
             comprasToolStripMenuItem.Name = "comprasToolStripMenuItem";
-            comprasToolStripMenuItem.Size = new Size(67, 20);
+            comprasToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             comprasToolStripMenuItem.Text = "Compras";
+            // MUDANÇA: Adicionado evento de clique
+            comprasToolStripMenuItem.Click += comprasToolStripMenuItem_Click;
             // 
             // vendasToolStripMenuItem
             // 
             vendasToolStripMenuItem.Name = "vendasToolStripMenuItem";
-            vendasToolStripMenuItem.Size = new Size(56, 20);
+            vendasToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             vendasToolStripMenuItem.Text = "Vendas";
+            // MUDANÇA: Adicionado evento de clique
+            vendasToolStripMenuItem.Click += vendasToolStripMenuItem_Click;
+            // 
+            // estoqueToolStripMenuItem
+            // 
+            estoqueToolStripMenuItem.Name = "estoqueToolStripMenuItem";
+            estoqueToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            estoqueToolStripMenuItem.Text = "Estoque";
+            estoqueToolStripMenuItem.Click += estoqueToolStripMenuItem_Click;
             // 
             // statusStrip1
             // 
-            statusStrip1.Location = new Point(0, 497);
+            statusStrip1.Location = new System.Drawing.Point(0, 497);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Padding = new Padding(1, 0, 16, 0);
-            statusStrip1.Size = new Size(933, 22);
+            statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            statusStrip1.Size = new System.Drawing.Size(933, 22);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
-            // relatórioPorPeríodoToolStripMenuItem
-            // 
-            relatórioPorPeríodoToolStripMenuItem.Name = "relatórioPorPeríodoToolStripMenuItem";
-            relatórioPorPeríodoToolStripMenuItem.Size = new Size(186, 22);
-            relatórioPorPeríodoToolStripMenuItem.Text = "Relatório por Período";
-            relatórioPorPeríodoToolStripMenuItem.Click += relatórioPorPeríodoToolStripMenuItem_Click;
-            // 
-            // produtoToolStripMenuItem
-            // 
-            produtoToolStripMenuItem.Name = "produtoToolStripMenuItem";
-            produtoToolStripMenuItem.Size = new Size(180, 22);
-            produtoToolStripMenuItem.Text = "Produto";
-            // 
             // MdiPrincipal
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(933, 519);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(933, 519);
             Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
-            Margin = new Padding(4, 3, 4, 3);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "MdiPrincipal";
             Text = "SysFin - Controle Financeiro";
-            WindowState = FormWindowState.Maximized;
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
+
         }
 
         #endregion
@@ -149,8 +142,8 @@ namespace SysFin_2CTDS.View
         private System.Windows.Forms.ToolStripMenuItem vendasToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripMenuItem fornecedoresToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem visualizarCadastrosToolStripMenuItem;
-        private ToolStripMenuItem relatórioPorPeríodoToolStripMenuItem;
-        private ToolStripMenuItem produtoToolStripMenuItem;
+        // MUDANÇA: Renomeado
+        private System.Windows.Forms.ToolStripMenuItem produtosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem estoqueToolStripMenuItem;
     }
 }

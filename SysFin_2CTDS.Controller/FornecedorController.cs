@@ -1,16 +1,23 @@
-﻿using SysFin_2CTDS.Model;
-using SysFin_2CTDS.Model.Data;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.Data.SqlClient;
+using SysFin_2CTDS.Model;
+using SysFin_2CTDS.Model.Data;
+using System;
 using System.Collections.Generic;
-using SysFin_2CTDS.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+using System.Threading.Tasks; // MUDANÇA: Adicionado
 
 namespace SysFin_2CTDS.Controller
 {
     public class FornecedorController
     {
-        public List<Fornecedor> GetAll(string orderBy = "nome", string direction = "ASC")
+        // MUDANÇA: Assinatura agora é async Task<List<Fornecedor>>
+        public async Task<List<Fornecedor>> GetAllAsync(string orderBy = "nome", string direction = "ASC")
         {
             var fornecedores = new List<Fornecedor>();
             var allowedColumns = new List<string> { "id", "nome", "cnpj", "email", "telefone" };
@@ -27,20 +34,22 @@ namespace SysFin_2CTDS.Controller
 
             using (var connection = Database.GetConnection())
             {
-                var query = $"SELECT * FROM fornecedores ORDER BY {orderBy} {direction}";
+                await connection.OpenAsync(); // MUDANÇA: Async
+                // MUDANÇA: SELECT * removido
+                var query = $"SELECT Id, Nome, Cnpj, Email, Telefone FROM Fornecedores ORDER BY {orderBy} {direction}";
                 var command = new SqlCommand(query, connection);
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+
+                using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync()) // MUDANÇA: Async
                     {
                         fornecedores.Add(new Fornecedor
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            Nome = reader.GetString(reader.GetOrdinal("nome")),
-                            Cnpj = reader.GetString(reader.GetOrdinal("cnpj")),
-                            Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString(reader.GetOrdinal("email")),
-                            Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? "" : reader.GetString(reader.GetOrdinal("telefone"))
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Nome = reader.GetString(reader.GetOrdinal("Nome")),
+                            Cnpj = reader.GetString(reader.GetOrdinal("Cnpj")),
+                            Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? null : reader.GetString(reader.GetOrdinal("Email")),
+                            Telefone = reader.IsDBNull(reader.GetOrdinal("Telefone")) ? null : reader.GetString(reader.GetOrdinal("Telefone"))
                         });
                     }
                 }
@@ -48,7 +57,8 @@ namespace SysFin_2CTDS.Controller
             return fornecedores;
         }
 
-        public List<string> Save(Fornecedor fornecedor)
+        // MUDANÇA: Assinatura agora é async Task<List<string>>
+        public async Task<List<string>> SaveAsync(Fornecedor fornecedor)
         {
             var errors = new List<string>();
 
@@ -56,38 +66,69 @@ namespace SysFin_2CTDS.Controller
             var validationResults = new List<ValidationResult>();
             bool isValid = Validator.TryValidateObject(fornecedor, validationContext, validationResults, validateAllProperties: true);
 
+            // MUDANÇA: Validação do CNPJ agora permite nulo
+            if (fornecedor.Cnpj != null && !fornecedor.CnpjValido())
+            {
+                errors.Add("O CNPJ informado é inválido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(fornecedor.Email))
+            {
+                errors.Add("O campo de e-mail é obrigatório.");
+            }
+            else if (!new EmailAddressAttribute().IsValid(fornecedor.Email))
+            {
+                errors.Add("O e-mail informado não é válido.");
+            }
+
+            // MUDANÇA: Validação de telefone agora permite nulo
+            if (!string.IsNullOrEmpty(fornecedor.Telefone))
+            {
+                var telefoneNumerico = new string(fornecedor.Telefone.Where(char.IsDigit).ToArray());
+                if (telefoneNumerico.Length < 10 || telefoneNumerico.Length > 11)
+                {
+                    errors.Add("O telefone deve conter entre 10 e 11 dígitos numéricos.");
+                }
+            }
+
             if (!isValid)
             {
                 foreach (var validationResult in validationResults)
                 {
-                    errors.Add(validationResult.ErrorMessage);
+                    // MUDANÇA: Checagem de nulidade
+                    if (validationResult.ErrorMessage != null)
+                        errors.Add(validationResult.ErrorMessage);
                 }
-                return errors;
+            }
+
+            if (errors.Any())
+            {
+                return errors; // Retorna erros de validação antes de ir ao banco
             }
 
             try
             {
                 using (var connection = Database.GetConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync(); // MUDANÇA: Async
                     SqlCommand command;
 
                     if (fornecedor.Id > 0)
                     {
-                        command = new SqlCommand("UPDATE fornecedores SET nome = @nome, cnpj = @cnpj, email = @email, telefone = @telefone WHERE id = @id", connection);
-                        command.Parameters.AddWithValue("@id", fornecedor.Id);
+                        command = new SqlCommand("UPDATE Fornecedores SET Nome = @Nome, Cnpj = @Cnpj, Email = @Email, Telefone = @Telefone WHERE Id = @Id", connection);
+                        command.Parameters.AddWithValue("@Id", fornecedor.Id);
                     }
                     else
                     {
-                        command = new SqlCommand("INSERT INTO fornecedores (nome, cnpj, email, telefone) VALUES (@nome, @cnpj, @email, @telefone)", connection);
+                        command = new SqlCommand("INSERT INTO Fornecedores (Nome, Cnpj, Email, Telefone) VALUES (@Nome, @Cnpj, @Email, @Telefone)", connection);
                     }
 
-                    command.Parameters.AddWithValue("@nome", fornecedor.Nome);
-                    command.Parameters.AddWithValue("@cnpj", fornecedor.Cnpj);
-                    command.Parameters.AddWithValue("@email", fornecedor.Email);
-                    command.Parameters.AddWithValue("@telefone", fornecedor.Telefone);
+                    command.Parameters.AddWithValue("@Nome", (object)fornecedor.Nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Cnpj", (object)fornecedor.Cnpj ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)fornecedor.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Telefone", (object)fornecedor.Telefone ?? DBNull.Value);
 
-                    if (command.ExecuteNonQuery() <= 0)
+                    if (await command.ExecuteNonQueryAsync() <= 0) // MUDANÇA: Async
                     {
                         errors.Add("Falha ao salvar o fornecedor no banco de dados.");
                     }
@@ -105,16 +146,18 @@ namespace SysFin_2CTDS.Controller
             return errors;
         }
 
-        public bool Delete(int id)
+        // MUDANÇA: Assinatura agora é async Task<bool>
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
                 using (var connection = Database.GetConnection())
                 {
-                    var command = new SqlCommand("DELETE FROM fornecedores WHERE id = @id", connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    connection.Open();
-                    return command.ExecuteNonQuery() > 0;
+                    await connection.OpenAsync(); // MUDANÇA: Async
+                    var command = new SqlCommand("DELETE FROM Fornecedores WHERE Id = @Id", connection);
+                    command.Parameters.AddWithValue("@Id", id);
+                    int rows = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
+                    return rows > 0;
                 }
             }
             catch (SqlException ex)
@@ -130,3 +173,4 @@ namespace SysFin_2CTDS.Controller
         }
     }
 }
+
