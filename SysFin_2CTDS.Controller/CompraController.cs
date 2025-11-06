@@ -2,6 +2,7 @@
 using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Model.Data;
 using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -10,12 +11,38 @@ namespace SysFin_2CTDS.Controller
 {
     public class CompraController
     {
-        // ID '2' é 'Compra de Mercadorias' conforme o script SQL padrão.
-        private const int ID_PLANO_CONTAS_DESPESA_COMPRA = 2;
+        public void OperacaoCompra()
+        {
+            var itensCompra = new List<Compra>();
+            decimal valorTotal = 0;
 
-        /// <summary>
-        /// Obtém todas as compras (apenas o cabeçalho) por período.
-        /// </summary>
+            foreach (var item in itensCompra)
+            {
+                var compraItem = new Compra
+                {
+                    ProdutoId = item.ProdutoId,
+                    ProdutoNome = item.ProdutoNome,
+                    Quantidade = item.Quantidade,
+                    ValorUnitario = item.ValorUnitario,
+                    //Subtotal = item.Quantidade * item.ValorUnitario
+                };
+                valorTotal += compraItem.Subtotal;
+                itensCompra.Add(compraItem);
+            }
+
+            int fornecedorId = 1;
+
+            try
+            {
+                bool sucesso = Compra.RegistrarCompra(itensCompra, fornecedorId, valorTotal);
+                Console.WriteLine("Compra registrada com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao registrar a compra: " + ex.Message, ex);
+            }
+
+        }
         public async Task<List<Compra>> GetComprasPorPeriodo(DateTime dataInicial, DateTime dataFinal)
         {
             var listaCompras = new List<Compra>();
