@@ -11,6 +11,10 @@
 *.sln.docstates
 *.env
 
+# Ignore SQL Server database files
+*.mdf
+*.ldf
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

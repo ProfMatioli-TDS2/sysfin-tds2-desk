@@ -1,19 +1,10 @@
 ﻿namespace SysFin_2CTDS.View
 {
-    // MUDANÇA: Herda de 'Form', não de 'FrmCadastroBase'
-    partial class ClienteForm : System.Windows.Forms.Form
+    // Herda diretamente de Form
+    partial class ClienteForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        // MUDANÇA: Adicionado 'components' de volta
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        // MUDANÇA: Adicionado 'Dispose' de volta
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -25,13 +16,8 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            // MUDANÇA: Todos os controles (dgvClientes, btnNovo, etc.) estão aqui
             this.dgvClientes = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtTelefone = new System.Windows.Forms.TextBox();
@@ -61,7 +47,6 @@
             this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvClientes.Size = new System.Drawing.Size(776, 250);
             this.dgvClientes.TabIndex = 0;
-            // MUDANÇA: Conectando o evento
             this.dgvClientes.SelectionChanged += new System.EventHandler(this.dgvClientes_SelectionChanged);
             // 
             // groupBox1
@@ -153,7 +138,6 @@
             this.btnNovo.TabIndex = 2;
             this.btnNovo.Text = "Novo";
             this.btnNovo.UseVisualStyleBackColor = true;
-            // MUDANÇA: Conectando o evento
             this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
             // btnSalvar
@@ -164,7 +148,6 @@
             this.btnSalvar.TabIndex = 3;
             this.btnSalvar.Text = "Salvar";
             this.btnSalvar.UseVisualStyleBackColor = true;
-            // MUDANÇA: Conectando o evento
             this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
             // btnExcluir
@@ -175,7 +158,6 @@
             this.btnExcluir.TabIndex = 4;
             this.btnExcluir.Text = "Excluir";
             this.btnExcluir.UseVisualStyleBackColor = true;
-            // MUDANÇA: Conectando o evento
             this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
             // 
             // ClienteForm
@@ -190,17 +172,16 @@
             this.Controls.Add(this.dgvClientes);
             this.Name = "ClienteForm";
             this.Text = "Gestão de Clientes";
-            // MUDANÇA: Conectando o evento
             this.Load += new System.EventHandler(this.ClienteForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         #endregion
 
-        // MUDANÇA: Todos os controles definidos aqui
         private System.Windows.Forms.DataGridView dgvClientes;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtTelefone;
@@ -216,4 +197,3 @@
         private System.Windows.Forms.Button btnExcluir;
     }
 }
-
