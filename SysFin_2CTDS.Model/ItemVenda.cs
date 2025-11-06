@@ -1,13 +1,14 @@
-using System;
-
-namespace SysFin_2CTDS.Models
+namespace SysFin_2CTDS.Models // Colocado no namespace Models
 {
+    /// <summary>
+    /// Model para os itens no carrinho de Venda.
+    /// </summary>
     public class ItemVenda
     {
-        public int Id { get; set; }
-        public int IdVenda { get; set; }
-        public int IdProduto { get; set; }
+        public int ProdutoId { get; set; }
+        public string? ProdutoNome { get; set; }
         public int Quantidade { get; set; }
         public decimal ValorUnitario { get; set; }
+        public decimal Subtotal => Quantidade * ValorUnitario;
     }
 }

@@ -3,18 +3,26 @@ using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Model.Data;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel; // Adicionado para BindingList
-using System.Threading.Tasks; // Adicionado para Async
+using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace SysFin_2CTDS.Controller
 {
     public class CompraController
     {
+        // ID '2' é 'Compra de Mercadorias' conforme o script SQL padrão.
+        private const int ID_PLANO_CONTAS_DESPESA_COMPRA = 2;
+
+        /// <summary>
+        /// Obtém todas as compras (apenas o cabeçalho) por período.
+        /// </summary>
         public async Task<List<Compra>> GetComprasPorPeriodo(DateTime dataInicial, DateTime dataFinal)
         {
             var listaCompras = new List<Compra>();
+
             using (var connection = Database.GetConnection())
             {
+                // Query SQL que junta compras e fornecedores
                 string sql = @"
                     SELECT 
                         c.data_compra,
@@ -36,9 +44,11 @@ namespace SysFin_2CTDS.Controller
                     {
                         while (await reader.ReadAsync())
                         {
+                            // Adiciona o item à lista
                             listaCompras.Add(new Compra
                             {
                                 DataCompra = reader.GetDateTime(reader.GetOrdinal("data_compra")),
+                                // Verifica se o nome do fornecedor é nulo
                                 NomeFornecedor = reader.IsDBNull(reader.GetOrdinal("nome_fornecedor")) ? null : reader.GetString(reader.GetOrdinal("nome_fornecedor")),
                                 ValorTotal = reader.GetDecimal(reader.GetOrdinal("valor_total"))
                             });
@@ -47,26 +57,30 @@ namespace SysFin_2CTDS.Controller
                 }
                 catch (Exception ex)
                 {
-                    // Lança o erro para a View (Formulário) tratar
-                    throw new Exception("Erro ao buscar compras por período: " + ex.Message, ex);
+                    // Lança a exceção para a View (Form) tratar
+                    throw new Exception("Erro ao buscar compras por período: " + ex.Message);
                 }
             }
             return listaCompras;
         }
 
-        // MUDANÇA: O método agora é 'async Task' e aceita BindingList
+        /// <summary>
+        /// Registra uma nova compra, seus itens, atualiza o estoque e lança no caixa.
+        /// (Usa Transação)
+        /// </summary>
         public async Task RegistrarCompra(int fornecedorId, DateTime dataDaCompra, decimal valorTotal, BindingList<Compra> itens)
         {
             using (var connection = Database.GetConnection())
             {
                 await connection.OpenAsync();
                 // Inicia a transação
-                using (var transaction = connection.BeginTransaction())
+                using (var transaction = (SqlTransaction)await connection.BeginTransactionAsync())
                 {
                     try
                     {
-                        // 1. Inserir o registro principal na tabela 'compras'
-                        var sqlCompra = "INSERT INTO compras (id_fornecedor, data_compra, valor_total) VALUES (@id_fornecedor, @data_compra, @valor_total); SELECT SCOPE_IDENTITY();";
+                        // 1. Inserir o cabeçalho na tabela 'compras' e obter o ID
+                        var sqlCompra = "INSERT INTO compras (id_fornecedor, data_compra, valor_total) OUTPUT INSERTED.id VALUES (@id_fornecedor, @data_compra, @valor_total)";
+
                         int compraId;
                         using (var cmdCompra = new SqlCommand(sqlCompra, connection, transaction))
                         {
@@ -74,7 +88,7 @@ namespace SysFin_2CTDS.Controller
                             cmdCompra.Parameters.AddWithValue("@data_compra", dataDaCompra);
                             cmdCompra.Parameters.AddWithValue("@valor_total", valorTotal);
 
-                            // Executa e pega o ID da compra recém-criada
+                            // Captura o ID da compra recém-criada
                             var result = await cmdCompra.ExecuteScalarAsync();
                             compraId = Convert.ToInt32(result);
                         }
@@ -93,7 +107,7 @@ namespace SysFin_2CTDS.Controller
                                 await cmdItem.ExecuteNonQueryAsync();
                             }
 
-                            // 2b. Atualizar o estoque do produto
+                            // 2b. Atualizar (somar) o estoque do produto
                             var sqlEstoque = "UPDATE produtos SET estoque_atual = estoque_atual + @quantidade WHERE id = @id_produto";
                             using (var cmdEstoque = new SqlCommand(sqlEstoque, connection, transaction))
                             {
@@ -103,18 +117,36 @@ namespace SysFin_2CTDS.Controller
                             }
                         }
 
+                        // --- ESTA É A PARTE NOVA (do Passo 28) ---
+                        // 3. Lançar no Movimento de Caixa (Despesa)
+                        var sqlCaixa = @"
+                            INSERT INTO movimento_caixa
+                            (data_movimento, descricao, id_plano_de_contas, tipo, valor, id_compra)
+                            VALUES (@data, @descricao, @id_plano, 'S', @valor, @id_compra)"; // 'S' de Saída
+
+                        using (var cmdCaixa = new SqlCommand(sqlCaixa, connection, transaction))
+                        {
+                            cmdCaixa.Parameters.AddWithValue("@data", dataDaCompra);
+                            cmdCaixa.Parameters.AddWithValue("@descricao", $"Despesa referente à Compra ID {compraId}");
+                            cmdCaixa.Parameters.AddWithValue("@id_plano", ID_PLANO_CONTAS_DESPESA_COMPRA);
+                            cmdCaixa.Parameters.AddWithValue("@valor", valorTotal);
+                            cmdCaixa.Parameters.AddWithValue("@id_compra", compraId);
+                            await cmdCaixa.ExecuteNonQueryAsync();
+                        }
+                        // --- FIM DA PARTE NOVA ---
+
                         // Se tudo deu certo, 'commita' a transação
-                        transaction.Commit();
+                        await transaction.CommitAsync();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Se algo deu errado, 'rollback' (desfaz) tudo
-                        transaction.Rollback();
-                        throw; // Lança o erro para o formulário (View)
+                        // Se algo deu errado, desfaz tudo
+                        await transaction.RollbackAsync();
+                        // Relança o erro para o formulário (View) exibi-lo
+                        throw new Exception("Erro ao registrar a compra (operação revertida): " + ex.Message);
                     }
                 }
             }
         }
     }
 }
-

@@ -64,9 +64,8 @@ namespace SysFin_2CTDS.View
                     dgvEstoque.Columns["Nome"].HeaderText = "Nome do Produto";
                     dgvEstoque.Columns["EstoqueAtual"].HeaderText = "Estoque Atual";
 
-                    // Formatação visual
+                    // Formatação visual (removida do Designer e centralizada aqui)
                     dgvEstoque.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    dgvEstoque.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     dgvEstoque.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
                     dgvEstoque.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(230, 230, 230);
                     dgvEstoque.EnableHeadersVisualStyles = false;
@@ -92,13 +91,13 @@ namespace SysFin_2CTDS.View
                 {
                     if (estoqueAtual < ESTOQUE_MINIMO)
                     {
-                        row.DefaultCellStyle.BackColor = Color.LightCoral;
+                        row.DefaultCellStyle.BackColor = Color.LightCoral; // Vermelho para baixo estoque
                         row.DefaultCellStyle.ForeColor = Color.White;
                         row.DefaultCellStyle.Font = new Font(dgvEstoque.Font, FontStyle.Bold);
                     }
                     else
                     {
-                        row.DefaultCellStyle.BackColor = Color.White;
+                        row.DefaultCellStyle.BackColor = Color.White; // Padrão
                         row.DefaultCellStyle.ForeColor = Color.Black;
                         row.DefaultCellStyle.Font = new Font(dgvEstoque.Font, FontStyle.Regular);
                     }
@@ -107,4 +106,3 @@ namespace SysFin_2CTDS.View
         }
     }
 }
-
