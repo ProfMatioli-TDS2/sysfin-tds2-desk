@@ -6,43 +6,25 @@ using System.Threading.Tasks;
 
 namespace SysFin_2CTDS.Model
 {
-        public class Compra
+    public class Compra
+    {
+        public int ProdutoId { get; set; }
+        // MUDANÇA: Adicionado '?' para permitir valores nulos
+        public string? ProdutoNome { get; set; }
+        public int Quantidade { get; set; }
+        public decimal ValorUnitario { get; set; }
+        public decimal Subtotal
         {
-            public int ProdutoId
+            get
             {
-                get; set;
+                return Quantidade * ValorUnitario;
             }
-            public string ProdutoNome
-            {
-                get; set;
-            }
-            public int Quantidade
-            {
-                get; set;
-            }
-            public decimal ValorUnitario
-            {
-                get; set;
-            }
-            public decimal Subtotal
-            {
-                get
-                {
-                    return Quantidade * ValorUnitario;
-                }
-            }
+        }
 
-        public DateTime DataCompra {
-            get;
-            set;
-        }
-        public string NomeFornecedor {
-            get;
-            set;
-        }
-        public decimal ValorTotal {
-            get;
-            set;
-        }
+        public DateTime DataCompra { get; set; }
+        // MUDANÇA: Adicionado '?' para permitir valores nulos
+        public string? NomeFornecedor { get; set; }
+        public decimal ValorTotal { get; set; }
     }
-    }
+}
+

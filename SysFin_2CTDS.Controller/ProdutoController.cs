@@ -1,111 +1,248 @@
-﻿using SysFin_2CTDS.Model;
+﻿using Microsoft.Data.SqlClient;
+using SysFin_2CTDS.Model;
+using SysFin_2CTDS.Model.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; // MUDANÇA: Adicionado
 
 namespace SysFin_2CTDS.Controller
 {
     public class ProdutoController
     {
-        // 1. SIMULAÇÃO DO BANCO DE DADOS
-        // Esta lista estática guardará todos os produtos enquanto o programa estiver rodando.
-        private static List<Produto> _bancoDeDadosSimulado = new List<Produto>();
-        private static int _idCounter = 1; // Para gerar IDs únicos
-
-        public string CadastrarProduto(string nome, string descricao, decimal precoVenda, int estoqueInicial)
+        // MUDANÇA: Assinatura agora é async Task<string>
+        public async Task<string> CadastrarProduto(string? nome, string? descricao, decimal precoVenda, int estoqueInicial)
         {
-            // Validações (futuras)
+            using (var connection = Database.GetConnection())
+            {
+                var sql = "INSERT INTO produtos (nome, descricao, preco_venda, estoque_atual) VALUES (@nome, @descricao, @preco_venda, @estoque_atual)";
 
-            Produto novoProduto = new Produto();
-            novoProduto.Id = _idCounter; // 2. Atribui um ID único
-            novoProduto.Nome = nome;
-            novoProduto.Descricao = descricao;
-            novoProduto.PrecoVenda = precoVenda;
-            novoProduto.Estoque = estoqueInicial;
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    // MUDANÇA: Tratamento de nulos
+                    command.Parameters.AddWithValue("@nome", (object)nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@descricao", (object)descricao ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@preco_venda", precoVenda);
+                    command.Parameters.AddWithValue("@estoque_atual", estoqueInicial);
 
-            // 3. Adiciona o novo produto na nossa lista simulada
-            _bancoDeDadosSimulado.Add(novoProduto);
-            _idCounter++; // Incrementa o contador para o próximo produto
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
 
-            return $"Produto '{nome}' cadastrado com sucesso!";
+                        if (linhasAfetadas > 0)
+                        {
+                            return $"Produto '{nome}' cadastrado com sucesso!";
+                        }
+                        else
+                        {
+                            return "Nenhuma linha foi afetada. O produto não foi cadastrado.";
+                        }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao cadastrar: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        return "Erro ao cadastrar produto: " + ex.Message;
+                    }
+                }
+            }
         }
 
-        // 4. NOVO MÉTODO PARA LISTAR OS PRODUTOS
-        public List<Produto> ListarProdutos()
+        // MUDANÇA: Assinatura agora é async Task<List<Produto>>
+        public async Task<List<Produto>> ListarProdutosAsync()
         {
-            // Simplesmente retorna a lista completa de produtos
-            return _bancoDeDadosSimulado;
+            var produtos = new List<Produto>();
+
+            using (var connection = Database.GetConnection())
+            {
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos ORDER BY nome";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
+                        {
+                            while (await reader.ReadAsync()) // MUDANÇA: Async
+                            {
+                                produtos.Add(MapearProduto(reader));
+                            }
+                        }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao listar produtos: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Erro ao listar produtos: " + ex.Message);
+                    }
+                }
+            }
+            return produtos;
         }
 
-        // Adicione este método dentro da classe ProdutoController
-
-        public List<Produto> ListarProdutosPorNome(string termoBusca)
+        // MUDANÇA: Assinatura agora é async Task<List<Produto>>
+        public async Task<List<Produto>> ListarProdutosPorNomeAsync(string termoBusca)
         {
-            // Se o termo de busca estiver vazio ou nulo, retorna a lista completa
             if (string.IsNullOrWhiteSpace(termoBusca))
             {
-                return ListarProdutos();
+                return await ListarProdutosAsync(); // MUDANÇA: Async
             }
 
-            // Usa LINQ para filtrar a lista
-            // Onde (Where) o Nome do produto, convertido para minúsculas (ToLower),
-            // contém (Contains) o termo de busca, também em minúsculas.
-            return _bancoDeDadosSimulado
-                .Where(p => p.Nome.ToLower().Contains(termoBusca.ToLower()))
-                .ToList();
-        }
-
-        // Adicione este método dentro da classe ProdutoController
-
-        public bool ExcluirProduto(int id)
-        {
-            // Procura na lista o produto que tem o ID correspondente
-            Produto produtoParaExcluir = _bancoDeDadosSimulado.FirstOrDefault(p => p.Id == id);
-
-            // Se encontrou o produto (não é nulo)
-            if (produtoParaExcluir != null)
+            var produtos = new List<Produto>();
+            using (var connection = Database.GetConnection())
             {
-                // Regra de negócio importante (será implementada no futuro):
-                // Antes de remover, deveríamos verificar se este produto não está em nenhuma venda ou compra.
-                // Como ainda não temos essas funcionalidades, vamos permitir a exclusão direta.
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos WHERE nome LIKE @termoBusca ORDER BY nome";
 
-                _bancoDeDadosSimulado.Remove(produtoParaExcluir);
-                return true; // Retorna true indicando que a exclusão foi bem-sucedida
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@termoBusca", "%" + termoBusca + "%");
+
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
+                        {
+                            while (await reader.ReadAsync()) // MUDANÇA: Async
+                            {
+                                produtos.Add(MapearProduto(reader));
+                            }
+                        }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao buscar produtos: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Erro ao buscar produtos: " + ex.Message);
+                    }
+                }
             }
-
-            // Se não encontrou o produto, retorna false
-            return false;
+            return produtos;
         }
 
-        // Adicione estes dois métodos dentro da classe ProdutoController
-
-        public Produto BuscarProdutoPorId(int id)
+        // MUDANÇA: Assinatura agora é async Task<bool>
+        public async Task<bool> ExcluirProdutoAsync(int id)
         {
-            // Usa o FirstOrDefault para encontrar o produto com o ID correspondente.
-            // Retorna o objeto Produto encontrado ou null se não encontrar.
-            return _bancoDeDadosSimulado.FirstOrDefault(p => p.Id == id);
-        }
-
-        public string AtualizarProduto(int id, string nome, string descricao, decimal precoVenda)
-        {
-            // Busca o produto existente na nossa lista
-            Produto produtoParaAtualizar = BuscarProdutoPorId(id);
-
-            // Se o produto não for encontrado, retorna uma mensagem de erro
-            if (produtoParaAtualizar == null)
+            using (var connection = Database.GetConnection())
             {
-                return "Produto não encontrado. A atualização falhou.";
+                var sql = "DELETE FROM produtos WHERE id = @id";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
+                        return linhasAfetadas > 0;
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao excluir: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Erro ao excluir produto: " + ex.Message);
+                        return false;
+                    }
+                }
             }
+        }
 
-            // Atualiza apenas as propriedades permitidas.
-            // NOTE que o ESTOQUE não está sendo modificado aqui.
-            produtoParaAtualizar.Nome = nome;
-            produtoParaAtualizar.Descricao = descricao;
-            produtoParaAtualizar.PrecoVenda = precoVenda;
+        // MUDANÇA: Assinatura agora é async Task<Produto?>
+        public async Task<Produto?> BuscarProdutoPorIdAsync(int id)
+        {
+            using (var connection = Database.GetConnection())
+            {
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos WHERE id = @id";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
+                        {
+                            if (await reader.ReadAsync()) // MUDANÇA: Async
+                            {
+                                return MapearProduto(reader);
+                            }
+                        }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao buscar produto: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Erro ao buscar produto por ID: " + ex.Message);
+                    }
+                }
+            }
+            return null;
+        }
 
-            return $"Produto '{nome}' atualizado com sucesso!";
+        // MUDANÇA: Assinatura agora é async Task<string>
+        public async Task<string> AtualizarProdutoAsync(int id, string? nome, string? descricao, decimal precoVenda)
+        {
+            using (var connection = Database.GetConnection())
+            {
+                var sql = "UPDATE produtos SET nome = @nome, descricao = @descricao, preco_venda = @preco_venda WHERE id = @id";
+
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    // MUDANÇA: Tratamento de nulos
+                    command.Parameters.AddWithValue("@nome", (object)nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@descricao", (object)descricao ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@preco_venda", precoVenda);
+
+                    try
+                    {
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
+
+                        if (linhasAfetadas > 0)
+                        {
+                            return $"Produto '{nome}' atualizado com sucesso!";
+                        }
+                        else
+                        {
+                            return "Produto não encontrado. A atualização falhou.";
+                        }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao atualizar: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        return "Erro ao atualizar produto: " + ex.Message;
+                    }
+                }
+            }
+        }
+
+        private Produto MapearProduto(SqlDataReader reader)
+        {
+            return new Produto
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                Nome = reader.IsDBNull(reader.GetOrdinal("nome")) ? null : reader.GetString(reader.GetOrdinal("nome")),
+                Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString(reader.GetOrdinal("descricao")),
+                PrecoVenda = reader.GetDecimal(reader.GetOrdinal("preco_venda")),
+                EstoqueAtual = reader.GetInt32(reader.GetOrdinal("estoque_atual"))
+            };
         }
     }
 }
+
