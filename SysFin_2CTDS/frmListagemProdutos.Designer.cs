@@ -132,7 +132,7 @@
             Controls.Add(btnNovo);
             Controls.Add(dgvProdutos);
             Name = "frmListagemProdutos";
-            Text = "Listagem de Produtos";
+            Text = "Gestão de Produtos";
             Load += frmListagemProdutos_Load;
             ((System.ComponentModel.ISupportInitialize)dgvProdutos).EndInit();
             ResumeLayout(false);
