@@ -30,7 +30,6 @@
         {
             dgvProdutos = new DataGridView();
             btnNovo = new Button();
-            btnAtualizar = new Button();
             label1 = new Label();
             txtBusca = new TextBox();
             btnBuscar = new Button();
@@ -46,29 +45,19 @@
             dgvProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProdutos.Location = new Point(12, 66);
             dgvProdutos.Name = "dgvProdutos";
-            dgvProdutos.Size = new Size(522, 183);
+            dgvProdutos.Size = new Size(921, 450);
             dgvProdutos.TabIndex = 0;
             // 
             // btnNovo
             // 
             btnNovo.Font = new Font("Segoe UI", 9F);
-            btnNovo.Location = new Point(12, 255);
+            btnNovo.Location = new Point(12, 522);
             btnNovo.Name = "btnNovo";
-            btnNovo.Size = new Size(91, 33);
-            btnNovo.TabIndex = 1;
+            btnNovo.Size = new Size(150, 34);
+            btnNovo.TabIndex = 2;
             btnNovo.Text = "Novo Produto";
             btnNovo.UseVisualStyleBackColor = true;
             btnNovo.Click += btnNovo_Click;
-            // 
-            // btnAtualizar
-            // 
-            btnAtualizar.Location = new Point(109, 255);
-            btnAtualizar.Name = "btnAtualizar";
-            btnAtualizar.Size = new Size(88, 33);
-            btnAtualizar.TabIndex = 2;
-            btnAtualizar.Text = "Atualizar";
-            btnAtualizar.UseVisualStyleBackColor = true;
-            btnAtualizar.Click += btnAtualizar_Click;
             // 
             // label1
             // 
@@ -84,46 +73,47 @@
             // 
             txtBusca.Location = new Point(152, 23);
             txtBusca.Name = "txtBusca";
-            txtBusca.Size = new Size(242, 23);
-            txtBusca.TabIndex = 4;
+            txtBusca.Size = new Size(625, 23);
+            txtBusca.TabIndex = 0;
             txtBusca.TextChanged += txtBusca_TextChanged;
+            txtBusca.KeyDown += txtBusca_KeyDown;
             // 
             // btnBuscar
             // 
-            btnBuscar.Location = new Point(203, 255);
+            btnBuscar.Location = new Point(783, 18);
             btnBuscar.Name = "btnBuscar";
-            btnBuscar.Size = new Size(90, 34);
-            btnBuscar.TabIndex = 5;
+            btnBuscar.Size = new Size(150, 34);
+            btnBuscar.TabIndex = 1;
             btnBuscar.Text = "Buscar";
             btnBuscar.UseVisualStyleBackColor = true;
             btnBuscar.Click += btnBuscar_Click;
             // 
             // btnExcluir
             // 
-            btnExcluir.Location = new Point(378, 255);
+            btnExcluir.Location = new Point(524, 522);
             btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(75, 34);
-            btnExcluir.TabIndex = 6;
+            btnExcluir.Size = new Size(150, 34);
+            btnExcluir.TabIndex = 4;
             btnExcluir.Text = "Excluir";
             btnExcluir.UseVisualStyleBackColor = true;
             btnExcluir.Click += btnExcluir_Click;
             // 
             // btnEditar
             // 
-            btnEditar.Location = new Point(299, 255);
+            btnEditar.Location = new Point(258, 522);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(73, 34);
-            btnEditar.TabIndex = 7;
+            btnEditar.Size = new Size(150, 34);
+            btnEditar.TabIndex = 3;
             btnEditar.Text = "Editar";
             btnEditar.UseVisualStyleBackColor = true;
             btnEditar.Click += btnEditar_Click;
             // 
             // btnRelatorio
             // 
-            btnRelatorio.Location = new Point(459, 254);
+            btnRelatorio.Location = new Point(783, 522);
             btnRelatorio.Name = "btnRelatorio";
-            btnRelatorio.Size = new Size(75, 35);
-            btnRelatorio.TabIndex = 8;
+            btnRelatorio.Size = new Size(150, 34);
+            btnRelatorio.TabIndex = 5;
             btnRelatorio.Text = "Gerar PDF";
             btnRelatorio.UseVisualStyleBackColor = true;
             btnRelatorio.Click += btnRelatorio_Click;
@@ -132,18 +122,17 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(546, 299);
+            ClientSize = new Size(945, 580);
             Controls.Add(btnRelatorio);
             Controls.Add(btnEditar);
             Controls.Add(btnExcluir);
             Controls.Add(btnBuscar);
             Controls.Add(txtBusca);
             Controls.Add(label1);
-            Controls.Add(btnAtualizar);
             Controls.Add(btnNovo);
             Controls.Add(dgvProdutos);
             Name = "frmListagemProdutos";
-            Text = "frmListagemProdutos";
+            Text = "Listagem de Produtos";
             Load += frmListagemProdutos_Load;
             ((System.ComponentModel.ISupportInitialize)dgvProdutos).EndInit();
             ResumeLayout(false);
@@ -154,7 +143,6 @@
 
         private DataGridView dgvProdutos;
         private Button btnNovo;
-        private Button btnAtualizar;
         private Label label1;
         private TextBox txtBusca;
         private Button btnBuscar;

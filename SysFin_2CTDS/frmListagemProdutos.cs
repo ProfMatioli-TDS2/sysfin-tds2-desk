@@ -41,11 +41,6 @@ namespace SysFin_2CTDS.View
             CarregarProdutos();
         }
 
-        private void btnAtualizar_Click(object? sender, EventArgs e)
-        {
-            CarregarProdutos();
-        }
-
         private void btnNovo_Click(object? sender, EventArgs e)
         {
             // O formulário de cadastro (modal) não precisa ser async
@@ -170,6 +165,15 @@ namespace SysFin_2CTDS.View
             if (string.IsNullOrWhiteSpace(txtBusca.Text))
             {
                 CarregarProdutos();
+            }
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnBuscar.PerformClick();
+                e.SuppressKeyPress = true;
             }
         }
     }
