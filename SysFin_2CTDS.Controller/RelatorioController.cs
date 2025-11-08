@@ -1,5 +1,4 @@
-﻿// Importações necessárias para o PDF e para acessar arquivos do sistema
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using SysFin_2CTDS.Model;
 using System;
@@ -25,7 +24,6 @@ namespace SysFin_2CTDS.Controller
                 throw new Exception("Não há produtos para gerar o relatório.");
             }
 
-            // 3. Criar o documento PDF
             Document doc = new Document(PageSize.A4, 20f, 20f, 30f, 30f);
 
             try
@@ -153,4 +151,3 @@ namespace SysFin_2CTDS.Controller
         }
     }
 }
-
