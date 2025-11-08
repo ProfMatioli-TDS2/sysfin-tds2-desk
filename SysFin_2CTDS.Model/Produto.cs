@@ -17,4 +17,3 @@ namespace SysFin_2CTDS.Model
         // MUDANÇA: Removida a propriedade duplicada 'Estoque' que causava um aviso
     }
 }
-

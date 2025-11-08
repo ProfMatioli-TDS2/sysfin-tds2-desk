@@ -121,5 +121,19 @@ namespace SysFin_2CTDS.View
             // 3. Fecha este formulário (MdiPrincipal)
             this.Close();
         }
+
+        private void produtoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frmCadastroProduto = new frmCadastroProduto();
+            frmCadastroProduto.MdiParent = this;
+            frmCadastroProduto.Show();
+        }
+
+        private void visualizarProdutosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frmListagemProdutos = new frmListagemProdutos();
+            frmListagemProdutos.MdiParent = this;
+            frmListagemProdutos.Show();
+        }
     }
 }

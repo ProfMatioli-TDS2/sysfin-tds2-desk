@@ -1,5 +1,5 @@
 ﻿using SysFin_2CTDS.Controller;
-using SysFin_2CTDS.Model;
+using SysFin_2CTDS.Model; // MUDANÇA: Mantido da sua versão
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks; // Adicionado
@@ -37,11 +37,6 @@ namespace SysFin_2CTDS.View
         }
 
         private void frmListagemProdutos_Load(object? sender, EventArgs e)
-        {
-            CarregarProdutos();
-        }
-
-        private void btnAtualizar_Click(object? sender, EventArgs e)
         {
             CarregarProdutos();
         }
@@ -172,6 +167,14 @@ namespace SysFin_2CTDS.View
                 CarregarProdutos();
             }
         }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnBuscar.PerformClick();
+                e.SuppressKeyPress = true;
+            }
+        }
     }
 }
-

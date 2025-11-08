@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Model.Data;
 using System;
@@ -46,7 +46,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        return "Erro ao cadastrar produto: " + ex.Message;
+                        // MUDANÇA: Lançando a exceção em vez de retornar string
+                        throw new Exception($"Erro ao cadastrar produto: {ex.Message}");
                     }
                 }
             }
@@ -80,7 +81,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erro ao listar produtos: " + ex.Message);
+                        // MUDANÇA: Lançando a exceção
+                        throw new Exception("Erro ao listar produtos: " + ex.Message);
                     }
                 }
             }
@@ -122,7 +124,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erro ao buscar produtos: " + ex.Message);
+                        // MUDANÇA: Lançando a exceção
+                        throw new Exception("Erro ao buscar produtos: " + ex.Message);
                     }
                 }
             }
@@ -150,8 +153,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erro ao excluir produto: " + ex.Message);
-                        return false;
+                        // MUDANÇA: Lançando a exceção
+                        throw new Exception("Erro ao excluir produto: " + ex.Message);
                     }
                 }
             }
@@ -184,7 +187,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erro ao buscar produto por ID: " + ex.Message);
+                        // MUDANÇA: Lançando a exceção
+                        throw new Exception("Erro ao buscar produto por ID: " + ex.Message);
                     }
                 }
             }
@@ -226,7 +230,8 @@ namespace SysFin_2CTDS.Controller
                     }
                     catch (Exception ex)
                     {
-                        return "Erro ao atualizar produto: " + ex.Message;
+                        // MUDANÇA: Lançando a exceção
+                        throw new Exception("Erro ao atualizar produto: " + ex.Message);
                     }
                 }
             }
@@ -245,4 +250,3 @@ namespace SysFin_2CTDS.Controller
         }
     }
 }
-

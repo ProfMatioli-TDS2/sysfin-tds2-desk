@@ -99,6 +99,7 @@
             // 
             numPrecoVenda.DecimalPlaces = 2;
             numPrecoVenda.Location = new Point(158, 133);
+            numPrecoVenda.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             numPrecoVenda.Name = "numPrecoVenda";
             numPrecoVenda.Size = new Size(120, 23);
             numPrecoVenda.TabIndex = 6;
@@ -106,6 +107,7 @@
             // numEstoque
             // 
             numEstoque.Location = new Point(150, 184);
+            numEstoque.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
             numEstoque.Name = "numEstoque";
             numEstoque.Size = new Size(120, 23);
             numEstoque.TabIndex = 7;
@@ -136,7 +138,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Name = "frmCadastroProduto";
-            Text = "frmCadastroProduto";
+            Text = "Cadastro de Produto";
             ((System.ComponentModel.ISupportInitialize)numPrecoVenda).EndInit();
             ((System.ComponentModel.ISupportInitialize)numEstoque).EndInit();
             ResumeLayout(false);

@@ -14,7 +14,6 @@ namespace SysFin_2CTDS.View
 {
     public partial class frmCadastroProduto : Form
     {
-        // Variável para controlar se estamos em modo de edição
         private int? _idProdutoParaEdicao = null;
         private readonly ProdutoController _controller; // MUDANÇA: Controller como campo
 
@@ -31,8 +30,6 @@ namespace SysFin_2CTDS.View
             _controller = new ProdutoController(); // MUDANÇA: Inicializado
 
             _idProdutoParaEdicao = idProduto; // Guarda o ID que recebemos
-
-            // Carrega os dados do produto para preencher a tela
             CarregarDadosParaEdicao();
         }
 
@@ -108,4 +105,3 @@ namespace SysFin_2CTDS.View
         }
     }
 }
-
