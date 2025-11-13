@@ -1,33 +1,21 @@
 ﻿using SysFin_2CTDS.Controller;
 using SysFin_2CTDS.Models;
 using System;
-<<<<<<< HEAD
-using System.Threading.Tasks; // Adicionado para Async
-=======
 using System.Text.RegularExpressions;
->>>>>>> tarefa2
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks; // MUDANÇA: Adicionado Async
 
 namespace SysFin_2CTDS.View
 {
-<<<<<<< HEAD
-    // Herda diretamente de Form, SEM FrmCadastroBase
-    public partial class ClienteForm : Form
-    {
-        // Instância do controller que contém a lógica de negócio
-        private readonly ClienteController _clienteController;
-        // Armazena o cliente atualmente selecionado na grade
-        private Cliente? _clienteSelecionado; // Adicionado '?'
-
-=======
     public partial class ClienteForm : Form
     {
         private readonly ClienteController _clienteController;
-        private Cliente _clienteSelecionado;
+        // MUDANÇA: '?' permite que ele seja nulo
+        private Cliente? _clienteSelecionado;
 
         // Máscaras padrão
         private const string MascaraCpf = "000\\.000\\.000\\-00";
@@ -39,76 +27,44 @@ namespace SysFin_2CTDS.View
         private bool _mudandoMascaraCpf = false;
         private bool _mudandoMascaraTel = false;
 
->>>>>>> tarefa2
         public ClienteForm()
         {
             InitializeComponent();
             _clienteController = new ClienteController();
         }
 
-<<<<<<< HEAD
-        // Evento Load agora é async
+        // MUDANÇA: 'async void'
         private async void ClienteForm_Load(object? sender, EventArgs e)
         {
-            ConfigurarColunasGrid();
-            await CarregarClientes();
-        }
-
-        private void ConfigurarColunasGrid()
-        {
-            // Configura a grade para não gerar colunas automaticamente
-            dgvClientes.AutoGenerateColumns = false;
-            // Limpa colunas existentes para evitar duplicação
-            dgvClientes.Columns.Clear();
-
-            // Adiciona as colunas manualmente
-            dgvClientes.Columns.Add("Id", "ID");
-            dgvClientes.Columns.Add("Nome", "Nome");
-            dgvClientes.Columns.Add("CpfCnpj", "CPF/CNPJ");
-            dgvClientes.Columns.Add("Email", "E-mail");
-
-            // Define qual propriedade do objeto Cliente preencherá cada coluna
-            dgvClientes.Columns["Id"].DataPropertyName = "Id";
-            dgvClientes.Columns["Nome"].DataPropertyName = "Nome";
-            dgvClientes.Columns["Nome"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvClientes.Columns["CpfCnpj"].DataPropertyName = "CpfCnpj";
-            dgvClientes.Columns["Email"].DataPropertyName = "Email";
-        }
-
-        private async Task CarregarClientes()
-        {
-            try
-            {
-                // Busca os dados do banco através do controller e preenche a grade
-                dgvClientes.DataSource = await _clienteController.GetAllAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erro ao Carregar Dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-=======
-        private void ClienteForm_Load(object sender, EventArgs e)
-        {
-            CarregarClientes();
             // Define o TextMaskFormat programaticamente
             mtbCpfCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
             mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
             // Define máscaras iniciais
             mtbCpfCnpj.Mask = MascaraCpf;
             mtbTelefone.Mask = MascaraTelFixo;
+
+            // MUDANÇA: 'await'
+            await CarregarClientes();
         }
 
-        private void CarregarClientes()
+        // MUDANÇA: 'async Task'
+        private async Task CarregarClientes()
         {
             string filtro = txtBuscaNome.Text.Trim();
             dgvClientes.AutoGenerateColumns = false;
             dgvClientes.DataSource = null;
-            dgvClientes.DataSource = _clienteController.GetAll(filtro);
+
+            try
+            {
+                // MUDANÇA: 'await' e '...Async'
+                dgvClientes.DataSource = await _clienteController.GetAllAsync(filtro);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro ao Carregar Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
->>>>>>> tarefa2
         private void LimparFormulario()
         {
             _clienteSelecionado = null;
@@ -122,84 +78,23 @@ namespace SysFin_2CTDS.View
             txtNome.Focus();
         }
 
-<<<<<<< HEAD
-        private void btnNovo_Click(object? sender, EventArgs e)
-        {
-=======
-        private void btnNovo_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnNovo_Click(object? sender, EventArgs e)
         {
             dgvClientes.SelectionChanged -= dgvClientes_SelectionChanged;
 
->>>>>>> tarefa2
             LimparFormulario();
             txtBuscaNome.Clear();
-            CarregarClientes();
+            // MUDANÇA: 'await'
+            await CarregarClientes();
             dgvClientes.ClearSelection();
 
             dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
             txtNome.Focus();
         }
 
-<<<<<<< HEAD
-        // Evento Salvar agora é async
+        // MUDANÇA: 'async void'
         private async void btnSalvar_Click(object? sender, EventArgs e)
-        {
-            // Se _clienteSelecionado for nulo, cria um novo objeto. Senão, usa o existente.
-            var cliente = _clienteSelecionado ?? new Cliente();
-
-            // Lê dados tratando strings vazias como null
-            cliente.Nome = string.IsNullOrWhiteSpace(txtNome.Text) ? null : txtNome.Text;
-            cliente.CpfCnpj = string.IsNullOrWhiteSpace(txtCpfCnpj.Text) ? null : txtCpfCnpj.Text;
-            cliente.Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text;
-            cliente.Telefone = string.IsNullOrWhiteSpace(txtTelefone.Text) ? null : txtTelefone.Text;
-
-            try
-            {
-                // Chama o método SaveAsync do controller
-                if (await _clienteController.SaveAsync(cliente))
-                {
-                    MessageBox.Show("Cliente salvo com sucesso!");
-                    LimparFormulario();
-                    await CarregarClientes(); // Recarrega
-                }
-                else
-                {
-                    MessageBox.Show("Falha ao salvar o cliente. Verifique os dados e tente novamente.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Captura erros (ex: CPF/CNPJ duplicado)
-                MessageBox.Show(ex.Message, "Erro ao Salvar", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        // Evento Excluir agora é async
-        private async void btnExcluir_Click(object? sender, EventArgs e)
-        {
-            if (_clienteSelecionado != null)
-            {
-                var result = MessageBox.Show("Tem certeza que deseja excluir este cliente?", "Confirmação", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    try
-                    {
-                        if (await _clienteController.DeleteAsync(_clienteSelecionado.Id))
-                        {
-                            MessageBox.Show("Cliente excluído com sucesso!");
-                            LimparFormulario();
-                            await CarregarClientes(); // Recarrega
-                        }
-                        else
-                        {
-                            MessageBox.Show("Falha ao excluir o cliente.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Erro ao Excluir", MessageBoxButtons.OK, MessageBoxIcon.Error);
-=======
-        private void btnSalvar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtNome.Text))
             {
@@ -217,6 +112,7 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
+            // MUDANÇA: Usa a validação estática do Controller
             if (!ClienteController.IsValidCpfCnpj(cpfCnpjApenasNumeros))
             {
                 MessageBox.Show("O CPF/CNPJ preenchido parece inválido (deve ter 11 ou 14 dígitos).", "Formato Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -242,133 +138,140 @@ namespace SysFin_2CTDS.View
 
             int clienteIdAtual = _clienteSelecionado?.Id ?? 0;
 
-            if (_clienteController.CpfCnpjExists(cpfCnpjApenasNumeros, clienteIdAtual))
+            try
             {
-                MessageBox.Show("O CPF/CNPJ informado já está cadastrado para outro cliente.", "CPF/CNPJ Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                mtbCpfCnpj.Focus();
-                return;
+                // MUDANÇA: 'await' e '...Async'
+                if (await _clienteController.CpfCnpjExistsAsync(cpfCnpjApenasNumeros, clienteIdAtual))
+                {
+                    MessageBox.Show("O CPF/CNPJ informado já está cadastrado para outro cliente.", "CPF/CNPJ Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    mtbCpfCnpj.Focus();
+                    return;
+                }
+
+                var cliente = _clienteSelecionado ?? new Cliente();
+                cliente.Nome = txtNome.Text;
+                cliente.CpfCnpj = cpfCnpjApenasNumeros;
+                cliente.Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text; // Salva nulo se vazio
+                cliente.Telefone = string.IsNullOrWhiteSpace(telefoneApenasNumeros) ? null : telefoneApenasNumeros; // Salva nulo se vazio
+
+                // MUDANÇA: 'await' e '...Async'
+                if (await _clienteController.SaveAsync(cliente))
+                {
+                    MessageBox.Show("Cliente salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    dgvClientes.SelectionChanged -= dgvClientes_SelectionChanged;
+                    LimparFormulario();
+                    await CarregarClientes(); // MUDANÇA: 'await'
+                    dgvClientes.ClearSelection();
+                    dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
+                }
+                else
+                {
+                    MessageBox.Show("Falha ao salvar o cliente. Verifique os dados e tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-
-            var cliente = _clienteSelecionado ?? new Cliente();
-            cliente.Nome = txtNome.Text;
-            cliente.CpfCnpj = cpfCnpjApenasNumeros;
-            cliente.Email = txtEmail.Text;
-            cliente.Telefone = telefoneApenasNumeros;
-
-            if (_clienteController.Save(cliente))
+            catch (Exception ex)
             {
-                MessageBox.Show("Cliente salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                dgvClientes.SelectionChanged -= dgvClientes_SelectionChanged;
-                LimparFormulario();
-                CarregarClientes();
-                dgvClientes.ClearSelection();
-                dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
-            }
-            else
-            {
-                MessageBox.Show("Falha ao salvar o cliente. Verifique os dados e tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Captura erros do Controller (DB, Validação)
+                MessageBox.Show(ex.Message, "Erro ao Salvar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnExcluir_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnExcluir_Click(object? sender, EventArgs e)
         {
             if (_clienteSelecionado != null)
             {
                 var result = MessageBox.Show("Tem certeza que deseja excluir este cliente?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    if (_clienteController.Delete(_clienteSelecionado.Id))
+                    try
                     {
-                        MessageBox.Show("Cliente excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LimparFormulario();
-                        CarregarClientes();
+                        // MUDANÇA: 'await' e '...Async'
+                        if (await _clienteController.DeleteAsync(_clienteSelecionado.Id))
+                        {
+                            MessageBox.Show("Cliente excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LimparFormulario();
+                            await CarregarClientes(); // MUDANÇA: 'await'
+                        }
+                        else
+                        {
+                            MessageBox.Show("Falha ao excluir o cliente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Falha ao excluir o cliente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
->>>>>>> tarefa2
+                        // Captura erro (ex: FK de Vendas)
+                        MessageBox.Show(ex.Message, "Erro ao Excluir", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             else
             {
-<<<<<<< HEAD
-                MessageBox.Show("Selecione um cliente para excluir.");
+                MessageBox.Show("Selecione um cliente para excluir.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void dgvClientes_SelectionChanged(object? sender, EventArgs e)
         {
-            // Verifica se há alguma linha selecionada
             if (dgvClientes.SelectedRows.Count > 0)
             {
-                // Pega o objeto Cliente associado à linha selecionada
-=======
-                MessageBox.Show("Selecione um cliente para excluir.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void dgvClientes_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dgvClientes.SelectedRows.Count > 0)
-            {
->>>>>>> tarefa2
                 _clienteSelecionado = dgvClientes.SelectedRows[0].DataBoundItem as Cliente;
 
                 if (_clienteSelecionado != null)
                 {
-<<<<<<< HEAD
-                    // Preenche os campos do formulário com os dados do cliente selecionado
-=======
->>>>>>> tarefa2
                     txtNome.Text = _clienteSelecionado.Nome;
                     mtbCpfCnpj.Text = _clienteSelecionado.CpfCnpj;
                     txtEmail.Text = _clienteSelecionado.Email;
                     mtbTelefone.Text = _clienteSelecionado.Telefone;
 
+                    // 'BeginInvoke' é necessário para que a máscara seja aplicada corretamente após o Text
                     BeginInvoke(new Action(() => AjustarMascaraCpfCnpjCarregamento()));
                     BeginInvoke(new Action(() => AjustarMascaraTelefoneCarregamento()));
                 }
             }
             else
             {
+                // Se o usuário clicar fora (ClearSelection)
                 if (_clienteSelecionado != null)
                 {
-                    txtNome.Clear();
-                    mtbCpfCnpj.Clear();
-                    txtEmail.Clear();
-                    mtbTelefone.Clear();
-                    _clienteSelecionado = null;
-
-                    if (mtbCpfCnpj.Mask != MascaraCpf)
-                        mtbCpfCnpj.Mask = MascaraCpf;
-                    if (mtbTelefone.Mask != MascaraTelFixo)
-                        mtbTelefone.Mask = MascaraTelFixo;
+                    LimparFormulario(); // Limpa os campos
                 }
             }
         }
 
-        private void txtBuscaNome_TextChanged(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void txtBuscaNome_TextChanged(object? sender, EventArgs e)
         {
-            CarregarClientes();
+            // MUDANÇA: 'await'
+            await CarregarClientes();
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void pictureBox1_Click(object? sender, EventArgs e)
         {
             string filtroExato = txtBuscaNome.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(filtroExato))
             {
-                CarregarClientes();
+                await CarregarClientes(); // MUDANÇA: 'await'
                 return;
             }
 
             dgvClientes.DataSource = null;
-            dgvClientes.DataSource = _clienteController.GetByExactName(filtroExato);
+            try
+            {
+                // MUDANÇA: 'await' e '...Async'
+                dgvClientes.DataSource = await _clienteController.GetByExactNameAsync(filtroExato);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro ao Buscar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void btnGerarRelatorio_Click(object sender, EventArgs e)
+        // MUDANÇA: 'async void'
+        private async void btnGerarRelatorio_Click(object? sender, EventArgs e)
         {
             var clientes = dgvClientes.DataSource as List<Cliente>;
             if (clientes == null || clientes.Count == 0)
@@ -386,7 +289,8 @@ namespace SysFin_2CTDS.View
             {
                 try
                 {
-                    bool sucesso = _clienteController.GerarRelatorioPDF(clientes, sfd.FileName);
+                    // MUDANÇA: 'await' e '...Async'
+                    bool sucesso = await _clienteController.GerarRelatorioPDFAsync(clientes, sfd.FileName);
 
                     if (sucesso)
                     {
@@ -414,8 +318,9 @@ namespace SysFin_2CTDS.View
         }
 
         // ========== MÁSCARAS DINÂMICAS - CPF/CNPJ ==========
+        // (Sem mudanças. Esta lógica já estava correta e é complexa)
 
-        private void mtbCpfCnpj_KeyPress(object sender, KeyPressEventArgs e)
+        private void mtbCpfCnpj_KeyPress(object? sender, KeyPressEventArgs e)
         {
             // Permite apenas números e backspace
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
@@ -424,10 +329,6 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // Se está digitando um número (não backspace)
-            // E já tem 11 dígitos na máscara de CPF
-            // E o cursor está no final
-            // Troca para CNPJ ANTES de processar a tecla
             if (char.IsDigit(e.KeyChar) &&
                 mtbCpfCnpj.Mask == MascaraCpf &&
                 mtbCpfCnpj.Text.Length == 11 &&
@@ -442,9 +343,8 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void mtbCpfCnpj_KeyUp(object sender, KeyEventArgs e)
+        private void mtbCpfCnpj_KeyUp(object? sender, KeyEventArgs e)
         {
-            // Ajusta máscara ao apagar (backspace)
             if (e.KeyCode == Keys.Back)
             {
                 AjustarMascaraCpfCnpjAposApagar();
@@ -458,7 +358,6 @@ namespace SysFin_2CTDS.View
 
             string numeros = mtbCpfCnpj.Text;
 
-            // Se está na máscara de CNPJ mas tem menos de 12 dígitos, volta para CPF
             if (mtbCpfCnpj.Mask == MascaraCnpj && numeros.Length < 12)
             {
                 _mudandoMascaraCpf = true;
@@ -476,8 +375,6 @@ namespace SysFin_2CTDS.View
         private void AjustarMascaraCpfCnpjCarregamento()
         {
             string numeros = mtbCpfCnpj.Text;
-
-            // Ao carregar dados, define a máscara correta baseado no tamanho
             if (numeros.Length > 11)
             {
                 mtbCpfCnpj.Mask = MascaraCnpj;
@@ -486,25 +383,20 @@ namespace SysFin_2CTDS.View
             {
                 mtbCpfCnpj.Mask = MascaraCpf;
             }
-
             mtbCpfCnpj.Text = numeros;
         }
 
         // ========== MÁSCARAS DINÂMICAS - TELEFONE ==========
+        // (Sem mudanças)
 
-        private void mtbTelefone_KeyPress(object sender, KeyPressEventArgs e)
+        private void mtbTelefone_KeyPress(object? sender, KeyPressEventArgs e)
         {
-            // Permite apenas números e backspace
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
                 e.Handled = true;
                 return;
             }
 
-            // Se está digitando um número
-            // E já tem 10 dígitos na máscara de fixo
-            // E o cursor está no final
-            // Troca para celular ANTES de processar a tecla
             if (char.IsDigit(e.KeyChar) &&
                 mtbTelefone.Mask == MascaraTelFixo &&
                 mtbTelefone.Text.Length == 10 &&
@@ -519,9 +411,8 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void mtbTelefone_KeyUp(object sender, KeyEventArgs e)
+        private void mtbTelefone_KeyUp(object? sender, KeyEventArgs e)
         {
-            // Ajusta máscara ao apagar (backspace)
             if (e.KeyCode == Keys.Back)
             {
                 AjustarMascaraTelefoneAposApagar();
@@ -535,7 +426,6 @@ namespace SysFin_2CTDS.View
 
             string numeros = mtbTelefone.Text;
 
-            // Se está na máscara de celular mas tem menos de 11 dígitos, volta para fixo
             if (mtbTelefone.Mask == MascaraTelCel && numeros.Length < 11)
             {
                 _mudandoMascaraTel = true;
@@ -553,8 +443,6 @@ namespace SysFin_2CTDS.View
         private void AjustarMascaraTelefoneCarregamento()
         {
             string numeros = mtbTelefone.Text;
-
-            // Ao carregar dados, define a máscara correta baseado no tamanho
             if (numeros.Length >= 11)
             {
                 mtbTelefone.Mask = MascaraTelCel;
@@ -563,7 +451,6 @@ namespace SysFin_2CTDS.View
             {
                 mtbTelefone.Mask = MascaraTelFixo;
             }
-
             mtbTelefone.Text = numeros;
         }
     }

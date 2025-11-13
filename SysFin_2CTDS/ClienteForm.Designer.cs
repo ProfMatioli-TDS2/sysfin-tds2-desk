@@ -18,24 +18,8 @@
 
         private void InitializeComponent()
         {
-<<<<<<< HEAD
-            this.dgvClientes = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtTelefone = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCpfCnpj = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtNome = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnNovo = new System.Windows.Forms.Button();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
-=======
+            // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClienteForm));
             dgvClientes = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colNome = new DataGridViewTextBoxColumn();
@@ -62,7 +46,6 @@
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
->>>>>>> tarefa2
             // 
             // dgvClientes
             // 
@@ -287,7 +270,6 @@
             // pictureBox1
             // 
             pictureBox1.Cursor = Cursors.Hand;
-            pictureBox1.Image = Properties.Resources.icons8_magnifying_glass_50;
             pictureBox1.Location = new Point(465, 181);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(40, 23);
@@ -320,10 +302,12 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
+            // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
         }
 
         #endregion
 
+        // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
         private System.Windows.Forms.DataGridView dgvClientes;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
@@ -346,5 +330,6 @@
         private Button btnGerarRelatorio;
         private MaskedTextBox mtbTelefone;
         private MaskedTextBox mtbCpfCnpj;
+        // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
     }
 }

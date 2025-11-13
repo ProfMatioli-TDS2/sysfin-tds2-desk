@@ -6,9 +6,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using System.Threading.Tasks; // Adicionado
+using System.Threading.Tasks;
 
-// MUDANÇA: Resolvendo a ambiguidade explicitamente
+// Resolvendo a ambiguidade explicitamente
 using ItemVenda = SysFin_2CTDS.Models.ItemVenda;
 
 namespace SysFin_2CTDS.View
@@ -20,8 +20,6 @@ namespace SysFin_2CTDS.View
         private readonly ProdutoController _produtoController;
         private readonly VendaController _vendaController;
 
-        // Lista de itens no "carrinho"
-        // Agora usa o 'ItemVenda' definido acima (do namespace Models)
         private BindingList<ItemVenda> itensVenda = new BindingList<ItemVenda>();
 
         public frmRegistroVendas()
@@ -31,26 +29,21 @@ namespace SysFin_2CTDS.View
             _produtoController = new ProdutoController();
             _vendaController = new VendaController();
 
-            // Configura o DataGridView
             ConfigurarGrid();
         }
 
         private async void frmRegistroVendas_Load(object? sender, EventArgs e)
         {
-            // Carrega os dropdowns
             await CarregarClientes();
             await CarregarProdutos();
-
-            // Limpa os campos
-            LimparFormulario(false); // Limpa sem perguntar
+            LimparFormulario(false);
         }
 
         private void ConfigurarGrid()
         {
             dgvItensVenda.AutoGenerateColumns = false;
-            dgvItensVenda.DataSource = itensVenda; // Liga a lista à grid
+            dgvItensVenda.DataSource = itensVenda;
 
-            // Adiciona colunas manualmente
             dgvItensVenda.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ProdutoNome",
@@ -68,7 +61,7 @@ namespace SysFin_2CTDS.View
                 DataPropertyName = "ValorUnitario",
                 HeaderText = "Vlr. Unit.",
                 Width = 90,
-                DefaultCellStyle = { Format = "C2" } // Formato de moeda
+                DefaultCellStyle = { Format = "C2" }
             });
             dgvItensVenda.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -83,7 +76,11 @@ namespace SysFin_2CTDS.View
         {
             try
             {
-                var listaDeClientes = await _clienteController.GetAllAsync();
+                // --- INÍCIO DA CORREÇÃO ---
+                // O método agora espera um filtro. Passamos "" (vazio) para trazer todos.
+                var listaDeClientes = await _clienteController.GetAllAsync("");
+                // --- FIM DA CORREÇÃO ---
+
                 cboCliente.DataSource = listaDeClientes;
                 cboCliente.DisplayMember = "Nome";
                 cboCliente.ValueMember = "Id";
@@ -113,7 +110,6 @@ namespace SysFin_2CTDS.View
 
         private void cboProduto_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            // Auto-preenche o valor do produto quando selecionado
             if (cboProduto.SelectedItem is Produto produtoSelecionado)
             {
                 numValorUnitario.Value = produtoSelecionado.PrecoVenda;
@@ -126,7 +122,6 @@ namespace SysFin_2CTDS.View
 
         private void btnAdicionar_Click(object? sender, EventArgs e)
         {
-            // Validações
             if (cboProduto.SelectedItem == null)
             {
                 MessageBox.Show("Por favor, selecione um produto.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -138,22 +133,17 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // Pega o produto selecionado
             var produtoSelecionado = (Produto)cboProduto.SelectedItem;
 
-            // Verifica se o item já está na lista
             var itemExistente = itensVenda.FirstOrDefault(item => item.ProdutoId == produtoSelecionado.Id);
 
             if (itemExistente != null)
             {
-                // Se já existe, apenas soma a quantidade
                 itemExistente.Quantidade += (int)numQuantidade.Value;
-                // Força a grid a atualizar (BindingList não atualiza automático em propriedades filhas)
                 itensVenda.ResetBindings();
             }
             else
             {
-                // Se é novo, cria o item e adiciona
                 var item = new ItemVenda
                 {
                     ProdutoId = produtoSelecionado.Id,
@@ -172,7 +162,6 @@ namespace SysFin_2CTDS.View
         {
             if (dgvItensVenda.SelectedRows.Count > 0)
             {
-                // Pega o item vinculado à linha selecionada
                 var itemSelecionado = (ItemVenda)dgvItensVenda.SelectedRows[0].DataBoundItem;
                 itensVenda.Remove(itemSelecionado);
                 AtualizarValorTotal();
@@ -185,7 +174,6 @@ namespace SysFin_2CTDS.View
 
         private async void btnFinalizarVenda_Click(object? sender, EventArgs e)
         {
-            // Validações
             if (cboCliente.SelectedItem == null)
             {
                 MessageBox.Show("Por favor, selecione um cliente.", "Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -197,7 +185,6 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // Confirmação
             var confirmResult = MessageBox.Show("Deseja realmente finalizar esta venda?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirmResult == DialogResult.No)
             {
@@ -209,7 +196,6 @@ namespace SysFin_2CTDS.View
                 int clienteId = (int)cboCliente.SelectedValue;
                 decimal valorTotal = itensVenda.Sum(item => item.Subtotal);
 
-                // Chama o Controller
                 await _vendaController.RegistrarVendaAsync(clienteId, itensVenda, valorTotal);
 
                 MessageBox.Show("Venda registrada com sucesso! Estoque atualizado e caixa lançado.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -217,22 +203,19 @@ namespace SysFin_2CTDS.View
             }
             catch (Exception ex)
             {
-                // Captura erros do Controller (ex: estoque insuficiente)
                 MessageBox.Show(ex.Message, "Erro ao Finalizar Venda", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnLimparTudo_Click(object? sender, EventArgs e)
         {
-            LimparFormulario(true); // Limpa perguntando
+            LimparFormulario(true);
         }
-
-        // --- Métodos Auxiliares ---
 
         private void AtualizarValorTotal()
         {
             decimal total = itensVenda.Sum(item => item.Subtotal);
-            lblValorTotal.Text = total.ToString("C"); // Formato de Moeda
+            lblValorTotal.Text = total.ToString("C");
         }
 
         private void LimparCamposDoItem()

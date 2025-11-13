@@ -2,27 +2,46 @@
 using SysFin_2CTDS.Model.Data;
 using SysFin_2CTDS.Models;
 using System;
-<<<<<<< HEAD
 using System.Collections.Generic;
-using System.Threading.Tasks; // Adicionado
+using System.Threading.Tasks;
+using System.Text.RegularExpressions; // Para Validação
+using iTextSharp.text; // Para Relatório PDF
+using iTextSharp.text.pdf; // Para Relatório PDF
+using System.IO; // Para Relatório PDF
+using System.Linq; // Para Relatório PDF
 
 namespace SysFin_2CTDS.Controller
 {
     public class ClienteController
     {
-        // MUDANÇA: 'List<Cliente>' alterado para 'Task<List<Cliente>>'
-        public async Task<List<Cliente>> GetAllAsync()
+        // --- MÉTODOS DE ACESSO A DADOS (ASYNC) ---
+
+        /// <summary>
+        /// Busca todos os clientes, opcionalmente filtrando por nome.
+        /// </summary>
+        public async Task<List<Cliente>> GetAllAsync(string filtroNome)
         {
             var clientes = new List<Cliente>();
-            // 'using' garante que a conexão com o banco será fechada automaticamente
             using (var connection = Database.GetConnection())
             {
-                // MUDANÇA: 'SELECT *' removido
-                var command = new SqlCommand("SELECT id, nome, cpf_cnpj, email, telefone FROM clientes ORDER BY nome", connection);
+                // Query dinâmica para adicionar o filtro
+                string sql = "SELECT id, nome, cpf_cnpj, email, telefone FROM clientes";
+
+                if (!string.IsNullOrWhiteSpace(filtroNome))
+                {
+                    sql += " WHERE nome LIKE @filtroNome";
+                }
+                sql += " ORDER BY nome";
+
+                var command = new SqlCommand(sql, connection);
+
+                if (!string.IsNullOrWhiteSpace(filtroNome))
+                {
+                    command.Parameters.AddWithValue("@filtroNome", $"%{filtroNome}%");
+                }
 
                 try
                 {
-                    // MUDANÇA: Chamadas Async
                     await connection.OpenAsync();
                     using (var reader = await command.ExecuteReaderAsync())
                     {
@@ -37,114 +56,85 @@ namespace SysFin_2CTDS.Controller
                                 Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString(reader.GetOrdinal("telefone"))
                             });
                         }
-=======
-using System.IO; // Necessário para FileStream
-using iTextSharp.text; // Necessário para Document, Paragraph, etc.
-using iTextSharp.text.pdf; // Necessário para PdfWriter e PdfPTable
-using System.Text.RegularExpressions; // Necessário para a validação
-
-namespace SysFin_2CTDS.Controller
-{
-    /// <summary>
-    /// Classe responsável pela lógica de negócio e acesso a dados para a entidade Cliente.
-    /// </summary>
-    public class ClienteController
-    {
-        /// <summary>
-        /// Obtém todos os clientes do banco de dados, podendo filtrar por nome (busca parcial 'LIKE').
-        /// </summary>
-        public List<Cliente> GetAll(string filtroNome = null)
-        {
-            var clientes = new List<Cliente>();
-            using (var connection = Database.GetConnection())
-            {
-                string sql = "SELECT * FROM clientes";
-                if (!string.IsNullOrWhiteSpace(filtroNome))
-                {
-                    sql += " WHERE nome LIKE @nome";
-                }
-                sql += " ORDER BY nome";
-
-                var command = new SqlCommand(sql, connection);
-
-                if (!string.IsNullOrWhiteSpace(filtroNome))
-                {
-                    command.Parameters.AddWithValue("@nome", "%" + filtroNome + "%");
-                }
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        clientes.Add(new Cliente
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            Nome = reader.GetString(reader.GetOrdinal("nome")),
-                            CpfCnpj = reader.GetString(reader.GetOrdinal("cpf_cnpj")),
-                            Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString(reader.GetOrdinal("email")),
-                            Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? "" : reader.GetString(reader.GetOrdinal("telefone"))
-                        });
-                    }
-                }
-            }
-            return clientes;
-        }
-
-        /// <summary>
-        /// Obtém clientes que correspondem EXATAMENTE ao nome fornecido, ignorando maiúsculas/minúsculas.
-        /// </summary>
-        public List<Cliente> GetByExactName(string nome)
-        {
-            var clientes = new List<Cliente>();
-            using (var connection = Database.GetConnection())
-            {
-                // Usamos UPPER() em ambos os lados para fazer uma busca exata, mas sem diferenciar maiúsculas/minúsculas
-                string sql = "SELECT * FROM clientes WHERE UPPER(nome) = UPPER(@nome) ORDER BY nome";
-                var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@nome", nome);
-
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        clientes.Add(new Cliente
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("id")),
-                            Nome = reader.GetString(reader.GetOrdinal("nome")),
-                            CpfCnpj = reader.GetString(reader.GetOrdinal("cpf_cnpj")),
-                            Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString(reader.GetOrdinal("email")),
-                            Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? "" : reader.GetString(reader.GetOrdinal("telefone"))
-                        });
->>>>>>> tarefa2
                     }
                 }
                 catch (SqlException ex)
                 {
-                    // "Lança" a exceção para a View (Form) tratar
-                    throw new Exception("Erro ao buscar clientes no banco de dados: " + ex.Message);
+                    throw new Exception("Erro ao buscar clientes: " + ex.Message);
                 }
             }
             return clientes;
         }
 
-<<<<<<< HEAD
-        // MUDANÇA: 'bool' alterado para 'Task<bool>'
+        /// <summary>
+        /// Busca clientes pelo nome exato.
+        /// </summary>
+        public async Task<List<Cliente>> GetByExactNameAsync(string nomeExato)
+        {
+            var clientes = new List<Cliente>();
+            using (var connection = Database.GetConnection())
+            {
+                string sql = "SELECT id, nome, cpf_cnpj, email, telefone FROM clientes WHERE nome = @nomeExato ORDER BY nome";
+                var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@nomeExato", nomeExato);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            clientes.Add(new Cliente
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("id")),
+                                Nome = reader.IsDBNull(reader.GetOrdinal("nome")) ? null : reader.GetString(reader.GetOrdinal("nome")),
+                                CpfCnpj = reader.IsDBNull(reader.GetOrdinal("cpf_cnpj")) ? null : reader.GetString(reader.GetOrdinal("cpf_cnpj")),
+                                Email = reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email")),
+                                Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? null : reader.GetString(reader.GetOrdinal("telefone"))
+                            });
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Erro ao buscar cliente por nome: " + ex.Message);
+                }
+            }
+            return clientes;
+        }
+
+        /// <summary>
+        /// Verifica se um CPF/CNPJ já existe, ignorando o ID do cliente atual (em caso de edição).
+        /// </summary>
+        public async Task<bool> CpfCnpjExistsAsync(string cpfCnpj, int idClienteAtual)
+        {
+            using (var connection = Database.GetConnection())
+            {
+                // Verifica se existe outro cliente (ID != idClienteAtual) com o mesmo CPF/CNPJ
+                var sql = "SELECT COUNT(*) FROM clientes WHERE cpf_cnpj = @cpfCnpj AND id != @idClienteAtual";
+                var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@cpfCnpj", cpfCnpj);
+                command.Parameters.AddWithValue("@idClienteAtual", idClienteAtual);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    int count = (int)await command.ExecuteScalarAsync();
+                    return count > 0;
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Erro ao verificar duplicidade de CPF/CNPJ: " + ex.Message);
+                }
+            }
+        }
+
+
         public async Task<bool> SaveAsync(Cliente cliente)
         {
             using (var connection = Database.GetConnection())
             {
-=======
-        /// <summary>
-        /// Salva um novo cliente ou atualiza um existente.
-        /// </summary>
-        public bool Save(Cliente cliente)
-        {
-            using (var connection = Database.GetConnection())
-            {
-                connection.Open();
->>>>>>> tarefa2
                 SqlCommand command;
 
                 if (cliente.Id > 0)
@@ -157,8 +147,6 @@ namespace SysFin_2CTDS.Controller
                     command = new SqlCommand("INSERT INTO clientes (nome, cpf_cnpj, email, telefone) VALUES (@nome, @cpf_cnpj, @email, @telefone)", connection);
                 }
 
-<<<<<<< HEAD
-                // MUDANÇA: Tratamento de Nulos
                 command.Parameters.AddWithValue("@nome", (object)cliente.Nome ?? DBNull.Value);
                 command.Parameters.AddWithValue("@cpf_cnpj", (object)cliente.CpfCnpj ?? DBNull.Value);
                 command.Parameters.AddWithValue("@email", (object)cliente.Email ?? DBNull.Value);
@@ -167,7 +155,6 @@ namespace SysFin_2CTDS.Controller
                 try
                 {
                     await connection.OpenAsync();
-                    // MUDANÇA: 'ExecuteNonQueryAsync' agora retorna o número de linhas
                     int linhasAfetadas = await command.ExecuteNonQueryAsync();
                     return linhasAfetadas > 0;
                 }
@@ -178,23 +165,7 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // MUDANÇA: 'bool' alterado para 'Task<bool>'
         public async Task<bool> DeleteAsync(int id)
-=======
-                command.Parameters.AddWithValue("@nome", cliente.Nome);
-                command.Parameters.AddWithValue("@cpf_cnpj", cliente.CpfCnpj);
-                command.Parameters.AddWithValue("@email", cliente.Email);
-                command.Parameters.AddWithValue("@telefone", cliente.Telefone);
-
-                return command.ExecuteNonQuery() > 0;
-            }
-        }
-
-        /// <summary>
-        /// Exclui um cliente do banco de dados com base no seu ID.
-        /// </summary>
-        public bool Delete(int id)
->>>>>>> tarefa2
         {
             using (var connection = Database.GetConnection())
             {
@@ -204,151 +175,145 @@ namespace SysFin_2CTDS.Controller
                 try
                 {
                     await connection.OpenAsync();
-                    // MUDANÇA: 'ExecuteNonQueryAsync' agora retorna o número de linhas
                     int linhasAfetadas = await command.ExecuteNonQueryAsync();
                     return linhasAfetadas > 0;
                 }
                 catch (SqlException ex)
                 {
+                    // Tratamento de erro de chave estrangeira (FK)
+                    if (ex.Number == 547) // Código de erro SQL Server para conflito de FK
+                    {
+                        throw new Exception("Não é possível excluir este cliente, pois ele já está vinculado a uma ou mais Vendas.");
+                    }
                     throw new Exception("Erro ao excluir cliente: " + ex.Message);
                 }
             }
         }
 
-        /// <summary>
-        /// Verifica se um CPF/CNPJ já existe no banco de dados, ignorando um ID de cliente específico.
-        /// </summary>
-        public bool CpfCnpjExists(string cpfCnpj, int currentId)
-        {
-            using (var connection = Database.GetConnection())
-            {
-                var command = new SqlCommand("SELECT COUNT(1) FROM clientes WHERE cpf_cnpj = @cpf_cnpj AND id <> @id", connection);
-                command.Parameters.AddWithValue("@cpf_cnpj", cpfCnpj);
-                command.Parameters.AddWithValue("@id", currentId);
+        // --- MÉTODOS DE VALIDAÇÃO (Como o seu Form espera) ---
 
-                connection.Open();
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return count > 0;
-            }
+        public static bool IsValidCpfCnpj(string? cpfCnpj)
+        {
+            if (string.IsNullOrWhiteSpace(cpfCnpj))
+                return false;
+
+            // O seu MaskedTextBox já remove os literais, então só verificamos o tamanho
+            return cpfCnpj.Length == 11 || cpfCnpj.Length == 14;
         }
 
-        /// <summary>
-        /// Gera um documento PDF com a lista de clientes fornecida.
-        /// </summary>
-        public bool GerarRelatorioPDF(List<Cliente> clientes, string caminhoArquivo)
+        public static bool IsValidEmail(string? email)
         {
+            if (string.IsNullOrWhiteSpace(email))
+                return true; // E-mail é opcional
+
+            // Regex simples para validação de email
             try
             {
-                // 1. Cria o documento PDF
-                Document doc = new Document(PageSize.A4.Rotate(), 20f, 20f, 30f, 20f);
-                PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(caminhoArquivo, FileMode.Create));
-
-                doc.Open();
-
-                // 2. Adiciona o Título
-                var fonteTitulo = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
-                var titulo = new Paragraph("Relatório de Clientes\n\n", fonteTitulo);
-                titulo.Alignment = Element.ALIGN_CENTER;
-                doc.Add(titulo);
-
-                // 3. Cria a Tabela
-                PdfPTable tabela = new PdfPTable(5); // 5 colunas
-                tabela.WidthPercentage = 100;
-                tabela.SetWidths(new float[] { 0.5f, 2f, 1.5f, 2f, 1f });
-
-                // 4. Adiciona os Cabeçalhos da Tabela
-                AdicionarCabecalhoTabela(tabela, "ID");
-                AdicionarCabecalhoTabela(tabela, "Nome");
-                AdicionarCabecalhoTabela(tabela, "CPF/CNPJ");
-                AdicionarCabecalhoTabela(tabela, "E-mail");
-                AdicionarCabecalhoTabela(tabela, "Telefone");
-
-                // 5. Adiciona os Dados (Linhas)
-                var fonteDados = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
-                foreach (var cliente in clientes)
-                {
-                    tabela.AddCell(new Phrase(cliente.Id.ToString(), fonteDados));
-                    tabela.AddCell(new Phrase(cliente.Nome, fonteDados));
-                    tabela.AddCell(new Phrase(cliente.CpfCnpj, fonteDados));
-                    tabela.AddCell(new Phrase(cliente.Email, fonteDados));
-                    tabela.AddCell(new Phrase(cliente.Telefone, fonteDados));
-                }
-
-                // 6. Adiciona a tabela ao documento
-                doc.Add(tabela);
-                doc.Close();
-
-                return true; // Sucesso
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
             }
-            catch (Exception)
+            catch (RegexMatchTimeoutException)
             {
-                // Em um app real, você logaria o erro
-                return false; // Falha
+                return false;
             }
         }
 
-        /// <summary>
-        /// Método auxiliar (privado) para formatar e adicionar células de cabeçalho à tabela PDF.
-        /// </summary>
-        private void AdicionarCabecalhoTabela(PdfPTable tabela, string texto)
+        public static bool IsValidTelefone(string? telefone)
         {
-            var fonteCabecalho = new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD, BaseColor.WHITE);
-            PdfPCell celula = new PdfPCell(new Phrase(texto, fonteCabecalho));
-            celula.BackgroundColor = new BaseColor(70, 130, 180); // Cor "SteelBlue"
-            celula.HorizontalAlignment = Element.ALIGN_CENTER;
-            celula.VerticalAlignment = Element.ALIGN_MIDDLE;
-            celula.Padding = 6;
-            tabela.AddCell(celula);
-        }
-
-        #region Métodos de Validação (Movidos da View)
-
-        /// <summary>
-        /// Valida um endereço de e-mail. Permite que o campo esteja vazio.
-        /// </summary>
-        public static bool IsValidEmail(string email)
-        {
-            // Se o email for opcional e estiver vazio, consideramos válido.
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return true;
-            }
-            // Expressão regular que verifica o formato "texto@texto.texto"
-            return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        }
-
-        /// <summary>
-        /// Valida um CPF (11 dígitos) ou CNPJ (14 dígitos).
-        /// </summary>
-        public static bool IsValidCpfCnpj(string cpfCnpj)
-        {
-            // Remove caracteres não numéricos (pontos, traços, barras) para contar apenas os dígitos.
-            var apenasNumeros = Regex.Replace(cpfCnpj, @"[^\d]", "");
-
-            // Verifica se a quantidade de dígitos corresponde a um CPF ou a um CNPJ.
-            if (apenasNumeros.Length == 11 || apenasNumeros.Length == 14)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Valida um número de telefone (10 ou 11 dígitos). Permite que o campo esteja vazio.
-        /// </summary>
-        public static bool IsValidTelefone(string telefone)
-        {
-            // Se o telefone for opcional e estiver vazio, consideramos válido.
             if (string.IsNullOrWhiteSpace(telefone))
-            {
-                return true;
-            }
-            var apenasNumeros = Regex.Replace(telefone, @"[^\d]", "");
-            // Verifica se a quantidade de dígitos corresponde a um telefone fixo com DDD ou celular com DDD.
-            return apenasNumeros.Length == 10 || apenasNumeros.Length == 11;
+                return true; // Telefone é opcional
+
+            // O seu MaskedTextBox já remove os literais
+            return telefone.Length == 10 || telefone.Length == 11;
         }
 
-        #endregion
+        // --- GERAÇÃO DE RELATÓRIO (Movido do RelatorioController) ---
+
+        public async Task<bool> GerarRelatorioPDFAsync(List<Cliente> clientes, string caminho)
+        {
+            // O Task.Run() move o processamento pesado (geração de PDF) 
+            // para uma thread separada, mantendo a UI responsiva.
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    Document doc = new Document(PageSize.A4.Rotate()); // Página deitada
+                    PdfWriter.GetInstance(doc, new FileStream(caminho, FileMode.Create));
+                    doc.Open();
+
+                    var fonteTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
+                    var fonteCabecalho = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+                    var fonteCorpo = FontFactory.GetFont(FontFactory.HELVETICA, 9);
+
+                    Paragraph titulo = new Paragraph("Relatório de Clientes", fonteTitulo)
+                    {
+                        Alignment = Element.ALIGN_CENTER,
+                        SpacingAfter = 20
+                    };
+                    doc.Add(titulo);
+
+                    PdfPTable tabela = new PdfPTable(5); // 5 Colunas
+                    tabela.WidthPercentage = 100;
+                    tabela.SetWidths(new float[] { 0.8f, 2.5f, 1.5f, 2.5f, 1.5f }); // Larguras relativas
+
+                    // Cabeçalhos
+                    tabela.AddCell(new PdfPCell(new Phrase("ID", fonteCabecalho)));
+                    tabela.AddCell(new PdfPCell(new Phrase("Nome", fonteCabecalho)));
+                    tabela.AddCell(new PdfPCell(new Phrase("CPF/CNPJ", fonteCabecalho)));
+                    tabela.AddCell(new PdfPCell(new Phrase("E-mail", fonteCabecalho)));
+                    tabela.AddCell(new PdfPCell(new Phrase("Telefone", fonteCabecalho)));
+
+                    // Dados
+                    foreach (var cliente in clientes)
+                    {
+                        tabela.AddCell(new PdfPCell(new Phrase(cliente.Id.ToString(), fonteCorpo)));
+                        tabela.AddCell(new PdfPCell(new Phrase(cliente.Nome ?? "", fonteCorpo)));
+                        tabela.AddCell(new PdfPCell(new Phrase(FormatarCpfCnpj(cliente.CpfCnpj), fonteCorpo)));
+                        tabela.AddCell(new PdfPCell(new Phrase(cliente.Email ?? "", fonteCorpo)));
+                        tabela.AddCell(new PdfPCell(new Phrase(FormatarTelefone(cliente.Telefone), fonteCorpo)));
+                    }
+
+                    doc.Add(tabela);
+
+                    // Rodapé
+                    Paragraph rodape = new Paragraph($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss} | Total de Clientes: {clientes.Count}", fonteCorpo)
+                    {
+                        Alignment = Element.ALIGN_RIGHT,
+                        SpacingBefore = 10
+                    };
+                    doc.Add(rodape);
+
+                    doc.Close();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    // Retorna false se falhar (ex: arquivo bloqueado)
+                    return false;
+                }
+            });
+        }
+
+        // Métodos auxiliares privados para o relatório
+        private static string FormatarCpfCnpj(string? numeros)
+        {
+            if (string.IsNullOrEmpty(numeros)) return "";
+            if (numeros.Length == 11)
+                return Convert.ToUInt64(numeros).ToString(@"000\.000\.000\-00");
+            if (numeros.Length == 14)
+                return Convert.ToUInt64(numeros).ToString(@"00\.000\.000\/0000\-00");
+            return numeros; // Retorna sem formatar se o tamanho for inválido
+        }
+
+        private static string FormatarTelefone(string? numeros)
+        {
+            if (string.IsNullOrEmpty(numeros)) return "";
+            if (numeros.Length == 10)
+                return Convert.ToUInt64(numeros).ToString(@"(00) 0000\-0000");
+            if (numeros.Length == 11)
+                return Convert.ToUInt64(numeros).ToString(@"(00) 00000\-0000");
+            return numeros;
+        }
     }
 }
-

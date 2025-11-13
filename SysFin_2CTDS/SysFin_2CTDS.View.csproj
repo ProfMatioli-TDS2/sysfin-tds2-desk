@@ -12,7 +12,7 @@
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.10" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <!-- Pacote 'System.Data.SqlClient' (antigo) removido, pois já estamos usando o 'Microsoft.Data.SqlClient' (moderno) -->
   </ItemGroup>
 
   <ItemGroup>
@@ -36,22 +36,15 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-=======
-    <None Update="BancoDB\BancoDados.mdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="BancoDB\BancoDados_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
->>>>>>> tarefa2
+    <!-- 
+      Conflito de Merge (<<<< HEAD... tarefa2) removido. 
+      Entradas duplicadas removidas.
+      Mantido apenas as referências da pasta 'Database\'.
+    -->
     <None Update="Database\BancoDados.mdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Database\BancoDados_log.ldf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Database\BancoDados.mdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
