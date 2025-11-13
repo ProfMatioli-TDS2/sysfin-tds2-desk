@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Controller;
-using System.Collections.Generic; // MUDANÇA: Adicionado
-using System.Threading.Tasks; // MUDANÇA: Adicionado
-using System.Linq; // MUDANÇA: Adicionado
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SysFin_2CTDS.View
 {
@@ -13,7 +13,6 @@ namespace SysFin_2CTDS.View
     {
         private BindingList<Compra> itensCompra = new BindingList<Compra>();
 
-        // MUDANÇA: Controllers como campos
         private readonly FornecedorController _fornecedorController;
         private readonly ProdutoController _produtoController;
         private readonly CompraController _compraController;
@@ -25,26 +24,20 @@ namespace SysFin_2CTDS.View
             _produtoController = new ProdutoController();
             _compraController = new CompraController();
 
-            // MUDANÇA: Configurar o DataGridView
             dgvItensCompra.DataSource = itensCompra;
             ConfigurarGrid();
         }
 
-        // MUDANÇA: Evento de Load agora é 'async'
-        private async void frmRegistroCompras_Load(object? sender, EventArgs e) // MUDANÇA: object?
+        private async void frmRegistroCompras_Load(object? sender, EventArgs e)
         {
-            // MUDANÇA: Usando Task.WhenAll para carregar em paralelo
             await Task.WhenAll(CarregarFornecedores(), CarregarProdutos());
         }
 
-        // MUDANÇA: Método agora é 'async Task'
         private async Task CarregarFornecedores()
         {
             try
             {
-                // MUDANÇA: Chamando método Async
                 var listaDeFornecedores = await _fornecedorController.GetAllAsync();
-
                 cboFornecedor.DataSource = listaDeFornecedores;
                 cboFornecedor.DisplayMember = "Nome";
                 cboFornecedor.ValueMember = "Id";
@@ -56,14 +49,11 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        // MUDANÇA: Método agora é 'async Task'
         private async Task CarregarProdutos()
         {
             try
             {
-                // MUDANÇA: Chamando método Async
                 var listaDeProdutos = await _produtoController.ListarProdutosAsync();
-
                 cboProduto.DataSource = listaDeProdutos;
                 cboProduto.DisplayMember = "Nome";
                 cboProduto.ValueMember = "Id";
@@ -75,7 +65,6 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        // MUDANÇA: Nova função para configurar a grid
         private void ConfigurarGrid()
         {
             dgvItensCompra.AutoGenerateColumns = false;
@@ -109,7 +98,7 @@ namespace SysFin_2CTDS.View
             });
         }
 
-        private void btnAdicionar_Click(object? sender, EventArgs e) // MUDANÇA: object?
+        private void btnAdicionar_Click(object? sender, EventArgs e)
         {
             if (cboProduto.SelectedItem == null)
             {
@@ -127,7 +116,6 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            // MUDANÇA: Tratamento de conversão segura
             if (!(cboProduto.SelectedItem is Model.Produto produtoSelecionado))
             {
                 MessageBox.Show("Produto selecionado inválido.");
@@ -136,8 +124,8 @@ namespace SysFin_2CTDS.View
 
             var item = new Compra
             {
-                ProdutoId = produtoSelecionado.Id, // MUDANÇA: Usando o ID do objeto
-                ProdutoNome = produtoSelecionado.Nome, // MUDANÇA: Usando o Nome do objeto
+                ProdutoId = produtoSelecionado.Id,
+                ProdutoNome = produtoSelecionado.Nome,
                 Quantidade = (int)numQuantidade.Value,
                 ValorUnitario = numValorUnitario.Value
             };
@@ -157,8 +145,7 @@ namespace SysFin_2CTDS.View
             lblValorTotal.Text = total.ToString("C");
         }
 
-        // MUDANÇA: Método agora é 'async void'
-        private async void btnFinalizarCompra_Click(object? sender, EventArgs e) // MUDANÇA: object?
+        private async void btnFinalizarCompra_Click(object? sender, EventArgs e)
         {
             if (cboFornecedor.SelectedItem == null)
             {
@@ -173,19 +160,20 @@ namespace SysFin_2CTDS.View
 
             try
             {
-                // MUDANÇA: Tratamento de conversão segura
                 if (!(cboFornecedor.SelectedItem is Model.Fornecedor fornecedorSelecionado))
                 {
                     MessageBox.Show("Fornecedor selecionado inválido.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                int fornecedorId = fornecedorSelecionado.Id; // MUDANÇA: Usando o ID do objeto
-                DateTime dataDaCompra = DateTime.Now;
+                int fornecedorId = fornecedorSelecionado.Id;
                 decimal valorTotal = itensCompra.Sum(item => item.Subtotal);
 
-                // MUDANÇA: Removido o .ToList() para passar o BindingList diretamente
-                await _compraController.RegistrarCompra(fornecedorId, dataDaCompra, valorTotal, itensCompra);
+                // --- INÍCIO DA CORREÇÃO ---
+                // 1. O nome do método agora é '...Async'.
+                // 2. Removemos o argumento 'dataDaCompra', pois o Controller usa DateTime.Now.
+                await _compraController.RegistrarCompraAsync(fornecedorId, itensCompra, valorTotal);
+                // --- FIM DA CORREÇÃO ---
 
                 MessageBox.Show("Compra registrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LimparFormulario();
@@ -196,7 +184,6 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        // MUDANÇA: Novo método
         private void LimparFormulario()
         {
             itensCompra.Clear();
@@ -208,4 +195,3 @@ namespace SysFin_2CTDS.View
         }
     }
 }
-

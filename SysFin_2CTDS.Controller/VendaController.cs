@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using SysFin_2CTDS.Models; // Adicionado para usar o ItemVenda correto
+using SysFin_2CTDS.Models; // Para ItemVenda
 
 namespace SysFin_2CTDS.Controller
 {
@@ -13,22 +13,19 @@ namespace SysFin_2CTDS.Controller
     {
         /// <summary>
         /// Registra uma Venda completa, atualiza estoque e lança no caixa.
-        /// Usa uma transação para garantir a integridade dos dados.
         /// </summary>
         public async Task RegistrarVendaAsync(int idCliente, BindingList<ItemVenda> itensVenda, decimal valorTotal)
         {
-            // ID '1' é 'Receita de Vendas' conforme o script SQL padrão.
             const int ID_PLANO_CONTAS_RECEITA_VENDA = 1;
 
             using (var connection = Database.GetConnection())
             {
                 await connection.OpenAsync();
-                // Inicia a transação
                 using (var transaction = (SqlTransaction)await connection.BeginTransactionAsync())
                 {
                     try
                     {
-                        // 1. Inserir o cabeçalho na tabela 'vendas' e obter o ID
+                        // 1. Inserir o cabeçalho na tabela 'vendas'
                         var sqlVenda = "INSERT INTO vendas (id_cliente, data_venda, valor_total) OUTPUT INSERTED.id VALUES (@id_cliente, @data_venda, @valor_total)";
 
                         int vendaId;
@@ -37,16 +34,13 @@ namespace SysFin_2CTDS.Controller
                             cmdVenda.Parameters.AddWithValue("@id_cliente", idCliente);
                             cmdVenda.Parameters.AddWithValue("@data_venda", DateTime.Now);
                             cmdVenda.Parameters.AddWithValue("@valor_total", valorTotal);
-
-                            // Captura o ID da venda recém-criada
                             var result = await cmdVenda.ExecuteScalarAsync();
                             vendaId = Convert.ToInt32(result);
                         }
 
-                        // 2. Inserir cada item na tabela 'itens_venda' E atualizar o estoque
+                        // 2. Inserir itens e atualizar estoque
                         foreach (var item in itensVenda)
                         {
-                            // 2a. Inserir o item da venda
                             var sqlItem = "INSERT INTO itens_venda (id_venda, id_produto, quantidade, valor_unitario) VALUES (@id_venda, @id_produto, @quantidade, @valor_unitario)";
                             using (var cmdItem = new SqlCommand(sqlItem, connection, transaction))
                             {
@@ -57,8 +51,6 @@ namespace SysFin_2CTDS.Controller
                                 await cmdItem.ExecuteNonQueryAsync();
                             }
 
-                            // 2b. Atualizar (subtrair) o estoque do produto
-                            // Adicionado AND estoque_atual >= @quantidade para garantir que não fique negativo
                             var sqlEstoque = "UPDATE produtos SET estoque_atual = estoque_atual - @quantidade WHERE id = @id_produto AND estoque_atual >= @quantidade";
                             using (var cmdEstoque = new SqlCommand(sqlEstoque, connection, transaction))
                             {
@@ -66,20 +58,18 @@ namespace SysFin_2CTDS.Controller
                                 cmdEstoque.Parameters.AddWithValue("@id_produto", item.ProdutoId);
                                 int linhasAfetadas = await cmdEstoque.ExecuteNonQueryAsync();
 
-                                // Se 'linhasAfetadas' for 0, o estoque era insuficiente.
                                 if (linhasAfetadas == 0)
                                 {
-                                    // Isso força o 'catch' e o 'Rollback'
                                     throw new Exception($"Estoque insuficiente para o produto '{item.ProdutoNome}'. Venda cancelada.");
                                 }
                             }
-                        } // Fim do foreach
+                        }
 
-                        // 3. Lançar no Movimento de Caixa (Receita)
+                        // 3. Lançar no Movimento de Caixa
                         var sqlCaixa = @"
                             INSERT INTO movimento_caixa
                             (data_movimento, descricao, id_plano_de_contas, tipo, valor, id_venda)
-                            VALUES (@data, @descricao, @id_plano, 'E', @valor, @id_venda)"; // 'E' de Entrada
+                            VALUES (@data, @descricao, @id_plano, 'E', @valor, @id_venda)";
 
                         using (var cmdCaixa = new SqlCommand(sqlCaixa, connection, transaction))
                         {
@@ -91,18 +81,65 @@ namespace SysFin_2CTDS.Controller
                             await cmdCaixa.ExecuteNonQueryAsync();
                         }
 
-                        // Se tudo deu certo, confirma a transação
                         await transaction.CommitAsync();
                     }
                     catch (Exception ex)
                     {
-                        // Se algo deu errado (ex: estoque insuficiente), desfaz tudo
                         await transaction.RollbackAsync();
-                        // Relança o erro para o formulário (View) exibi-lo
                         throw new Exception("Erro ao registrar a venda: " + ex.Message);
                     }
-                } // Fim do using transaction
-            } // Fim do using connection
-        } // Fim do RegistrarVendaAsync
-    } // Fim da classe VendaController
-} // Fim do namespace
+                }
+            }
+        }
+
+        // --- MÉTODO ATUALIZADO (Tarefa 13) ---
+        /// <summary>
+        /// Busca o relatório de Vendas (volume) por período.
+        /// USA O MODEL 'RelatorioVenda'
+        /// </summary>
+        public async Task<List<RelatorioVenda>> GetVendasPorPeriodoAsync(DateTime dataInicial, DateTime dataFinal)
+        {
+            var lista = new List<RelatorioVenda>(); // MUDANÇA: Usa RelatorioVenda
+            using (var connection = Database.GetConnection())
+            {
+                string sql = @"
+                    SELECT 
+                        v.data_venda,
+                        c.nome AS nome_cliente,
+                        v.valor_total
+                    FROM vendas v
+                    JOIN clientes c ON v.id_cliente = c.id
+                    WHERE 
+                        v.data_venda BETWEEN @dataInicial AND @dataFinal
+                    ORDER BY 
+                        v.data_venda DESC";
+
+                var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@dataInicial", dataInicial.Date);
+                command.Parameters.AddWithValue("@dataFinal", dataFinal.Date.AddDays(1).AddSeconds(-1));
+
+                try
+                {
+                    await connection.OpenAsync();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            lista.Add(new RelatorioVenda // MUDANÇA: Usa RelatorioVenda
+                            {
+                                DataVenda = reader.GetDateTime(reader.GetOrdinal("data_venda")),
+                                NomeCliente = reader.GetString(reader.GetOrdinal("nome_cliente")),
+                                ValorTotal = reader.GetDecimal(reader.GetOrdinal("valor_total"))
+                            });
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Erro ao buscar relatório de vendas: " + ex.Message);
+                }
+            }
+            return lista;
+        }
+    }
+}
