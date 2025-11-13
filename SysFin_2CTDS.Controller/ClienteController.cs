@@ -1,4 +1,5 @@
-﻿using SysFin_2CTDS.Model;
+﻿using System.Threading.Tasks;
+using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Model.Data;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
@@ -16,8 +17,10 @@ namespace SysFin_2CTDS.Controller
     /// </summary>
     public class ClienteController
     {
+        // MÉTODO 1 - O SÍNCRONO (para o ClienteForm)
+        // =============================================
         /// <summary>
-        /// Obtém todos os clientes do banco de dados, podendo filtrar por nome (busca parcial 'LIKE').
+        /// Obtém todos os clientes do banco de dados (VERSÃO SÍNCRONA).
         /// </summary>
         public List<Cliente> GetAll(string filtroNome = null)
         {
@@ -31,17 +34,60 @@ namespace SysFin_2CTDS.Controller
                 }
                 sql += " ORDER BY nome";
 
-                var command = new SqlCommand(sql, connection);
+                var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection);
 
                 if (!string.IsNullOrWhiteSpace(filtroNome))
                 {
                     command.Parameters.AddWithValue("@nome", "%" + filtroNome + "%");
                 }
 
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+                connection.Open(); // Síncrono
+                using (var reader = command.ExecuteReader()) // Síncrono
                 {
-                    while (reader.Read())
+                    while (reader.Read()) // Síncrono
+                    {
+                        clientes.Add(new Cliente
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("id")),
+                            Nome = reader.GetString(reader.GetOrdinal("nome")),
+                            CpfCnpj = reader.GetString(reader.GetOrdinal("cpf_cnpj")),
+                            Email = reader.IsDBNull(reader.GetOrdinal("email")) ? "" : reader.GetString(reader.GetOrdinal("email")),
+                            Telefone = reader.IsDBNull(reader.GetOrdinal("telefone")) ? "" : reader.GetString(reader.GetOrdinal("telefone"))
+                        });
+                    }
+                }
+            }
+            return clientes;
+        }
+
+        // MÉTODO 2 - O ASSÍNCRONO (para o frmRegistroVendas)
+        // =============================================
+        /// <summary>
+        /// Obtém todos os clientes do banco de dados (VERSÃO ASSÍNCRONA).
+        /// </summary>
+        public async Task<List<Cliente>> GetAllAsync(string filtroNome = null)
+        {
+            var clientes = new List<Cliente>();
+            await using (var connection = Database.GetConnection())
+            {
+                string sql = "SELECT * FROM clientes";
+                if (!string.IsNullOrWhiteSpace(filtroNome))
+                {
+                    sql += " WHERE nome LIKE @nome";
+                }
+                sql += " ORDER BY nome";
+
+                var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection);
+
+                if (!string.IsNullOrWhiteSpace(filtroNome))
+                {
+                    command.Parameters.AddWithValue("@nome", "%" + filtroNome + "%");
+                }
+
+                await connection.OpenAsync(); // Assíncrono
+                await using (var reader = await command.ExecuteReaderAsync()) // Assíncrono
+                {
+                    while (await reader.ReadAsync()) // Assíncrono
                     {
                         clientes.Add(new Cliente
                         {
