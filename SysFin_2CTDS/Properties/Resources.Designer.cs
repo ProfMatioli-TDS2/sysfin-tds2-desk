@@ -63,9 +63,15 @@ namespace SysFin_2CTDS.View.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+<<<<<<< HEAD
         internal static System.Drawing.Bitmap atualizar {
             get {
                 object obj = ResourceManager.GetObject("atualizar", resourceCulture);
+=======
+        internal static System.Drawing.Bitmap icons8_magnifying_glass_50 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-magnifying-glass-50", resourceCulture);
+>>>>>>> tarefa2
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
