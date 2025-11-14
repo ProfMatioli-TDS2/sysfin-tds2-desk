@@ -7,15 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using System.IO;
+using System.Threading.Tasks; // MUDANÇA: Adicionado
 
 namespace SysFin_2CTDS.Controller
 {
     public class FornecedorController
     {
-        public List<Fornecedor> GetAll(string orderBy = "nome", string direction = "ASC")
+        // MUDANÇA: Assinatura agora é async Task<List<Fornecedor>>
+        public async Task<List<Fornecedor>> GetAllAsync(string orderBy = "nome", string direction = "ASC")
         {
             var fornecedores = new List<Fornecedor>();
             var allowedColumns = new List<string> { "id", "nome", "cnpj", "email", "telefone" };
@@ -32,13 +32,14 @@ namespace SysFin_2CTDS.Controller
 
             using (var connection = Database.GetConnection())
             {
-                connection.Open();
-                var query = $"SELECT * FROM Fornecedores ORDER BY {orderBy} {direction}";
+                await connection.OpenAsync(); // MUDANÇA: Async
+                // MUDANÇA: SELECT * removido
+                var query = $"SELECT Id, Nome, Cnpj, Email, Telefone FROM Fornecedores ORDER BY {orderBy} {direction}";
                 var command = new SqlCommand(query, connection);
 
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync()) // MUDANÇA: Async
                     {
                         fornecedores.Add(new Fornecedor
                         {
@@ -54,14 +55,17 @@ namespace SysFin_2CTDS.Controller
             return fornecedores;
         }
 
-        public List<string> Save(Fornecedor fornecedor)
+        // MUDANÇA: Assinatura agora é async Task<List<string>>
+        public async Task<List<string>> SaveAsync(Fornecedor fornecedor)
         {
             var errors = new List<string>();
 
             var validationContext = new ValidationContext(fornecedor, serviceProvider: null, items: null);
             var validationResults = new List<ValidationResult>();
             bool isValid = Validator.TryValidateObject(fornecedor, validationContext, validationResults, validateAllProperties: true);
-            if (!fornecedor.CnpjValido())
+
+            // MUDANÇA: Validação do CNPJ agora permite nulo
+            if (fornecedor.Cnpj != null && !fornecedor.CnpjValido())
             {
                 errors.Add("O CNPJ informado é inválido.");
             }
@@ -75,30 +79,36 @@ namespace SysFin_2CTDS.Controller
                 errors.Add("O e-mail informado não é válido.");
             }
 
-
-            var telefoneNumerico = new string((fornecedor.Telefone ?? "").Where(char.IsDigit).ToArray());
-            if (telefoneNumerico.Length < 10 || telefoneNumerico.Length > 11)
+            // MUDANÇA: Validação de telefone agora permite nulo
+            if (!string.IsNullOrEmpty(fornecedor.Telefone))
             {
-                errors.Add("O telefone deve conter entre 10 e 11 dígitos numéricos.");
+                var telefoneNumerico = new string(fornecedor.Telefone.Where(char.IsDigit).ToArray());
+                if (telefoneNumerico.Length < 10 || telefoneNumerico.Length > 11)
+                {
+                    errors.Add("O telefone deve conter entre 10 e 11 dígitos numéricos.");
+                }
             }
 
-
-
-            if (!isValid || errors.Any())
+            if (!isValid)
             {
                 foreach (var validationResult in validationResults)
                 {
-                    errors.Add(validationResult.ErrorMessage);
+                    // MUDANÇA: Checagem de nulidade
+                    if (validationResult.ErrorMessage != null)
+                        errors.Add(validationResult.ErrorMessage);
                 }
-                return errors;
             }
 
+            if (errors.Any())
+            {
+                return errors; // Retorna erros de validação antes de ir ao banco
+            }
 
             try
             {
                 using (var connection = Database.GetConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync(); // MUDANÇA: Async
                     SqlCommand command;
 
                     if (fornecedor.Id > 0)
@@ -111,12 +121,12 @@ namespace SysFin_2CTDS.Controller
                         command = new SqlCommand("INSERT INTO Fornecedores (Nome, Cnpj, Email, Telefone) VALUES (@Nome, @Cnpj, @Email, @Telefone)", connection);
                     }
 
-                    command.Parameters.AddWithValue("@Nome", fornecedor.Nome ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Cnpj", fornecedor.Cnpj ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Email", fornecedor.Email ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("@Telefone", fornecedor.Telefone ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@Nome", (object)fornecedor.Nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Cnpj", (object)fornecedor.Cnpj ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)fornecedor.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Telefone", (object)fornecedor.Telefone ?? DBNull.Value);
 
-                    if (command.ExecuteNonQuery() <= 0)
+                    if (await command.ExecuteNonQueryAsync() <= 0) // MUDANÇA: Async
                     {
                         errors.Add("Falha ao salvar o fornecedor no banco de dados.");
                     }
@@ -134,16 +144,18 @@ namespace SysFin_2CTDS.Controller
             return errors;
         }
 
-        public bool Delete(int id)
+        // MUDANÇA: Assinatura agora é async Task<bool>
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
                 using (var connection = Database.GetConnection())
                 {
-                    connection.Open();
+                    await connection.OpenAsync(); // MUDANÇA: Async
                     var command = new SqlCommand("DELETE FROM Fornecedores WHERE Id = @Id", connection);
                     command.Parameters.AddWithValue("@Id", id);
-                    return command.ExecuteNonQuery() > 0;
+                    int rows = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
+                    return rows > 0;
                 }
             }
             catch (SqlException ex)
@@ -157,74 +169,6 @@ namespace SysFin_2CTDS.Controller
                 return false;
             }
         }
-
-
-
-        public string GerarRelatorioPDF(string caminho)
-        {
-            var fornecedores = GetAll("nome", "ASC");
-
-            Document doc = new Document(PageSize.A4);
-            PdfWriter.GetInstance(doc, new FileStream(caminho, FileMode.Create));
-            doc.Open();
-
-            var fonteTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
-            var fonteSubtitulo = FontFactory.GetFont(FontFactory.HELVETICA, 10, Font.BOLD);
-            var fonteCorpo = FontFactory.GetFont(FontFactory.HELVETICA, 8);
-
-            // Título centralizado
-            Paragraph titulo = new Paragraph("Relatório de Fornecedores", fonteTitulo);
-            titulo.Alignment = Element.ALIGN_CENTER;
-            doc.Add(titulo);
-
-            doc.Add(new Paragraph("\n")); // Espaço entre título e tabela
-
-            PdfPTable tabela = new PdfPTable(5);
-            tabela.WidthPercentage = 100;
-            tabela.SpacingBefore = 10f;
-            tabela.SpacingAfter = 10f;
-            tabela.SetWidths(new float[] { 10, 25, 25, 25, 15 });
-
-            // Cabeçalhos
-            tabela.AddCell(new PdfPCell(new Phrase("ID", fonteSubtitulo)));
-            tabela.AddCell(new PdfPCell(new Phrase("Nome", fonteSubtitulo)));
-            tabela.AddCell(new PdfPCell(new Phrase("CNPJ", fonteSubtitulo)));
-            tabela.AddCell(new PdfPCell(new Phrase("E-mail", fonteSubtitulo)));
-            tabela.AddCell(new PdfPCell(new Phrase("Telefone", fonteSubtitulo)));
-
-            foreach (var f in fornecedores)
-            {
-                string cnpjFormatado = string.IsNullOrWhiteSpace(f.Cnpj) || f.Cnpj.Length != 14
-                    ? f.Cnpj ?? ""
-                    : Convert.ToUInt64(f.Cnpj).ToString(@"00\.000\.000\/0000\-00");
-
-                string telefoneFormatado = string.IsNullOrWhiteSpace(f.Telefone)
-                    ? ""
-                    : f.Telefone.Length == 11
-                        ? Convert.ToUInt64(f.Telefone).ToString(@"(00) 00000\-0000")
-                        : Convert.ToUInt64(f.Telefone).ToString(@"(00) 0000\-0000");
-
-                tabela.AddCell(new PdfPCell(new Phrase(f.Id.ToString(), fonteCorpo)));
-                tabela.AddCell(new PdfPCell(new Phrase(f.Nome ?? "", fonteCorpo)));
-                tabela.AddCell(new PdfPCell(new Phrase(cnpjFormatado, fonteCorpo)));
-                tabela.AddCell(new PdfPCell(new Phrase(f.Email ?? "", fonteCorpo)));
-                tabela.AddCell(new PdfPCell(new Phrase(telefoneFormatado, fonteCorpo)));
-            }
-
-            doc.Add(tabela);
-
-            // Rodapé com data de geração, alinhado à direita
-            Paragraph rodape = new Paragraph($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", fonteCorpo);
-            rodape.Alignment = Element.ALIGN_RIGHT;
-            doc.Add(new Paragraph("\n")); // Espaço extra
-            doc.Add(rodape);
-
-            doc.Close();
-
-            return caminho;
-        }
-
-
-
     }
 }
+

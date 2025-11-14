@@ -1,76 +1,83 @@
 ﻿using SysFin_2CTDS.Controller;
-using SysFin_2CTDS.Model;
-using SysFin_2CTDS.Models;
 using System;
-using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View
 {
     public partial class frmRelatorioCompras : Form
     {
-        
-        private readonly CompraController _compraController;
+        private readonly CompraController _controller;
 
         public frmRelatorioCompras()
         {
             InitializeComponent();
-            
-            _compraController = new CompraController();
+            _controller = new CompraController();
         }
 
-        private void btnGerarRelatorio_Click(object sender, EventArgs e)
+        private async void frmRelatorioCompras_Load(object? sender, EventArgs e)
         {
-            
-            DateTime dataInicial = dtpDataInicial.Value;
-            DateTime dataFinal = dtpDataFinal.Value;
-
-           
-            List<Compra> resultados = _compraController.GetComprasPorPeriodo(dataInicial, dataFinal);
-
-            
             ConfigurarGrid();
-            dgvResultados.DataSource = resultados;
+            dtpInicial.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            dtpFinal.Value = DateTime.Now;
 
-            
-            CalcularEExibirTotais(resultados);
+            await CarregarRelatorioAsync();
         }
 
-       
         private void ConfigurarGrid()
         {
-            dgvResultados.AutoGenerateColumns = false;
-            dgvResultados.Columns.Clear();
+            dgvRelatorio.AutoGenerateColumns = false;
+            dgvRelatorio.Columns.Clear();
 
-            dgvResultados.Columns.Add("DataCompra", "Data da Compra");
-            dgvResultados.Columns.Add("NomeFornecedor", "Fornecedor");
-            dgvResultados.Columns.Add("ValorTotal", "Valor Total");
-
-            
-            dgvResultados.Columns["DataCompra"].DataPropertyName = "DataCompra";
-            dgvResultados.Columns["NomeFornecedor"].DataPropertyName = "NomeFornecedor";
-            dgvResultados.Columns["ValorTotal"].DataPropertyName = "ValorTotal";
-
-            
-            dgvResultados.Columns["ValorTotal"].DefaultCellStyle.Format = "C2";
-
-            
-            dgvResultados.Columns["NomeFornecedor"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Data",
+                DataPropertyName = "DataCompra",
+                HeaderText = "Data da Compra",
+                Width = 150,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "g" }
+            });
+            dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Fornecedor",
+                DataPropertyName = "NomeFornecedor",
+                HeaderText = "Fornecedor",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+            dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Valor",
+                DataPropertyName = "ValorTotal",
+                HeaderText = "Valor Total (R$)",
+                Width = 150,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "C2", Alignment = DataGridViewContentAlignment.MiddleRight }
+            });
         }
 
-       
-        private void CalcularEExibirTotais(List<Compra> compras)
+        private async Task CarregarRelatorioAsync()
         {
-            
-            int totalCompras = compras.Count();
+            try
+            {
+                var relatorio = await _controller.GetComprasPorPeriodoAsync(dtpInicial.Value, dtpFinal.Value);
+                dgvRelatorio.DataSource = relatorio;
 
-            
-            decimal valorTotal = compras.Sum(c => c.ValorTotal);
+                decimal totalPeriodo = relatorio.Sum(item => item.ValorTotal);
 
-           
-            lblTotalCompras.Text = $"Total de Compras: {totalCompras}";
-            lblValorTotal.Text = $"Valor Total Comprado: {valorTotal:C2}";
+                lblTotalPeriodo.Text = totalPeriodo.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
+                lblTotalPeriodo.ForeColor = Color.Firebrick; // Compras são sempre despesas
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro ao Carregar Relatório", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void btnBuscar_Click(object? sender, EventArgs e)
+        {
+            await CarregarRelatorioAsync();
         }
     }
 }
