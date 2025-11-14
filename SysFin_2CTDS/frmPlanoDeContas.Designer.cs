@@ -17,127 +17,159 @@
 
         private void InitializeComponent()
         {
-            this.dgvContas = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cboTipo = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtDescricao = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnNovo = new System.Windows.Forms.Button();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvContas)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
+            dgvContas = new DataGridView();
+            groupBox1 = new GroupBox();
+            cboTipo = new ComboBox();
+            label2 = new Label();
+            txtDescricao = new TextBox();
+            label1 = new Label();
+            btnSalvar = new Button();
+            btnExcluir = new Button();
+            label = new Label();
+            btnPDF = new Button();
+            ((System.ComponentModel.ISupportInitialize)dgvContas).BeginInit();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
             // 
             // dgvContas
             // 
-            this.dgvContas.AllowUserToAddRows = false;
-            this.dgvContas.AllowUserToDeleteRows = false;
-            this.dgvContas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvContas.Location = new System.Drawing.Point(12, 146);
-            this.dgvContas.MultiSelect = false;
-            this.dgvContas.Name = "dgvContas";
-            this.dgvContas.ReadOnly = true;
-            this.dgvContas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvContas.Size = new System.Drawing.Size(776, 292);
-            this.dgvContas.TabIndex = 4;
-            this.dgvContas.SelectionChanged += new System.EventHandler(this.dgvContas_SelectionChanged);
+            dgvContas.AllowUserToAddRows = false;
+            dgvContas.AllowUserToDeleteRows = false;
+            dgvContas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvContas.Location = new Point(14, 178);
+            dgvContas.Margin = new Padding(4, 3, 4, 3);
+            dgvContas.MultiSelect = false;
+            dgvContas.Name = "dgvContas";
+            dgvContas.ReadOnly = true;
+            dgvContas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvContas.Size = new Size(906, 327);
+            dgvContas.TabIndex = 4;
+            dgvContas.SelectionChanged += dgvContas_SelectionChanged;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.cboTipo);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.txtDescricao);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 85);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Dados da Conta";
+            groupBox1.BackColor = SystemColors.ActiveCaption;
+            groupBox1.Controls.Add(cboTipo);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(txtDescricao);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Location = new Point(15, 74);
+            groupBox1.Margin = new Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new Padding(4, 3, 4, 3);
+            groupBox1.Size = new Size(905, 98);
+            groupBox1.TabIndex = 0;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Plano de Contas";
             // 
             // cboTipo
             // 
-            this.cboTipo.FormattingEnabled = true;
-            this.cboTipo.Location = new System.Drawing.Point(582, 41);
-            this.cboTipo.Name = "cboTipo";
-            this.cboTipo.Size = new System.Drawing.Size(179, 21);
-            this.cboTipo.TabIndex = 1;
+            cboTipo.FormattingEnabled = true;
+            cboTipo.Location = new Point(679, 47);
+            cboTipo.Margin = new Padding(4, 3, 4, 3);
+            cboTipo.Name = "cboTipo";
+            cboTipo.Size = new Size(208, 23);
+            cboTipo.TabIndex = 1;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(579, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(28, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Tipo";
+            label2.AutoSize = true;
+            label2.Location = new Point(676, 29);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(31, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Tipo";
             // 
             // txtDescricao
             // 
-            this.txtDescricao.Location = new System.Drawing.Point(15, 41);
-            this.txtDescricao.Name = "txtDescricao";
-            this.txtDescricao.Size = new System.Drawing.Size(546, 20);
-            this.txtDescricao.TabIndex = 0;
+            txtDescricao.Location = new Point(14, 47);
+            txtDescricao.Margin = new Padding(4, 3, 4, 3);
+            txtDescricao.Name = "txtDescricao";
+            txtDescricao.Size = new Size(636, 23);
+            txtDescricao.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Descrição";
-            // 
-            // btnNovo
-            // 
-            this.btnNovo.Location = new System.Drawing.Point(549, 103);
-            this.btnNovo.Name = "btnNovo";
-            this.btnNovo.Size = new System.Drawing.Size(75, 23);
-            this.btnNovo.TabIndex = 1;
-            this.btnNovo.Text = "Novo";
-            this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
+            label1.AutoSize = true;
+            label1.Location = new Point(14, 29);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(58, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Descrição";
             // 
             // btnSalvar
             // 
-            this.btnSalvar.Location = new System.Drawing.Point(630, 103);
-            this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(75, 23);
-            this.btnSalvar.TabIndex = 2;
-            this.btnSalvar.Text = "Salvar";
-            this.btnSalvar.UseVisualStyleBackColor = true;
-            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            btnSalvar.BackColor = Color.DarkSeaGreen;
+            btnSalvar.FlatAppearance.BorderColor = Color.Black;
+            btnSalvar.FlatStyle = FlatStyle.Flat;
+            btnSalvar.Location = new Point(14, 525);
+            btnSalvar.Margin = new Padding(4, 3, 4, 3);
+            btnSalvar.Name = "btnSalvar";
+            btnSalvar.Size = new Size(88, 27);
+            btnSalvar.TabIndex = 2;
+            btnSalvar.Text = "Salvar";
+            btnSalvar.UseVisualStyleBackColor = false;
+            btnSalvar.Click += btnSalvar_Click;
             // 
             // btnExcluir
             // 
-            this.btnExcluir.Location = new System.Drawing.Point(711, 103);
-            this.btnExcluir.Name = "btnExcluir";
-            this.btnExcluir.Size = new System.Drawing.Size(75, 23);
-            this.btnExcluir.TabIndex = 3;
-            this.btnExcluir.Text = "Excluir";
-            this.btnExcluir.UseVisualStyleBackColor = true;
-            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            btnExcluir.BackColor = Color.IndianRed;
+            btnExcluir.FlatAppearance.BorderColor = Color.Black;
+            btnExcluir.FlatStyle = FlatStyle.Flat;
+            btnExcluir.ForeColor = SystemColors.ButtonHighlight;
+            btnExcluir.Location = new Point(131, 525);
+            btnExcluir.Margin = new Padding(4, 3, 4, 3);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(88, 27);
+            btnExcluir.TabIndex = 3;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = false;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // label
+            // 
+            label.AutoSize = true;
+            label.Font = new Font("Segoe UI Semibold", 30F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            label.Location = new Point(277, 9);
+            label.Name = "label";
+            label.Size = new Size(374, 54);
+            label.TabIndex = 5;
+            label.Text = "Cadastro de Contas";
+            // 
+            // btnPDF
+            // 
+            btnPDF.FlatStyle = FlatStyle.Flat;
+            btnPDF.Location = new Point(252, 525);
+            btnPDF.Margin = new Padding(4, 3, 4, 3);
+            btnPDF.Name = "btnPDF";
+            btnPDF.Size = new Size(88, 27);
+            btnPDF.TabIndex = 6;
+            btnPDF.Text = "PDF";
+            btnPDF.UseVisualStyleBackColor = true;
+            btnPDF.Click += btnPDF_Click;
             // 
             // frmPlanoDeContas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnExcluir);
-            this.Controls.Add(this.btnSalvar);
-            this.Controls.Add(this.btnNovo);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.dgvContas);
-            this.Name = "frmPlanoDeContas";
-            this.Text = "Gestão de Plano de Contas";
-            this.Load += new System.EventHandler(this.frmPlanoDeContas_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvContas)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1520, 655);
+            Controls.Add(btnPDF);
+            Controls.Add(label);
+            Controls.Add(btnExcluir);
+            Controls.Add(btnSalvar);
+            Controls.Add(groupBox1);
+            Controls.Add(dgvContas);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "frmPlanoDeContas";
+            Text = "Gestão de Plano de Contas";
+            Load += frmPlanoDeContas_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvContas).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -148,8 +180,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtDescricao;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnExcluir;
+        private Label label;
+        private Button btnPDF;
     }
 }

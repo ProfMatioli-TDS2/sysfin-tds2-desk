@@ -1,4 +1,6 @@
-﻿using SysFin_2CTDS.Controller;
+﻿using iTextSharp.text.pdf;
+using iTextSharp.text;
+using SysFin_2CTDS.Controller;
 using SysFin_2CTDS.Model;
 using System;
 using System.Collections.Generic;
@@ -95,11 +97,6 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void btnNovo_Click(object? sender, EventArgs e)
-        {
-            LimparFormulario();
-        }
-
         private async void btnSalvar_Click(object? sender, EventArgs e)
         {
             try
@@ -164,5 +161,66 @@ namespace SysFin_2CTDS.View
                 }
             }
         }
+
+        private void btnPDF_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Caixa para escolher onde salvar
+                SaveFileDialog save = new SaveFileDialog();
+                save.Title = "Salvar Relatório";
+                save.Filter = "Arquivo PDF (*.pdf)|*.pdf";
+                save.FileName = "PlanoDeContas.pdf";
+
+                if (save.ShowDialog() != DialogResult.OK)
+                    return;
+
+                // Criando o PDF
+                Document doc = new Document(PageSize.A4, 20, 20, 20, 20);
+                PdfWriter.GetInstance(doc, new FileStream(save.FileName, FileMode.Create));
+                doc.Open();
+
+                // Título
+                Paragraph titulo = new Paragraph("Relatório - Plano de Contas\n\n",
+                    new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 16, iTextSharp.text.Font.BOLD));
+                titulo.Alignment = Element.ALIGN_CENTER;
+                doc.Add(titulo);
+
+                // Tabela do PDF – 3 colunas
+                PdfPTable tabela = new PdfPTable(3);
+                tabela.WidthPercentage = 100;
+                tabela.SetWidths(new float[] { 15f, 55f, 30f });
+
+                // Cabeçalhos
+                tabela.AddCell(new PdfPCell(new Phrase("ID")) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                tabela.AddCell(new PdfPCell(new Phrase("Descrição")) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                tabela.AddCell(new PdfPCell(new Phrase("Tipo")) { BackgroundColor = BaseColor.LIGHT_GRAY });
+
+                // Preenchendo a tabela com os dados da grid
+                foreach (DataGridViewRow row in dgvContas.Rows)
+                {
+                    if (row.DataBoundItem is PlanoDeContas conta)
+                    {
+                        string tipoTexto = conta.Tipo == 'R' ? "Receita" : "Despesa";
+
+                        tabela.AddCell(conta.Id.ToString());
+                        tabela.AddCell(conta.Descricao);
+                        tabela.AddCell(tipoTexto);
+                    }
+                }
+
+                doc.Add(tabela);
+                doc.Close();
+
+                MessageBox.Show("PDF gerado com sucesso!", "Sucesso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao gerar PDF: " + ex.Message,
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }
