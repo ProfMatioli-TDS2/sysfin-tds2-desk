@@ -23,7 +23,6 @@ namespace SysFin_2CTDS.Controller
         public async Task<DashboardMetrics> CarregarMetricasAsync()
         {
             var metricas = new DashboardMetrics();
-
             try
             {
                 var dataInicioMes = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -33,7 +32,7 @@ namespace SysFin_2CTDS.Controller
                 var taskVendas = _vendaController.GetVendasPorPeriodoAsync(dataInicioMes, dataFimMes);
                 var taskCompras = _compraController.GetComprasPorPeriodoAsync(dataInicioMes, dataFimMes);
                 var taskEstoque = _produtoController.ListarProdutosAsync();
-                var taskLancamentos = _movimentoCaixaController.GetMovimentosPorPeriodoAsync(DateTime.Now.AddDays(-7), DateTime.Now);
+                var taskLancamentos = _movimentoCaixaController.GetMovimentosPorPeriodoAsync(DateTime.Now.AddDays(-30), DateTime.Now);
 
                 await Task.WhenAll(taskSaldo, taskVendas, taskCompras, taskEstoque, taskLancamentos);
 
@@ -49,7 +48,6 @@ namespace SysFin_2CTDS.Controller
             {
                 Console.WriteLine("Erro ao carregar métricas do dashboard: " + ex.Message);
             }
-
             return metricas;
         }
     }

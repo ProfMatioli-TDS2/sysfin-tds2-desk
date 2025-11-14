@@ -17,7 +17,7 @@ namespace SysFin_2CTDS.View
             _controller = new DashboardController();
         }
 
-        private async void frmDashboard_Load(object? sender, EventArgs e)
+        private async void frmDashboard_Load(object sender, EventArgs e)
         {
             await CarregarDadosAsync();
         }
@@ -27,7 +27,6 @@ namespace SysFin_2CTDS.View
             try
             {
                 DashboardMetrics metricas = await _controller.CarregarMetricasAsync();
-
                 CultureInfo br = new CultureInfo("pt-BR");
 
                 lblSaldoTotal.Text = metricas.SaldoTotalCaixa.ToString("C", br);
@@ -35,8 +34,8 @@ namespace SysFin_2CTDS.View
 
                 lblVendasMes.Text = metricas.VendasDoMes.ToString("C", br);
                 lblComprasMes.Text = metricas.ComprasDoMes.ToString("C", br);
-                lblEstoqueBaixo.Text = metricas.ProdutosEstoqueBaixo.ToString();
 
+                lblEstoqueBaixo.Text = metricas.ProdutosEstoqueBaixo.ToString();
                 if (metricas.ProdutosEstoqueBaixo > 0)
                 {
                     lblEstoqueBaixo.ForeColor = Color.DarkOrange;
@@ -49,8 +48,7 @@ namespace SysFin_2CTDS.View
                     {
                         var item = new ListViewItem(lancamento.DataMovimento.ToString("dd/MM HH:mm"));
                         item.SubItems.Add(lancamento.Descricao);
-
-                        string valorFormatado = lancamento.ValorFormatado.ToString("C", br);
+                        string valorFormatado = lancamento.Valor.ToString("C", br);
 
                         if (lancamento.Tipo == 'E')
                         {
@@ -62,7 +60,6 @@ namespace SysFin_2CTDS.View
                             item.SubItems.Add(valorFormatado);
                             item.ForeColor = Color.Firebrick;
                         }
-
                         lvUltimosLancamentos.Items.Add(item);
                     }
                 }
