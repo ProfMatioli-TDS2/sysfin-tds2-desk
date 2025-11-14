@@ -1,11 +1,9 @@
-﻿-- 1. PRIMEIRO INSERIR UM CLIENTE (se não existir)
 IF NOT EXISTS (SELECT 1 FROM clientes WHERE id = 1)
 BEGIN
     INSERT INTO clientes (nome, cpf_cnpj, email, telefone) 
     VALUES ('Cliente Teste', '123.456.789-00', 'teste@email.com', '(11) 9999-8888');
 END
 
--- 2. INSERIR PRODUTOS COM ESTOQUE BAIXO (menos de 50)
 INSERT INTO produtos (nome, descricao, preco_venda, estoque_atual) VALUES
 ('Notebook Dell', 'Notebook Dell i5 8GB RAM', 2500.00, 5),
 ('Mouse Gamer', 'Mouse RGB 3200DPI', 89.90, 8),
@@ -13,19 +11,16 @@ INSERT INTO produtos (nome, descricao, preco_venda, estoque_atual) VALUES
 ('Monitor 24"', 'Monitor LED 24 polegadas', 699.00, 3),
 ('Headphone Bluetooth', 'Fone de ouvido sem fio', 159.90, 25);
 
--- 3. INSERIR VENDAS DO MÊS ATUAL (usando cliente ID 1)
 INSERT INTO vendas (id_cliente, data_venda, valor_total) VALUES
 (1, GETDATE(), 2848.80),
 (1, DATEADD(day, -1, GETDATE()), 899.00),
 (1, DATEADD(day, -3, GETDATE()), 567.50);
 
--- 4. OBTER OS IDs DAS VENDAS RECÉM INSERIDAS
 DECLARE @venda1 INT, @venda2 INT, @venda3 INT;
 SELECT @venda1 = IDENT_CURRENT('vendas') - 2;
 SELECT @venda2 = IDENT_CURRENT('vendas') - 1;
 SELECT @venda3 = IDENT_CURRENT('vendas');
 
--- 5. INSERIR MOVIMENTOS DE CAIXA (agora com IDs de venda válidos)
 INSERT INTO movimento_caixa (data_movimento, descricao, id_plano_de_contas, tipo, valor, id_venda) VALUES
 (GETDATE(), 'Venda de Notebook', 1, 'E', 2500.00, @venda1),
 (GETDATE(), 'Venda de Acessórios', 1, 'E', 348.80, @venda1),
@@ -36,7 +31,6 @@ INSERT INTO movimento_caixa (data_movimento, descricao, id_plano_de_contas, tipo
 (DATEADD(day, -3, GETDATE()), 'Aluguel', 3, 'S', 1200.00, NULL),
 (DATEADD(day, -3, GETDATE()), 'Venda no Cartão', 1, 'E', 567.50, @venda3);
 
--- 6. VERIFICAR OS DADOS INSERIDOS
 SELECT 'PRODUTOS COM ESTOQUE BAIXO:' as Info;
 SELECT nome, estoque_atual FROM produtos WHERE estoque_atual < 50;
 
