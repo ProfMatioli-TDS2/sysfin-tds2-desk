@@ -1,6 +1,5 @@
 ﻿namespace SysFin_2CTDS.View
 {
-    // Herda diretamente de Form
     partial class ClienteForm
     {
         private System.ComponentModel.IContainer components = null;
@@ -18,318 +17,361 @@
 
         private void InitializeComponent()
         {
-            // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClienteForm));
-            dgvClientes = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
-            colNome = new DataGridViewTextBoxColumn();
-            colCpfCnpj = new DataGridViewTextBoxColumn();
-            colEmail = new DataGridViewTextBoxColumn();
-            colTelefone = new DataGridViewTextBoxColumn();
-            groupBox1 = new GroupBox();
-            mtbCpfCnpj = new MaskedTextBox();
-            mtbTelefone = new MaskedTextBox();
-            label4 = new Label();
-            txtEmail = new TextBox();
-            label3 = new Label();
-            label2 = new Label();
-            txtNome = new TextBox();
-            label1 = new Label();
-            btnGerarRelatorio = new Button();
-            txtBuscaNome = new TextBox();
-            label5 = new Label();
-            btnNovo = new Button();
-            btnSalvar = new Button();
-            btnExcluir = new Button();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
-            groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            SuspendLayout();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+
+            this.pnlHeader = new System.Windows.Forms.Panel();
+            this.lblTitulo = new System.Windows.Forms.Label();
+            this.dgvClientes = new System.Windows.Forms.DataGridView();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNome = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCpfCnpj = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTelefone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.mtbCpfCnpj = new System.Windows.Forms.MaskedTextBox();
+            this.mtbTelefone = new System.Windows.Forms.MaskedTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtNome = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnGerarRelatorio = new System.Windows.Forms.Button();
+            this.txtBuscaNome = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnNovo = new System.Windows.Forms.Button();
+            this.btnSalvar = new System.Windows.Forms.Button();
+            this.btnExcluir = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pnlHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // pnlHeader
+            // 
+            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            this.pnlHeader.Controls.Add(this.lblTitulo);
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new System.Drawing.Size(933, 60);
+            this.pnlHeader.TabIndex = 11;
+            // 
+            // lblTitulo
+            // 
+            this.lblTitulo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
+            this.lblTitulo.ForeColor = System.Drawing.Color.White;
+            this.lblTitulo.Location = new System.Drawing.Point(0, 0);
+            this.lblTitulo.Name = "lblTitulo";
+            this.lblTitulo.Size = new System.Drawing.Size(933, 60);
+            this.lblTitulo.TabIndex = 0;
+            this.lblTitulo.Text = "Gestão de Clientes";
+            this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // dgvClientes
             // 
-            dgvClientes.AllowUserToAddRows = false;
-            dgvClientes.AllowUserToDeleteRows = false;
-            dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colCpfCnpj, colEmail, colTelefone });
-            dgvClientes.Location = new Point(14, 217);
-            dgvClientes.Margin = new Padding(4, 3, 4, 3);
-            dgvClientes.MultiSelect = false;
-            dgvClientes.Name = "dgvClientes";
-            dgvClientes.ReadOnly = true;
-            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvClientes.Size = new Size(905, 288);
-            dgvClientes.TabIndex = 0;
-            dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
+            this.dgvClientes.AllowUserToAddRows = false;
+            this.dgvClientes.AllowUserToDeleteRows = false;
+            this.dgvClientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvClientes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvClientes.BackgroundColor = System.Drawing.Color.White;
+            this.dgvClientes.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvClientes.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvClientes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvClientes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvClientes.ColumnHeadersHeight = 35;
+
+            this.dgvClientes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colId,
+            this.colNome,
+            this.colCpfCnpj,
+            this.colEmail,
+            this.colTelefone});
+
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvClientes.DefaultCellStyle = dataGridViewCellStyle2;
+
+            this.dgvClientes.EnableHeadersVisualStyles = false;
+            this.dgvClientes.GridColor = System.Drawing.Color.LightGray;
+            this.dgvClientes.Location = new System.Drawing.Point(14, 260);
+            this.dgvClientes.MultiSelect = false;
+            this.dgvClientes.Name = "dgvClientes";
+            this.dgvClientes.ReadOnly = true;
+            this.dgvClientes.RowHeadersVisible = false;
+            this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvClientes.Size = new System.Drawing.Size(905, 245);
+            this.dgvClientes.TabIndex = 0;
+            this.dgvClientes.SelectionChanged += new System.EventHandler(this.dgvClientes_SelectionChanged);
             // 
-            // colId
-            // 
-            colId.DataPropertyName = "Id";
-            colId.HeaderText = "ID";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            // 
-            // colNome
-            // 
-            colNome.DataPropertyName = "Nome";
-            colNome.HeaderText = "Nome";
-            colNome.Name = "colNome";
-            colNome.ReadOnly = true;
-            // 
-            // colCpfCnpj
-            // 
-            colCpfCnpj.DataPropertyName = "CpfCnpj";
-            colCpfCnpj.HeaderText = "CPF/CNPJ";
-            colCpfCnpj.Name = "colCpfCnpj";
-            colCpfCnpj.ReadOnly = true;
-            // 
-            // colEmail
-            // 
-            colEmail.DataPropertyName = "Email";
-            colEmail.HeaderText = "E-mail";
-            colEmail.Name = "colEmail";
-            colEmail.ReadOnly = true;
-            // 
-            // colTelefone
-            // 
-            colTelefone.DataPropertyName = "Telefone";
-            colTelefone.HeaderText = "Telefone";
-            colTelefone.Name = "colTelefone";
-            colTelefone.ReadOnly = true;
+            // colId... (Colunas)
+            this.colId.DataPropertyName = "Id";
+            this.colId.HeaderText = "ID";
+            this.colId.Name = "colId";
+            this.colId.ReadOnly = true;
+            this.colNome.DataPropertyName = "Nome";
+            this.colNome.HeaderText = "Nome";
+            this.colNome.Name = "colNome";
+            this.colNome.ReadOnly = true;
+            this.colCpfCnpj.DataPropertyName = "CpfCnpj";
+            this.colCpfCnpj.HeaderText = "CPF/CNPJ";
+            this.colCpfCnpj.Name = "colCpfCnpj";
+            this.colCpfCnpj.ReadOnly = true;
+            this.colEmail.DataPropertyName = "Email";
+            this.colEmail.HeaderText = "E-mail";
+            this.colEmail.Name = "colEmail";
+            this.colEmail.ReadOnly = true;
+            this.colTelefone.DataPropertyName = "Telefone";
+            this.colTelefone.HeaderText = "Telefone";
+            this.colTelefone.Name = "colTelefone";
+            this.colTelefone.ReadOnly = true;
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(mtbCpfCnpj);
-            groupBox1.Controls.Add(mtbTelefone);
-            groupBox1.Controls.Add(label4);
-            groupBox1.Controls.Add(txtEmail);
-            groupBox1.Controls.Add(label3);
-            groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(txtNome);
-            groupBox1.Controls.Add(label1);
-            groupBox1.Location = new Point(14, 14);
-            groupBox1.Margin = new Padding(4, 3, 4, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(4, 3, 4, 3);
-            groupBox1.Size = new Size(905, 161);
-            groupBox1.TabIndex = 1;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Dados do Cliente";
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.White;
+            this.groupBox1.Controls.Add(this.mtbCpfCnpj);
+            this.groupBox1.Controls.Add(this.mtbTelefone);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.txtEmail);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.txtNome);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.groupBox1.Location = new System.Drawing.Point(14, 75);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(905, 140);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Dados do Cliente";
             // 
             // mtbCpfCnpj
             // 
-            mtbCpfCnpj.Location = new Point(531, 47);
-            mtbCpfCnpj.Name = "mtbCpfCnpj";
-            mtbCpfCnpj.Size = new Size(356, 23);
-            mtbCpfCnpj.TabIndex = 9;
-            mtbCpfCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-            mtbCpfCnpj.KeyPress += mtbCpfCnpj_KeyPress;
-            mtbCpfCnpj.KeyUp += mtbCpfCnpj_KeyUp;
-            // 
-            // mtbTelefone
-            // 
-            mtbTelefone.Location = new Point(531, 100);
-            mtbTelefone.Name = "mtbTelefone";
-            mtbTelefone.Size = new Size(356, 23);
-            mtbTelefone.TabIndex = 8;
-            mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-            mtbTelefone.KeyPress += mtbTelefone_KeyPress;
-            mtbTelefone.KeyUp += mtbTelefone_KeyUp;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(527, 82);
-            label4.Margin = new Padding(4, 0, 4, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(55, 15);
-            label4.TabIndex = 6;
-            label4.Text = "Telefone:";
-            // 
-            // txtEmail
-            // 
-            txtEmail.Location = new Point(18, 100);
-            txtEmail.Margin = new Padding(4, 3, 4, 3);
-            txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(487, 23);
-            txtEmail.TabIndex = 5;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(14, 82);
-            label3.Margin = new Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(44, 15);
-            label3.TabIndex = 4;
-            label3.Text = "E-mail:";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(527, 29);
-            label2.Margin = new Padding(4, 0, 4, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(63, 15);
-            label2.TabIndex = 2;
-            label2.Text = "CPF/CNPJ:";
-            // 
-            // txtNome
-            // 
-            txtNome.Location = new Point(18, 47);
-            txtNome.Margin = new Padding(4, 3, 4, 3);
-            txtNome.Name = "txtNome";
-            txtNome.Size = new Size(487, 23);
-            txtNome.TabIndex = 1;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(14, 29);
-            label1.Margin = new Padding(4, 0, 4, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(43, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Nome:";
+            this.mtbCpfCnpj.Location = new System.Drawing.Point(531, 47);
+            this.mtbCpfCnpj.Name = "mtbCpfCnpj";
+            this.mtbCpfCnpj.Size = new System.Drawing.Size(356, 23);
+            this.mtbCpfCnpj.TabIndex = 9;
+            this.mtbCpfCnpj.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+            this.mtbCpfCnpj.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mtbCpfCnpj_KeyPress);
+            this.mtbCpfCnpj.KeyUp += new System.Windows.Forms.KeyEventHandler(this.mtbCpfCnpj_KeyUp);
+
+            this.mtbTelefone.Location = new System.Drawing.Point(531, 100);
+            this.mtbTelefone.Name = "mtbTelefone";
+            this.mtbTelefone.Size = new System.Drawing.Size(356, 23);
+            this.mtbTelefone.TabIndex = 8;
+            this.mtbTelefone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+            this.mtbTelefone.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mtbTelefone_KeyPress);
+            this.mtbTelefone.KeyUp += new System.Windows.Forms.KeyEventHandler(this.mtbTelefone_KeyUp);
+
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(527, 82);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(55, 15);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Telefone:";
+
+            this.txtEmail.Location = new System.Drawing.Point(18, 100);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(487, 23);
+            this.txtEmail.TabIndex = 5;
+
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(14, 82);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(44, 15);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "E-mail:";
+
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(527, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 15);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "CPF/CNPJ:";
+
+            this.txtNome.Location = new System.Drawing.Point(18, 47);
+            this.txtNome.Name = "txtNome";
+            this.txtNome.Size = new System.Drawing.Size(487, 23);
+            this.txtNome.TabIndex = 1;
+
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 15);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Nome:";
+
             // 
             // btnGerarRelatorio
             // 
-            btnGerarRelatorio.BackColor = Color.MediumOrchid;
-            btnGerarRelatorio.FlatStyle = FlatStyle.Flat;
-            btnGerarRelatorio.ForeColor = Color.White;
-            btnGerarRelatorio.Location = new Point(831, 181);
-            btnGerarRelatorio.Name = "btnGerarRelatorio";
-            btnGerarRelatorio.Size = new Size(88, 27);
-            btnGerarRelatorio.TabIndex = 10;
-            btnGerarRelatorio.Text = "Relatório";
-            btnGerarRelatorio.UseVisualStyleBackColor = false;
-            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
+            this.btnGerarRelatorio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGerarRelatorio.BackColor = System.Drawing.Color.MediumOrchid;
+            this.btnGerarRelatorio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGerarRelatorio.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnGerarRelatorio.ForeColor = System.Drawing.Color.White;
+            this.btnGerarRelatorio.Location = new System.Drawing.Point(831, 225);
+            this.btnGerarRelatorio.Name = "btnGerarRelatorio";
+            this.btnGerarRelatorio.Size = new System.Drawing.Size(88, 27);
+            this.btnGerarRelatorio.TabIndex = 10;
+            this.btnGerarRelatorio.Text = "Relatório";
+            this.btnGerarRelatorio.UseVisualStyleBackColor = false;
+            this.btnGerarRelatorio.Click += new System.EventHandler(this.btnGerarRelatorio_Click);
             // 
             // txtBuscaNome
             // 
-            txtBuscaNome.Location = new Point(136, 181);
-            txtBuscaNome.Name = "txtBuscaNome";
-            txtBuscaNome.Size = new Size(323, 23);
-            txtBuscaNome.TabIndex = 0;
+            this.txtBuscaNome.Location = new System.Drawing.Point(136, 227);
+            this.txtBuscaNome.Name = "txtBuscaNome";
+            this.txtBuscaNome.Size = new System.Drawing.Size(323, 23);
+            this.txtBuscaNome.TabIndex = 0;
+            this.txtBuscaNome.TextChanged += new System.EventHandler(this.txtBuscaNome_TextChanged);
             // 
             // label5
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(28, 184);
-            label5.Name = "label5";
-            label5.Size = new Size(102, 15);
-            label5.TabIndex = 8;
-            label5.Text = "Buscar por Nome:";
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.label5.Location = new System.Drawing.Point(28, 230);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(102, 15);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Buscar por Nome:";
             // 
             // btnNovo
             // 
-            btnNovo.BackColor = Color.CornflowerBlue;
-            btnNovo.FlatAppearance.BorderSize = 0;
-            btnNovo.FlatStyle = FlatStyle.Flat;
-            btnNovo.ForeColor = Color.White;
-            btnNovo.Location = new Point(526, 181);
-            btnNovo.Margin = new Padding(4, 3, 4, 3);
-            btnNovo.Name = "btnNovo";
-            btnNovo.Size = new Size(88, 27);
-            btnNovo.TabIndex = 2;
-            btnNovo.Text = "Novo";
-            btnNovo.UseVisualStyleBackColor = false;
-            btnNovo.Click += btnNovo_Click;
+            this.btnNovo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNovo.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.btnNovo.FlatAppearance.BorderSize = 0;
+            this.btnNovo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNovo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnNovo.ForeColor = System.Drawing.Color.White;
+            this.btnNovo.Location = new System.Drawing.Point(526, 225);
+            this.btnNovo.Name = "btnNovo";
+            this.btnNovo.Size = new System.Drawing.Size(88, 27);
+            this.btnNovo.TabIndex = 2;
+            this.btnNovo.Text = "Novo";
+            this.btnNovo.UseVisualStyleBackColor = false;
+            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
             // btnSalvar
             // 
-            btnSalvar.BackColor = Color.MediumSeaGreen;
-            btnSalvar.FlatAppearance.BorderSize = 0;
-            btnSalvar.FlatStyle = FlatStyle.Flat;
-            btnSalvar.ForeColor = Color.White;
-            btnSalvar.Location = new Point(627, 181);
-            btnSalvar.Margin = new Padding(4, 3, 4, 3);
-            btnSalvar.Name = "btnSalvar";
-            btnSalvar.Size = new Size(88, 27);
-            btnSalvar.TabIndex = 3;
-            btnSalvar.Text = "Salvar";
-            btnSalvar.UseVisualStyleBackColor = false;
-            btnSalvar.Click += btnSalvar_Click;
+            this.btnSalvar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSalvar.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnSalvar.FlatAppearance.BorderSize = 0;
+            this.btnSalvar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSalvar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnSalvar.ForeColor = System.Drawing.Color.White;
+            this.btnSalvar.Location = new System.Drawing.Point(627, 225);
+            this.btnSalvar.Name = "btnSalvar";
+            this.btnSalvar.Size = new System.Drawing.Size(88, 27);
+            this.btnSalvar.TabIndex = 3;
+            this.btnSalvar.Text = "Salvar";
+            this.btnSalvar.UseVisualStyleBackColor = false;
+            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
             // btnExcluir
             // 
-            btnExcluir.BackColor = Color.Crimson;
-            btnExcluir.FlatAppearance.BorderSize = 0;
-            btnExcluir.FlatStyle = FlatStyle.Flat;
-            btnExcluir.ForeColor = Color.White;
-            btnExcluir.Location = new Point(733, 181);
-            btnExcluir.Margin = new Padding(4, 3, 4, 3);
-            btnExcluir.Name = "btnExcluir";
-            btnExcluir.Size = new Size(88, 27);
-            btnExcluir.TabIndex = 4;
-            btnExcluir.Text = "Excluir";
-            btnExcluir.UseVisualStyleBackColor = false;
-            btnExcluir.Click += btnExcluir_Click;
+            this.btnExcluir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExcluir.BackColor = System.Drawing.Color.Crimson;
+            this.btnExcluir.FlatAppearance.BorderSize = 0;
+            this.btnExcluir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExcluir.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExcluir.ForeColor = System.Drawing.Color.White;
+            this.btnExcluir.Location = new System.Drawing.Point(733, 225);
+            this.btnExcluir.Name = "btnExcluir";
+            this.btnExcluir.Size = new System.Drawing.Size(88, 27);
+            this.btnExcluir.TabIndex = 4;
+            this.btnExcluir.Text = "Excluir";
+            this.btnExcluir.UseVisualStyleBackColor = false;
+            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
             // 
             // pictureBox1
             // 
-            pictureBox1.Cursor = Cursors.Hand;
-            pictureBox1.Location = new Point(465, 181);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(40, 23);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 9;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(465, 227);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(40, 23);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 9;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // ClienteForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(933, 519);
-            Controls.Add(btnGerarRelatorio);
-            Controls.Add(pictureBox1);
-            Controls.Add(txtBuscaNome);
-            Controls.Add(btnExcluir);
-            Controls.Add(label5);
-            Controls.Add(btnSalvar);
-            Controls.Add(btnNovo);
-            Controls.Add(groupBox1);
-            Controls.Add(dgvClientes);
-            Margin = new Padding(4, 3, 4, 3);
-            Name = "ClienteForm";
-            Text = "Gestão de Clientes";
-            Load += ClienteForm_Load;
-            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
-            // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Gainsboro;
+            this.ClientSize = new System.Drawing.Size(933, 519);
+            this.Controls.Add(this.btnGerarRelatorio);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.txtBuscaNome);
+            this.Controls.Add(this.btnExcluir);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.btnSalvar);
+            this.Controls.Add(this.btnNovo);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.dgvClientes);
+            this.Controls.Add(this.pnlHeader);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.Name = "ClienteForm";
+            this.Text = "Gestão de Clientes";
+            this.Load += new System.EventHandler(this.ClienteForm_Load);
+            this.pnlHeader.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
 
-        // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
         private System.Windows.Forms.DataGridView dgvClientes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNome;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCpfCnpj;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEmail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTelefone;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.MaskedTextBox mtbTelefone;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.MaskedTextBox mtbCpfCnpj;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtNome;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnExcluir;
-        private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colNome;
-        private DataGridViewTextBoxColumn colCpfCnpj;
-        private DataGridViewTextBoxColumn colEmail;
-        private DataGridViewTextBoxColumn colTelefone;
-        private Label label5;
-        private TextBox txtBuscaNome;
-        private PictureBox pictureBox1;
-        private Button btnGerarRelatorio;
-        private MaskedTextBox mtbTelefone;
-        private MaskedTextBox mtbCpfCnpj;
-        // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtBuscaNome;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnGerarRelatorio;
+        private System.Windows.Forms.Panel pnlHeader;
+        private System.Windows.Forms.Label lblTitulo;
     }
 }

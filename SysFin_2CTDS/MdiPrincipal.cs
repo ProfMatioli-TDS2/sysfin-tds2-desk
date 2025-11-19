@@ -1,5 +1,6 @@
 using SysFin_2CTDS.Model;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View
@@ -17,25 +18,10 @@ namespace SysFin_2CTDS.View
 
             if (SessionManager.CurrentUser != null)
             {
-                tssUsuarioLogado.Text = $"Usuário: {SessionManager.CurrentUser.Nome} (Perfil: {string.Join(", ", SessionManager.CurrentUser.Perfis)})";
+                tssUsuarioLogado.Text = $"Usuário: {SessionManager.CurrentUser.Nome} | Perfis: {string.Join(", ", SessionManager.CurrentUser.Perfis)}";
             }
 
             AbrirDashboard();
-        }
-
-        private void AbrirDashboard()
-        {
-            foreach (var form in this.MdiChildren)
-            {
-                form.Close();
-            }
-
-            var dashboard = new frmDashboard
-            {
-                MdiParent = this,
-                WindowState = FormWindowState.Maximized
-            };
-            dashboard.Show();
         }
 
         private void AplicarSeguranca()
@@ -44,144 +30,93 @@ namespace SysFin_2CTDS.View
 
             if (usuario == null)
             {
+                pnlSideMenu.Enabled = false;
                 MessageBox.Show("Erro de sessão. O aplicativo será fechado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
                 return;
             }
 
-            // --- 1. Definir Visibilidade dos BOTÕES ---
+            bool adminOuTesoureiro = usuario.HasRole("Administrador") || usuario.HasRole("Tesoureiro");
+            bool acessoVendas = adminOuTesoureiro || usuario.HasRole("Vendedor");
 
-            // Cadastros
-            btnClientes.Visible = usuario.HasRole("Administrador");
-            btnFornecedores.Visible = usuario.HasRole("Administrador");
-            btnProdutos.Visible = usuario.HasRole("Administrador");
-            btnPlanoContas.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Tesoureiro");
+            // Regra 1: Cadastros
+            lblMenuCadastros.Visible = adminOuTesoureiro;
+            btnClientes.Visible = adminOuTesoureiro;
+            btnFornecedores.Visible = adminOuTesoureiro;
+            btnProdutos.Visible = adminOuTesoureiro;
+            btnPlanoDeContas.Visible = adminOuTesoureiro;
             btnUsuarios.Visible = usuario.HasRole("Administrador");
 
-            // Financeiro (Registros)
-            btnFluxoCaixa.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Tesoureiro");
-            btnCompras.Visible = usuario.HasRole("Administrador");
-            btnVendas.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Vendedor");
+            // Regra 2: Movimentações
+            lblMenuMovimentacoes.Visible = true;
+            btnCompras.Visible = adminOuTesoureiro;
+            btnVendas.Visible = acessoVendas;
+            btnEstoque.Visible = true;
+            btnFluxoCaixa.Visible = adminOuTesoureiro;
 
-            // Relatórios
-            btnContasPagar.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Tesoureiro");
+            // Regra 3: Relatórios
+            lblMenuRelatorios.Visible = true;
             btnRelatorioCompras.Visible = usuario.HasRole("Administrador");
-            btnRelatorioVendas.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Tesoureiro");
-            btnEstoque.Visible = usuario.HasRole("Administrador") || usuario.HasRole("Vendedor");
-
-            // Dashboard (Logo)
-            pnlLogo.Visible = true;
-
-            // --- 2. Definir Visibilidade dos TÍTULOS (Separadores) ---
-            // Um título só aparece se pelo menos UM botão do grupo estiver visível.
-
-            lblMenuCadastros.Visible = btnClientes.Visible ||
-                                      btnFornecedores.Visible ||
-                                      btnProdutos.Visible ||
-                                      btnPlanoContas.Visible ||
-                                      btnUsuarios.Visible;
-
-            lblMenuFinanceiro.Visible = btnFluxoCaixa.Visible ||
-                                        btnCompras.Visible ||
-                                        btnVendas.Visible;
-
-            lblMenuRelatorios.Visible = btnContasPagar.Visible ||
-                                        btnRelatorioCompras.Visible ||
-                                        btnRelatorioVendas.Visible ||
-                                        btnEstoque.Visible;
+            btnRelatorioVendas.Visible = adminOuTesoureiro;
+            btnContasPagar.Visible = adminOuTesoureiro;
         }
 
-        // --- Eventos de Clique ---
-
-        private void pnlLogo_Click(object? sender, EventArgs e)
+        // --- MÉTODO CENTRALIZADO PARA ABRIR FORMULÁRIOS ---
+        private void AbrirFormulario(Form form)
         {
-            AbrirDashboard();
-        }
+            // Fecha outros formulários filhos abertos para não acumular janelas
+            foreach (var child in this.MdiChildren)
+            {
+                child.Close();
+            }
 
-        private void btnClientes_Click(object? sender, EventArgs e)
-        {
-            var form = new ClienteForm();
             form.MdiParent = this;
+
+            // --- MUDANÇA SOLICITADA ---
+            // Faz o formulário preencher todo o espaço do MDI
+            form.WindowState = FormWindowState.Maximized;
+
+            // Opcional: Remove a borda do formulário filho para parecer
+            // que ele faz parte da janela principal (sem barra de título extra).
+            // Se você não gostar disso, pode comentar a linha abaixo.
+            form.FormBorderStyle = FormBorderStyle.None;
+
+            // Opcional: Faz o formulário preencher o espaço restante (Dock)
+            // Isso às vezes funciona melhor que Maximized em MDIs complexos.
+            form.Dock = DockStyle.Fill;
+
             form.Show();
         }
 
-        private void btnFornecedores_Click(object? sender, EventArgs e)
+        private void AbrirDashboard()
         {
-            var form = new FornecedorForm();
-            form.MdiParent = this;
-            form.Show();
+            // O Dashboard também usa a nova lógica
+            AbrirFormulario(new frmDashboard());
         }
 
-        private void btnProdutos_Click(object? sender, EventArgs e)
-        {
-            var form = new frmListagemProdutos();
-            form.MdiParent = this;
-            form.Show();
-        }
+        // --- EVENTOS DE CLIQUE (Navegação) ---
 
-        private void btnPlanoContas_Click(object? sender, EventArgs e)
-        {
-            var form = new frmPlanoDeContas();
-            form.MdiParent = this;
-            form.Show();
-        }
+        private void pnlLogo_Click(object? sender, EventArgs e) => AbrirDashboard();
 
-        private void btnUsuarios_Click(object? sender, EventArgs e)
-        {
-            var form = new frmCadastroUsuarios();
-            form.MdiParent = this;
-            form.Show();
-        }
+        // Cadastros
+        private void btnClientes_Click(object? sender, EventArgs e) => AbrirFormulario(new ClienteForm());
+        private void btnFornecedores_Click(object? sender, EventArgs e) => AbrirFormulario(new FornecedorForm());
+        private void btnProdutos_Click(object? sender, EventArgs e) => AbrirFormulario(new frmListagemProdutos());
+        private void btnUsuarios_Click(object? sender, EventArgs e) => AbrirFormulario(new frmCadastroUsuarios());
+        private void btnPlanoDeContas_Click(object? sender, EventArgs e) => AbrirFormulario(new frmPlanoDeContas());
 
-        private void btnFluxoCaixa_Click(object? sender, EventArgs e)
-        {
-            var form = new frmFluxoCaixa();
-            form.MdiParent = this;
-            form.Show();
-        }
+        // Movimentações
+        private void btnFluxoCaixa_Click(object? sender, EventArgs e) => AbrirFormulario(new frmFluxoCaixa());
+        private void btnCompras_Click(object? sender, EventArgs e) => AbrirFormulario(new frmRegistroCompras());
+        private void btnVendas_Click(object? sender, EventArgs e) => AbrirFormulario(new frmRegistroVendas());
+        private void btnEstoque_Click(object? sender, EventArgs e) => AbrirFormulario(new EstoqueForm());
 
-        private void btnContasPagar_Click(object? sender, EventArgs e)
-        {
-            var form = new frmContasPagar();
-            form.MdiParent = this;
-            form.Show();
-        }
+        // Relatórios
+        private void btnContasPagar_Click(object? sender, EventArgs e) => AbrirFormulario(new frmContasPagar());
+        private void btnRelatorioCompras_Click(object? sender, EventArgs e) => AbrirFormulario(new frmRelatorioCompras());
+        private void btnRelatorioVendas_Click(object? sender, EventArgs e) => AbrirFormulario(new frmRelatorioVendas());
 
-        private void btnRelatorioCompras_Click(object? sender, EventArgs e)
-        {
-            var form = new frmRelatorioCompras();
-            form.MdiParent = this;
-            form.Show();
-        }
-
-        private void btnRelatorioVendas_Click(object? sender, EventArgs e)
-        {
-            var form = new frmRelatorioVendas();
-            form.MdiParent = this;
-            form.Show();
-        }
-
-        private void btnCompras_Click(object? sender, EventArgs e)
-        {
-            var form = new frmRegistroCompras();
-            form.MdiParent = this;
-            form.Show();
-        }
-
-        private void btnVendas_Click(object? sender, EventArgs e)
-        {
-            var form = new frmRegistroVendas();
-            form.MdiParent = this;
-            form.Show();
-        }
-
-        private void btnEstoque_Click(object? sender, EventArgs e)
-        {
-            var form = new EstoqueForm();
-            form.MdiParent = this;
-            form.Show();
-        }
-
+        // Sair
         private void btnSair_Click(object? sender, EventArgs e)
         {
             if (MessageBox.Show("Deseja realmente sair e voltar para a tela de Login?", "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)

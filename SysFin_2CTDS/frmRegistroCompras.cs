@@ -11,6 +11,7 @@ namespace SysFin_2CTDS.View
 {
     public partial class frmRegistroCompras : Form
     {
+        // Lista de itens no "carrinho" (Usa o Model 'Compra' como DTO)
         private BindingList<Compra> itensCompra = new BindingList<Compra>();
 
         private readonly FornecedorController _fornecedorController;
@@ -24,20 +25,56 @@ namespace SysFin_2CTDS.View
             _produtoController = new ProdutoController();
             _compraController = new CompraController();
 
-            dgvItensCompra.DataSource = itensCompra;
+            // Configura a Grid
             ConfigurarGrid();
+            dgvItensCompra.DataSource = itensCompra;
         }
 
         private async void frmRegistroCompras_Load(object? sender, EventArgs e)
         {
+            // Carrega dados iniciais
             await Task.WhenAll(CarregarFornecedores(), CarregarProdutos());
+            LimparFormulario(false);
+        }
+
+        private void ConfigurarGrid()
+        {
+            dgvItensCompra.AutoGenerateColumns = false;
+            dgvItensCompra.Columns.Clear();
+
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ProdutoNome",
+                HeaderText = "Produto",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Quantidade",
+                HeaderText = "Qtd",
+                Width = 60
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ValorUnitario",
+                HeaderText = "Vl. Unit.",
+                Width = 100,
+                DefaultCellStyle = { Format = "C2" }
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Subtotal",
+                HeaderText = "Subtotal",
+                Width = 100,
+                DefaultCellStyle = { Format = "C2" }
+            });
         }
 
         private async Task CarregarFornecedores()
         {
             try
             {
-                var listaDeFornecedores = await _fornecedorController.GetAllAsync();
+                var listaDeFornecedores = await _fornecedorController.GetAllAsync("nome", "ASC"); // Adicionado parametros padrão
                 cboFornecedor.DataSource = listaDeFornecedores;
                 cboFornecedor.DisplayMember = "Nome";
                 cboFornecedor.ValueMember = "Id";
@@ -65,37 +102,15 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void ConfigurarGrid()
+        // Auto-preenche o valor ao selecionar produto
+        private void cboProduto_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            dgvItensCompra.AutoGenerateColumns = false;
-            dgvItensCompra.Columns.Clear();
-
-            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            if (cboProduto.SelectedItem is Produto produtoSelecionado)
             {
-                DataPropertyName = "ProdutoNome",
-                HeaderText = "Produto",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
-            });
-            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Quantidade",
-                HeaderText = "Qtd",
-                Width = 60
-            });
-            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "ValorUnitario",
-                HeaderText = "Vl. Unitário",
-                Width = 100,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }
-            });
-            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                DataPropertyName = "Subtotal",
-                HeaderText = "Subtotal",
-                Width = 100,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }
-            });
+                // Em compras, geralmente o valor unitário é zero ou o custo anterior, 
+                // mas podemos sugerir o preço de venda ou 0. Vamos deixar 0 para o usuário digitar.
+                numValorUnitario.Value = 0;
+            }
         }
 
         private void btnAdicionar_Click(object? sender, EventArgs e)
@@ -133,17 +148,31 @@ namespace SysFin_2CTDS.View
             itensCompra.Add(item);
             AtualizarValorTotal();
 
-            cboProduto.SelectedIndex = -1;
-            numQuantidade.Value = 1;
-            numValorUnitario.Value = 0;
-            cboProduto.Focus();
+            LimparCamposDoItem();
         }
 
-        private void AtualizarValorTotal()
+        // --- MÉTODOS QUE FALTAVAM (Correção dos Erros) ---
+
+        private void btnRemover_Click(object? sender, EventArgs e)
         {
-            decimal total = itensCompra.Sum(item => item.Subtotal);
-            lblValorTotal.Text = total.ToString("C");
+            if (dgvItensCompra.SelectedRows.Count > 0)
+            {
+                var itemSelecionado = (Compra)dgvItensCompra.SelectedRows[0].DataBoundItem;
+                itensCompra.Remove(itemSelecionado);
+                AtualizarValorTotal();
+            }
+            else
+            {
+                MessageBox.Show("Selecione um item na lista para remover.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
+
+        private void btnLimparTudo_Click(object? sender, EventArgs e)
+        {
+            LimparFormulario(true);
+        }
+
+        // -------------------------------------------------
 
         private async void btnFinalizarCompra_Click(object? sender, EventArgs e)
         {
@@ -158,6 +187,9 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
+            var confirmacao = MessageBox.Show($"Deseja finalizar a compra no valor de {lblValorTotal.Text}?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmacao == DialogResult.No) return;
+
             try
             {
                 if (!(cboFornecedor.SelectedItem is Model.Fornecedor fornecedorSelecionado))
@@ -169,14 +201,10 @@ namespace SysFin_2CTDS.View
                 int fornecedorId = fornecedorSelecionado.Id;
                 decimal valorTotal = itensCompra.Sum(item => item.Subtotal);
 
-                // --- INÍCIO DA CORREÇÃO ---
-                // 1. O nome do método agora é '...Async'.
-                // 2. Removemos o argumento 'dataDaCompra', pois o Controller usa DateTime.Now.
                 await _compraController.RegistrarCompraAsync(fornecedorId, itensCompra, valorTotal);
-                // --- FIM DA CORREÇÃO ---
 
                 MessageBox.Show("Compra registrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LimparFormulario();
+                LimparFormulario(false);
             }
             catch (Exception ex)
             {
@@ -184,13 +212,31 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void LimparFormulario()
+        private void AtualizarValorTotal()
         {
-            itensCompra.Clear();
-            cboFornecedor.SelectedIndex = -1;
+            decimal total = itensCompra.Sum(item => item.Subtotal);
+            lblValorTotal.Text = total.ToString("C");
+        }
+
+        private void LimparCamposDoItem()
+        {
             cboProduto.SelectedIndex = -1;
             numQuantidade.Value = 1;
             numValorUnitario.Value = 0;
+            cboProduto.Focus();
+        }
+
+        private void LimparFormulario(bool perguntar)
+        {
+            if (perguntar)
+            {
+                if (MessageBox.Show("Tem certeza que deseja limpar todos os campos?", "Confirmação", MessageBoxButtons.YesNo) == DialogResult.No)
+                    return;
+            }
+
+            itensCompra.Clear();
+            cboFornecedor.SelectedIndex = -1;
+            LimparCamposDoItem();
             AtualizarValorTotal();
         }
     }
