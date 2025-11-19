@@ -1,4 +1,5 @@
 ﻿using SysFin_2CTDS.Controller;
+using SysFin_2CTDS.Model;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -8,17 +9,17 @@ using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View
 {
-    public partial class frmRelatorioCompras : Form
+    public partial class frmRelatorioVendas : Form
     {
-        private readonly CompraController _controller;
+        private readonly VendaController _controller;
 
-        public frmRelatorioCompras()
+        public frmRelatorioVendas()
         {
             InitializeComponent();
-            _controller = new CompraController();
+            _controller = new VendaController();
         }
 
-        private async void frmRelatorioCompras_Load(object? sender, EventArgs e)
+        private async void frmRelatorioVendas_Load(object? sender, EventArgs e)
         {
             ConfigurarGrid();
             dtpInicial.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -35,16 +36,16 @@ namespace SysFin_2CTDS.View
             dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Data",
-                DataPropertyName = "DataCompra",
-                HeaderText = "Data da Compra",
+                DataPropertyName = "DataVenda",
+                HeaderText = "Data da Venda",
                 Width = 150,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "g" }
             });
             dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "Fornecedor",
-                DataPropertyName = "NomeFornecedor",
-                HeaderText = "Fornecedor",
+                Name = "Cliente",
+                DataPropertyName = "NomeCliente",
+                HeaderText = "Cliente",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
             });
             dgvRelatorio.Columns.Add(new DataGridViewTextBoxColumn
@@ -61,13 +62,13 @@ namespace SysFin_2CTDS.View
         {
             try
             {
-                var relatorio = await _controller.GetComprasPorPeriodoAsync(dtpInicial.Value, dtpFinal.Value);
+                var relatorio = await _controller.GetVendasPorPeriodoAsync(dtpInicial.Value, dtpFinal.Value);
                 dgvRelatorio.DataSource = relatorio;
 
                 decimal totalPeriodo = relatorio.Sum(item => item.ValorTotal);
 
                 lblTotalPeriodo.Text = totalPeriodo.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
-                lblTotalPeriodo.ForeColor = Color.Firebrick; // Compras são sempre despesas
+                lblTotalPeriodo.ForeColor = Color.DarkGreen;
             }
             catch (Exception ex)
             {

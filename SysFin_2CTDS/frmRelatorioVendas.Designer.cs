@@ -1,6 +1,6 @@
 ﻿namespace SysFin_2CTDS.View
 {
-    partial class frmRelatorioCompras
+    partial class frmRelatorioVendas
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -46,7 +46,7 @@
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(884, 60);
-            this.pnlHeader.TabIndex = 2;
+            this.pnlHeader.TabIndex = 3;
             // 
             // lblTitulo
             // 
@@ -57,7 +57,7 @@
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(884, 60);
             this.lblTitulo.TabIndex = 1;
-            this.lblTitulo.Text = "Relatório de Compras por Período";
+            this.lblTitulo.Text = "Relatório de Vendas por Período";
             this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pnlFiltros
@@ -72,7 +72,7 @@
             this.pnlFiltros.Location = new System.Drawing.Point(0, 60);
             this.pnlFiltros.Name = "pnlFiltros";
             this.pnlFiltros.Size = new System.Drawing.Size(884, 55);
-            this.pnlFiltros.TabIndex = 3;
+            this.pnlFiltros.TabIndex = 4;
             // 
             // btnBuscar
             // 
@@ -168,7 +168,7 @@
             this.dgvRelatorio.RowTemplate.Height = 35;
             this.dgvRelatorio.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvRelatorio.Size = new System.Drawing.Size(884, 401);
-            this.dgvRelatorio.TabIndex = 4;
+            this.dgvRelatorio.TabIndex = 5;
             // 
             // pnlSaldos
             // 
@@ -179,13 +179,13 @@
             this.pnlSaldos.Location = new System.Drawing.Point(0, 516);
             this.pnlSaldos.Name = "pnlSaldos";
             this.pnlSaldos.Size = new System.Drawing.Size(884, 45);
-            this.pnlSaldos.TabIndex = 6;
+            this.pnlSaldos.TabIndex = 7;
             // 
             // lblTotalPeriodo
             // 
             this.lblTotalPeriodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalPeriodo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalPeriodo.ForeColor = System.Drawing.Color.Firebrick;
+            this.lblTotalPeriodo.ForeColor = System.Drawing.Color.DarkGreen;
             this.lblTotalPeriodo.Location = new System.Drawing.Point(707, 12);
             this.lblTotalPeriodo.Name = "lblTotalPeriodo";
             this.lblTotalPeriodo.Size = new System.Drawing.Size(165, 21);
@@ -204,7 +204,7 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "TOTAL DO PERÍODO (R$):";
             // 
-            // frmRelatorioCompras
+            // frmRelatorioVendas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -213,9 +213,9 @@
             this.Controls.Add(this.pnlSaldos);
             this.Controls.Add(this.pnlFiltros);
             this.Controls.Add(this.pnlHeader);
-            this.Name = "frmRelatorioCompras";
-            this.Text = "Relatório de Compras";
-            this.Load += new System.EventHandler(this.frmRelatorioCompras_Load);
+            this.Name = "frmRelatorioVendas";
+            this.Text = "Relatório de Vendas";
+            this.Load += new System.EventHandler(this.frmRelatorioVendas_Load);
             this.pnlHeader.ResumeLayout(false);
             this.pnlFiltros.ResumeLayout(false);
             this.pnlFiltros.PerformLayout();

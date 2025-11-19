@@ -3,49 +3,102 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using SysFin_2CTDS.Model;
 using SysFin_2CTDS.Controller;
-
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace SysFin_2CTDS.View
 {
     public partial class frmRegistroCompras : Form
     {
         private BindingList<Compra> itensCompra = new BindingList<Compra>();
+
+        private readonly FornecedorController _fornecedorController;
+        private readonly ProdutoController _produtoController;
+        private readonly CompraController _compraController;
+
         public frmRegistroCompras()
         {
             InitializeComponent();
+            _fornecedorController = new FornecedorController();
+            _produtoController = new ProdutoController();
+            _compraController = new CompraController();
+
+            dgvItensCompra.DataSource = itensCompra;
+            ConfigurarGrid();
         }
 
-        private void frmRegistroCompras_Load(object sender, EventArgs e)
+        private async void frmRegistroCompras_Load(object? sender, EventArgs e)
         {
-            CarregarFornecedores();
-            CarregarProdutos();
+            await Task.WhenAll(CarregarFornecedores(), CarregarProdutos());
         }
 
-        // Método responsável por buscar e carregar os fornecedores no ComboBox
-        private void CarregarFornecedores()
+        private async Task CarregarFornecedores()
         {
-            FornecedorController fornecedorController = new FornecedorController();
-            var listaDeFornecedores = fornecedorController.GetAll();
-
-            cboFornecedor.DataSource = listaDeFornecedores;
-            cboFornecedor.DisplayMember = "Nome"; 
-            cboFornecedor.ValueMember = "Id";     
-            cboFornecedor.SelectedIndex = -1;
+            try
+            {
+                var listaDeFornecedores = await _fornecedorController.GetAllAsync();
+                cboFornecedor.DataSource = listaDeFornecedores;
+                cboFornecedor.DisplayMember = "Nome";
+                cboFornecedor.ValueMember = "Id";
+                cboFornecedor.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar fornecedores: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void CarregarProdutos()
+        private async Task CarregarProdutos()
         {
-            ProdutoController produtoController = new ProdutoController();
-            var listaDeProdutos = produtoController.ListarProdutos();
-
-            cboProduto.DataSource = listaDeProdutos;
-            cboProduto.DisplayMember = "Nome"; 
-            cboProduto.ValueMember = "Id";     
-            cboProduto.SelectedIndex = -1;
+            try
+            {
+                var listaDeProdutos = await _produtoController.ListarProdutosAsync();
+                cboProduto.DataSource = listaDeProdutos;
+                cboProduto.DisplayMember = "Nome";
+                cboProduto.ValueMember = "Id";
+                cboProduto.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar produtos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void btnAdicionar_Click(object sender, EventArgs e)
+        private void ConfigurarGrid()
+        {
+            dgvItensCompra.AutoGenerateColumns = false;
+            dgvItensCompra.Columns.Clear();
+
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ProdutoNome",
+                HeaderText = "Produto",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Quantidade",
+                HeaderText = "Qtd",
+                Width = 60
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ValorUnitario",
+                HeaderText = "Vl. Unitário",
+                Width = 100,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }
+            });
+            dgvItensCompra.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Subtotal",
+                HeaderText = "Subtotal",
+                Width = 100,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "C2" }
+            });
+        }
+
+        private void btnAdicionar_Click(object? sender, EventArgs e)
         {
             if (cboProduto.SelectedItem == null)
             {
@@ -63,10 +116,16 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
+            if (!(cboProduto.SelectedItem is Model.Produto produtoSelecionado))
+            {
+                MessageBox.Show("Produto selecionado inválido.");
+                return;
+            }
+
             var item = new Compra
             {
-                ProdutoId = (int)cboProduto.SelectedValue,
-                ProdutoNome = cboProduto.Text,
+                ProdutoId = produtoSelecionado.Id,
+                ProdutoNome = produtoSelecionado.Nome,
                 Quantidade = (int)numQuantidade.Value,
                 ValorUnitario = numValorUnitario.Value
             };
@@ -80,20 +139,13 @@ namespace SysFin_2CTDS.View
             cboProduto.Focus();
         }
 
-        // Método para calcular e exibir o valor total da compra
         private void AtualizarValorTotal()
         {
-            decimal total = 0;
-            foreach (var item in itensCompra)
-            {
-                total += item.Subtotal;
-            }
-
-            lblValorTotal.Text = total.ToString("C"); 
-
+            decimal total = itensCompra.Sum(item => item.Subtotal);
+            lblValorTotal.Text = total.ToString("C");
         }
 
-        private void btnFinalizarCompra_Click(object sender, EventArgs e)
+        private async void btnFinalizarCompra_Click(object? sender, EventArgs e)
         {
             if (cboFornecedor.SelectedItem == null)
             {
@@ -106,27 +158,40 @@ namespace SysFin_2CTDS.View
                 return;
             }
 
-            int fornecedorId = (int)cboFornecedor.SelectedValue;
-            DateTime dataDaCompra = DateTime.Now;
-            var listaDeItens = this.itensCompra;
-
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("--- Compra Pronta para ser Salva ---");
-            sb.AppendLine();
-            sb.AppendLine($"ID do Fornecedor: {fornecedorId}");
-            sb.AppendLine($"Data da Compra: {dataDaCompra:dd/yyyy HH:mm:ss}");
-            sb.AppendLine($"Total de Itens: {listaDeItens.Count}");
-            sb.AppendLine($"Valor Total: {lblValorTotal.Text}");
-            sb.AppendLine();
-            sb.AppendLine("Itens:");
-            foreach (var item in listaDeItens)
+            try
             {
-                sb.AppendLine($"- {item.ProdutoNome} | Qtd: {item.Quantidade} | Vlr. Un.: {item.ValorUnitario:C} | Subtotal: {item.Subtotal:C}");
-            }
+                if (!(cboFornecedor.SelectedItem is Model.Fornecedor fornecedorSelecionado))
+                {
+                    MessageBox.Show("Fornecedor selecionado inválido.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            MessageBox.Show(sb.ToString(), "Dados da Compra Coletados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                int fornecedorId = fornecedorSelecionado.Id;
+                decimal valorTotal = itensCompra.Sum(item => item.Subtotal);
+
+                // --- INÍCIO DA CORREÇÃO ---
+                // 1. O nome do método agora é '...Async'.
+                // 2. Removemos o argumento 'dataDaCompra', pois o Controller usa DateTime.Now.
+                await _compraController.RegistrarCompraAsync(fornecedorId, itensCompra, valorTotal);
+                // --- FIM DA CORREÇÃO ---
+
+                MessageBox.Show("Compra registrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LimparFormulario();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao finalizar a compra: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LimparFormulario()
+        {
+            itensCompra.Clear();
+            cboFornecedor.SelectedIndex = -1;
+            cboProduto.SelectedIndex = -1;
+            numQuantidade.Value = 1;
+            numValorUnitario.Value = 0;
+            AtualizarValorTotal();
         }
     }
 }
-
-

@@ -1,15 +1,18 @@
-﻿using SysFin_2CTDS.Model;
+﻿using Microsoft.Data.SqlClient;
+using SysFin_2CTDS.Model;
+using SysFin_2CTDS.Model.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks; // MUDANÇA: Adicionado
 
 namespace SysFin_2CTDS.Controller
 {
     public class ProdutoController
     {
-        public string CadastrarProduto(string nome, string descricao, decimal precoVenda, int estoqueInicial)
+        // MUDANÇA: Assinatura agora é async Task<string>
+        public async Task<string> CadastrarProduto(string? nome, string? descricao, decimal precoVenda, int estoqueInicial)
         {
             using (var connection = Database.GetConnection())
             {
@@ -17,15 +20,16 @@ namespace SysFin_2CTDS.Controller
 
                 using (var command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@nome", nome);
-                    command.Parameters.AddWithValue("@descricao", descricao);
+                    // MUDANÇA: Tratamento de nulos
+                    command.Parameters.AddWithValue("@nome", (object)nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@descricao", (object)descricao ?? DBNull.Value);
                     command.Parameters.AddWithValue("@preco_venda", precoVenda);
                     command.Parameters.AddWithValue("@estoque_atual", estoqueInicial);
 
                     try
                     {
-                        connection.Open();
-                        int linhasAfetadas = command.ExecuteNonQuery();
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
 
                         if (linhasAfetadas > 0)
                         {
@@ -33,8 +37,12 @@ namespace SysFin_2CTDS.Controller
                         }
                         else
                         {
-                            return "Nenhuma linha foi afetada. O produto n�o foi cadastrado.";
+                            return "Nenhuma linha foi afetada. O produto não foi cadastrado.";
                         }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao cadastrar: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -44,26 +52,31 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 3. M�TODO PARA LISTAR OS PRODUTOS DO BANCO
-        public List<Produto> ListarProdutos()
+        // MUDANÇA: Assinatura agora é async Task<List<Produto>>
+        public async Task<List<Produto>> ListarProdutosAsync()
         {
             var produtos = new List<Produto>();
 
             using (var connection = Database.GetConnection())
             {
-                var sql = "SELECT * FROM produtos ORDER BY nome";
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos ORDER BY nome";
                 using (var command = new SqlCommand(sql, connection))
                 {
                     try
                     {
-                        connection.Open();
-                        using (var reader = command.ExecuteReader())
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync()) // MUDANÇA: Async
                             {
                                 produtos.Add(MapearProduto(reader));
                             }
                         }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao listar produtos: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -74,18 +87,19 @@ namespace SysFin_2CTDS.Controller
             return produtos;
         }
 
-        // 4. M�TODO PARA LISTAR PRODUTOS POR NOME (BUSCA)
-        public List<Produto> ListarProdutosPorNome(string termoBusca)
+        // MUDANÇA: Assinatura agora é async Task<List<Produto>>
+        public async Task<List<Produto>> ListarProdutosPorNomeAsync(string termoBusca)
         {
             if (string.IsNullOrWhiteSpace(termoBusca))
             {
-                return ListarProdutos();
+                return await ListarProdutosAsync(); // MUDANÇA: Async
             }
 
             var produtos = new List<Produto>();
             using (var connection = Database.GetConnection())
             {
-                var sql = "SELECT * FROM produtos WHERE nome LIKE @termoBusca ORDER BY nome";
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos WHERE nome LIKE @termoBusca ORDER BY nome";
 
                 using (var command = new SqlCommand(sql, connection))
                 {
@@ -93,14 +107,18 @@ namespace SysFin_2CTDS.Controller
 
                     try
                     {
-                        connection.Open();
-                        using (var reader = command.ExecuteReader())
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync()) // MUDANÇA: Async
                             {
                                 produtos.Add(MapearProduto(reader));
                             }
                         }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao buscar produtos: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -111,8 +129,8 @@ namespace SysFin_2CTDS.Controller
             return produtos;
         }
 
-        // 5. M�TODO PARA EXCLUIR PRODUTO
-        public bool ExcluirProduto(int id)
+        // MUDANÇA: Assinatura agora é async Task<bool>
+        public async Task<bool> ExcluirProdutoAsync(int id)
         {
             using (var connection = Database.GetConnection())
             {
@@ -122,8 +140,13 @@ namespace SysFin_2CTDS.Controller
                     command.Parameters.AddWithValue("@id", id);
                     try
                     {
-                        connection.Open();
-                        return command.ExecuteNonQuery() > 0;
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
+                        return linhasAfetadas > 0;
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao excluir: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -134,25 +157,30 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 6. M�TODO PARA BUSCAR UM PRODUTO �NICO POR ID
-        public Produto BuscarProdutoPorId(int id)
+        // MUDANÇA: Assinatura agora é async Task<Produto?>
+        public async Task<Produto?> BuscarProdutoPorIdAsync(int id)
         {
             using (var connection = Database.GetConnection())
             {
-                var sql = "SELECT * FROM produtos WHERE id = @id";
+                // MUDANÇA: SELECT * removido
+                var sql = "SELECT id, nome, descricao, preco_venda, estoque_atual FROM produtos WHERE id = @id";
                 using (var command = new SqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     try
                     {
-                        connection.Open();
-                        using (var reader = command.ExecuteReader())
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        using (var reader = await command.ExecuteReaderAsync()) // MUDANÇA: Async
                         {
-                            if (reader.Read())
+                            if (await reader.ReadAsync()) // MUDANÇA: Async
                             {
                                 return MapearProduto(reader);
                             }
                         }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao buscar produto: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -163,8 +191,8 @@ namespace SysFin_2CTDS.Controller
             return null;
         }
 
-        // 7. M�TODO PARA ATUALIZAR O PRODUTO
-        public string AtualizarProduto(int id, string nome, string descricao, decimal precoVenda)
+        // MUDANÇA: Assinatura agora é async Task<string>
+        public async Task<string> AtualizarProdutoAsync(int id, string? nome, string? descricao, decimal precoVenda)
         {
             using (var connection = Database.GetConnection())
             {
@@ -173,14 +201,15 @@ namespace SysFin_2CTDS.Controller
                 using (var command = new SqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@nome", nome);
-                    command.Parameters.AddWithValue("@descricao", descricao);
+                    // MUDANÇA: Tratamento de nulos
+                    command.Parameters.AddWithValue("@nome", (object)nome ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@descricao", (object)descricao ?? DBNull.Value);
                     command.Parameters.AddWithValue("@preco_venda", precoVenda);
 
                     try
                     {
-                        connection.Open();
-                        int linhasAfetadas = command.ExecuteNonQuery();
+                        await connection.OpenAsync(); // MUDANÇA: Async
+                        int linhasAfetadas = await command.ExecuteNonQueryAsync(); // MUDANÇA: Async
 
                         if (linhasAfetadas > 0)
                         {
@@ -188,8 +217,12 @@ namespace SysFin_2CTDS.Controller
                         }
                         else
                         {
-                            return "Produto n�o encontrado. A atualiza��o falhou.";
+                            return "Produto não encontrado. A atualização falhou.";
                         }
+                    }
+                    catch (SqlException ex) // MUDANÇA: Captura SqlException
+                    {
+                        throw new Exception($"Erro de banco de dados ao atualizar: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
@@ -199,17 +232,17 @@ namespace SysFin_2CTDS.Controller
             }
         }
 
-        // 8. M�TODO AUXILIAR PARA MAPEAR OS PRODUTOS
         private Produto MapearProduto(SqlDataReader reader)
         {
             return new Produto
             {
                 Id = reader.GetInt32(reader.GetOrdinal("id")),
-                Nome = reader.GetString(reader.GetOrdinal("nome")),
-                Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? "" : reader.GetString(reader.GetOrdinal("descricao")),
+                Nome = reader.IsDBNull(reader.GetOrdinal("nome")) ? null : reader.GetString(reader.GetOrdinal("nome")),
+                Descricao = reader.IsDBNull(reader.GetOrdinal("descricao")) ? null : reader.GetString(reader.GetOrdinal("descricao")),
                 PrecoVenda = reader.GetDecimal(reader.GetOrdinal("preco_venda")),
                 EstoqueAtual = reader.GetInt32(reader.GetOrdinal("estoque_atual"))
             };
         }
     }
 }
+

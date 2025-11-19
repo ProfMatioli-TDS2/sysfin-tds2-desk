@@ -1,9 +1,14 @@
-﻿namespace SysFin_2CTDS.View {
-    partial class ClienteForm {
+﻿namespace SysFin_2CTDS.View
+{
+    // Herda diretamente de Form
+    partial class ClienteForm
+    {
         private System.ComponentModel.IContainer components = null;
 
-        protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -11,183 +16,320 @@
 
         #region Windows Form Designer generated code
 
-        private void InitializeComponent() {
-            this.dgvClientes = new System.Windows.Forms.DataGridView();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtTelefone = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCpfCnpj = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtNome = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnNovo = new System.Windows.Forms.Button();
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClienteForm));
+            dgvClientes = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
+            colNome = new DataGridViewTextBoxColumn();
+            colCpfCnpj = new DataGridViewTextBoxColumn();
+            colEmail = new DataGridViewTextBoxColumn();
+            colTelefone = new DataGridViewTextBoxColumn();
+            groupBox1 = new GroupBox();
+            mtbCpfCnpj = new MaskedTextBox();
+            mtbTelefone = new MaskedTextBox();
+            label4 = new Label();
+            txtEmail = new TextBox();
+            label3 = new Label();
+            label2 = new Label();
+            txtNome = new TextBox();
+            label1 = new Label();
+            btnGerarRelatorio = new Button();
+            txtBuscaNome = new TextBox();
+            label5 = new Label();
+            btnNovo = new Button();
+            btnSalvar = new Button();
+            btnExcluir = new Button();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
             // 
             // dgvClientes
             // 
-            this.dgvClientes.AllowUserToAddRows = false;
-            this.dgvClientes.AllowUserToDeleteRows = false;
-            this.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvClientes.Location = new System.Drawing.Point(12, 188);
-            this.dgvClientes.MultiSelect = false;
-            this.dgvClientes.Name = "dgvClientes";
-            this.dgvClientes.ReadOnly = true;
-            this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientes.Size = new System.Drawing.Size(776, 250);
-            this.dgvClientes.TabIndex = 0;
-            this.dgvClientes.SelectionChanged += new System.EventHandler(this.dgvClientes_SelectionChanged);
+            dgvClientes.AllowUserToAddRows = false;
+            dgvClientes.AllowUserToDeleteRows = false;
+            dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colCpfCnpj, colEmail, colTelefone });
+            dgvClientes.Location = new Point(14, 217);
+            dgvClientes.Margin = new Padding(4, 3, 4, 3);
+            dgvClientes.MultiSelect = false;
+            dgvClientes.Name = "dgvClientes";
+            dgvClientes.ReadOnly = true;
+            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClientes.Size = new Size(905, 288);
+            dgvClientes.TabIndex = 0;
+            dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "Id";
+            colId.HeaderText = "ID";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            // 
+            // colNome
+            // 
+            colNome.DataPropertyName = "Nome";
+            colNome.HeaderText = "Nome";
+            colNome.Name = "colNome";
+            colNome.ReadOnly = true;
+            // 
+            // colCpfCnpj
+            // 
+            colCpfCnpj.DataPropertyName = "CpfCnpj";
+            colCpfCnpj.HeaderText = "CPF/CNPJ";
+            colCpfCnpj.Name = "colCpfCnpj";
+            colCpfCnpj.ReadOnly = true;
+            // 
+            // colEmail
+            // 
+            colEmail.DataPropertyName = "Email";
+            colEmail.HeaderText = "E-mail";
+            colEmail.Name = "colEmail";
+            colEmail.ReadOnly = true;
+            // 
+            // colTelefone
+            // 
+            colTelefone.DataPropertyName = "Telefone";
+            colTelefone.HeaderText = "Telefone";
+            colTelefone.Name = "colTelefone";
+            colTelefone.ReadOnly = true;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.txtTelefone);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.txtEmail);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.txtCpfCnpj);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.txtNome);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 128);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Dados do Cliente";
+            groupBox1.Controls.Add(mtbCpfCnpj);
+            groupBox1.Controls.Add(mtbTelefone);
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(txtEmail);
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(txtNome);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Location = new Point(14, 14);
+            groupBox1.Margin = new Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new Padding(4, 3, 4, 3);
+            groupBox1.Size = new Size(905, 161);
+            groupBox1.TabIndex = 1;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Dados do Cliente";
             // 
-            // txtTelefone
+            // mtbCpfCnpj
             // 
-            this.txtTelefone.Location = new System.Drawing.Point(455, 87);
-            this.txtTelefone.Name = "txtTelefone";
-            this.txtTelefone.Size = new System.Drawing.Size(306, 20);
-            this.txtTelefone.TabIndex = 7;
+            mtbCpfCnpj.Location = new Point(531, 47);
+            mtbCpfCnpj.Name = "mtbCpfCnpj";
+            mtbCpfCnpj.Size = new Size(356, 23);
+            mtbCpfCnpj.TabIndex = 9;
+            mtbCpfCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbCpfCnpj.KeyPress += mtbCpfCnpj_KeyPress;
+            mtbCpfCnpj.KeyUp += mtbCpfCnpj_KeyUp;
+            // 
+            // mtbTelefone
+            // 
+            mtbTelefone.Location = new Point(531, 100);
+            mtbTelefone.Name = "mtbTelefone";
+            mtbTelefone.Size = new Size(356, 23);
+            mtbTelefone.TabIndex = 8;
+            mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbTelefone.KeyPress += mtbTelefone_KeyPress;
+            mtbTelefone.KeyUp += mtbTelefone_KeyUp;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(452, 71);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Telefone";
+            label4.AutoSize = true;
+            label4.Location = new Point(527, 82);
+            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(55, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Telefone:";
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(15, 87);
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(418, 20);
-            this.txtEmail.TabIndex = 5;
+            txtEmail.Location = new Point(18, 100);
+            txtEmail.Margin = new Padding(4, 3, 4, 3);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(487, 23);
+            txtEmail.TabIndex = 5;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 71);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "E-mail";
-            // 
-            // txtCpfCnpj
-            // 
-            this.txtCpfCnpj.Location = new System.Drawing.Point(455, 41);
-            this.txtCpfCnpj.Name = "txtCpfCnpj";
-            this.txtCpfCnpj.Size = new System.Drawing.Size(306, 20);
-            this.txtCpfCnpj.TabIndex = 3;
+            label3.AutoSize = true;
+            label3.Location = new Point(14, 82);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(44, 15);
+            label3.TabIndex = 4;
+            label3.Text = "E-mail:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(452, 25);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "CPF/CNPJ";
+            label2.AutoSize = true;
+            label2.Location = new Point(527, 29);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(63, 15);
+            label2.TabIndex = 2;
+            label2.Text = "CPF/CNPJ:";
             // 
             // txtNome
             // 
-            this.txtNome.Location = new System.Drawing.Point(15, 41);
-            this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(418, 20);
-            this.txtNome.TabIndex = 1;
+            txtNome.Location = new Point(18, 47);
+            txtNome.Margin = new Padding(4, 3, 4, 3);
+            txtNome.Name = "txtNome";
+            txtNome.Size = new Size(487, 23);
+            txtNome.TabIndex = 1;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 25);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Nome";
+            label1.AutoSize = true;
+            label1.Location = new Point(14, 29);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(43, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Nome:";
+            // 
+            // btnGerarRelatorio
+            // 
+            btnGerarRelatorio.BackColor = Color.MediumOrchid;
+            btnGerarRelatorio.FlatStyle = FlatStyle.Flat;
+            btnGerarRelatorio.ForeColor = Color.White;
+            btnGerarRelatorio.Location = new Point(831, 181);
+            btnGerarRelatorio.Name = "btnGerarRelatorio";
+            btnGerarRelatorio.Size = new Size(88, 27);
+            btnGerarRelatorio.TabIndex = 10;
+            btnGerarRelatorio.Text = "Relatório";
+            btnGerarRelatorio.UseVisualStyleBackColor = false;
+            btnGerarRelatorio.Click += btnGerarRelatorio_Click;
+            // 
+            // txtBuscaNome
+            // 
+            txtBuscaNome.Location = new Point(136, 181);
+            txtBuscaNome.Name = "txtBuscaNome";
+            txtBuscaNome.Size = new Size(323, 23);
+            txtBuscaNome.TabIndex = 0;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(28, 184);
+            label5.Name = "label5";
+            label5.Size = new Size(102, 15);
+            label5.TabIndex = 8;
+            label5.Text = "Buscar por Nome:";
             // 
             // btnNovo
             // 
-            this.btnNovo.Location = new System.Drawing.Point(549, 146);
-            this.btnNovo.Name = "btnNovo";
-            this.btnNovo.Size = new System.Drawing.Size(75, 23);
-            this.btnNovo.TabIndex = 2;
-            this.btnNovo.Text = "Novo";
-            this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
+            btnNovo.BackColor = Color.CornflowerBlue;
+            btnNovo.FlatAppearance.BorderSize = 0;
+            btnNovo.FlatStyle = FlatStyle.Flat;
+            btnNovo.ForeColor = Color.White;
+            btnNovo.Location = new Point(526, 181);
+            btnNovo.Margin = new Padding(4, 3, 4, 3);
+            btnNovo.Name = "btnNovo";
+            btnNovo.Size = new Size(88, 27);
+            btnNovo.TabIndex = 2;
+            btnNovo.Text = "Novo";
+            btnNovo.UseVisualStyleBackColor = false;
+            btnNovo.Click += btnNovo_Click;
             // 
             // btnSalvar
             // 
-            this.btnSalvar.Location = new System.Drawing.Point(630, 146);
-            this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(75, 23);
-            this.btnSalvar.TabIndex = 3;
-            this.btnSalvar.Text = "Salvar";
-            this.btnSalvar.UseVisualStyleBackColor = true;
-            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            btnSalvar.BackColor = Color.MediumSeaGreen;
+            btnSalvar.FlatAppearance.BorderSize = 0;
+            btnSalvar.FlatStyle = FlatStyle.Flat;
+            btnSalvar.ForeColor = Color.White;
+            btnSalvar.Location = new Point(627, 181);
+            btnSalvar.Margin = new Padding(4, 3, 4, 3);
+            btnSalvar.Name = "btnSalvar";
+            btnSalvar.Size = new Size(88, 27);
+            btnSalvar.TabIndex = 3;
+            btnSalvar.Text = "Salvar";
+            btnSalvar.UseVisualStyleBackColor = false;
+            btnSalvar.Click += btnSalvar_Click;
             // 
             // btnExcluir
             // 
-            this.btnExcluir.Location = new System.Drawing.Point(711, 146);
-            this.btnExcluir.Name = "btnExcluir";
-            this.btnExcluir.Size = new System.Drawing.Size(75, 23);
-            this.btnExcluir.TabIndex = 4;
-            this.btnExcluir.Text = "Excluir";
-            this.btnExcluir.UseVisualStyleBackColor = true;
-            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            btnExcluir.BackColor = Color.Crimson;
+            btnExcluir.FlatAppearance.BorderSize = 0;
+            btnExcluir.FlatStyle = FlatStyle.Flat;
+            btnExcluir.ForeColor = Color.White;
+            btnExcluir.Location = new Point(733, 181);
+            btnExcluir.Margin = new Padding(4, 3, 4, 3);
+            btnExcluir.Name = "btnExcluir";
+            btnExcluir.Size = new Size(88, 27);
+            btnExcluir.TabIndex = 4;
+            btnExcluir.Text = "Excluir";
+            btnExcluir.UseVisualStyleBackColor = false;
+            btnExcluir.Click += btnExcluir_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Cursor = Cursors.Hand;
+            pictureBox1.Location = new Point(465, 181);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(40, 23);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // ClienteForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnExcluir);
-            this.Controls.Add(this.btnSalvar);
-            this.Controls.Add(this.btnNovo);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.dgvClientes);
-            this.Name = "ClienteForm";
-            this.Text = "Gestão de Clientes";
-            this.Load += new System.EventHandler(this.ClienteForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(933, 519);
+            Controls.Add(btnGerarRelatorio);
+            Controls.Add(pictureBox1);
+            Controls.Add(txtBuscaNome);
+            Controls.Add(btnExcluir);
+            Controls.Add(label5);
+            Controls.Add(btnSalvar);
+            Controls.Add(btnNovo);
+            Controls.Add(groupBox1);
+            Controls.Add(dgvClientes);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ClienteForm";
+            Text = "Gestão de Clientes";
+            Load += ClienteForm_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+            // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
         }
 
         #endregion
 
+        // --- INÍCIO DA VERSÃO CORRETA (TAREFA2) ---
         private System.Windows.Forms.DataGridView dgvClientes;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox txtTelefone;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtCpfCnpj;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtNome;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.Button btnSalvar;
         private System.Windows.Forms.Button btnExcluir;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colNome;
+        private DataGridViewTextBoxColumn colCpfCnpj;
+        private DataGridViewTextBoxColumn colEmail;
+        private DataGridViewTextBoxColumn colTelefone;
+        private Label label5;
+        private TextBox txtBuscaNome;
+        private PictureBox pictureBox1;
+        private Button btnGerarRelatorio;
+        private MaskedTextBox mtbTelefone;
+        private MaskedTextBox mtbCpfCnpj;
+        // --- FIM DA VERSÃO CORRETA (TAREFA2) ---
     }
 }

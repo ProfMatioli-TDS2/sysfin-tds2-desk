@@ -1,6 +1,6 @@
 ﻿namespace SysFin_2CTDS.View
 {
-    partial class frmRelatorioCompras
+    partial class frmFluxoCaixa
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -22,19 +22,22 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblTitulo = new System.Windows.Forms.Label();
+            this.btnNovoLancamento = new System.Windows.Forms.Button();
             this.pnlFiltros = new System.Windows.Forms.Panel();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.dtpFinal = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpInicial = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
-            this.dgvRelatorio = new System.Windows.Forms.DataGridView();
+            this.dgvMovimentos = new System.Windows.Forms.DataGridView();
             this.pnlSaldos = new System.Windows.Forms.Panel();
-            this.lblTotalPeriodo = new System.Windows.Forms.Label();
+            this.lblSaldoTotal = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblSaldoPeriodo = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             this.pnlFiltros.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRelatorio)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMovimentos)).BeginInit();
             this.pnlSaldos.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -42,11 +45,12 @@
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
             this.pnlHeader.Controls.Add(this.lblTitulo);
+            this.pnlHeader.Controls.Add(this.btnNovoLancamento);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(884, 60);
-            this.pnlHeader.TabIndex = 2;
+            this.pnlHeader.TabIndex = 0;
             // 
             // lblTitulo
             // 
@@ -55,10 +59,28 @@
             this.lblTitulo.ForeColor = System.Drawing.Color.White;
             this.lblTitulo.Location = new System.Drawing.Point(0, 0);
             this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(884, 60);
+            this.lblTitulo.Size = new System.Drawing.Size(714, 60);
             this.lblTitulo.TabIndex = 1;
-            this.lblTitulo.Text = "Relatório de Compras por Período";
+            this.lblTitulo.Text = "Fluxo de Caixa";
             this.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnNovoLancamento
+            // 
+            this.btnNovoLancamento.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            this.btnNovoLancamento.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnNovoLancamento.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnNovoLancamento.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(68)))), ((int)(((byte)(70)))));
+            this.btnNovoLancamento.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(62)))), ((int)(((byte)(64)))));
+            this.btnNovoLancamento.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNovoLancamento.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNovoLancamento.ForeColor = System.Drawing.Color.White;
+            this.btnNovoLancamento.Location = new System.Drawing.Point(714, 0);
+            this.btnNovoLancamento.Name = "btnNovoLancamento";
+            this.btnNovoLancamento.Size = new System.Drawing.Size(170, 60);
+            this.btnNovoLancamento.TabIndex = 3;
+            this.btnNovoLancamento.Text = "+ Novo Lançamento";
+            this.btnNovoLancamento.UseVisualStyleBackColor = false;
+            this.btnNovoLancamento.Click += new System.EventHandler(this.btnNovoLancamento_Click);
             // 
             // pnlFiltros
             // 
@@ -72,7 +94,7 @@
             this.pnlFiltros.Location = new System.Drawing.Point(0, 60);
             this.pnlFiltros.Name = "pnlFiltros";
             this.pnlFiltros.Size = new System.Drawing.Size(884, 55);
-            this.pnlFiltros.TabIndex = 3;
+            this.pnlFiltros.TabIndex = 1;
             // 
             // btnBuscar
             // 
@@ -128,15 +150,15 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "De:";
             // 
-            // dgvRelatorio
+            // dgvMovimentos
             // 
-            this.dgvRelatorio.AllowUserToAddRows = false;
-            this.dgvRelatorio.AllowUserToDeleteRows = false;
-            this.dgvRelatorio.AllowUserToResizeRows = false;
-            this.dgvRelatorio.BackgroundColor = System.Drawing.Color.WhiteSmoke;
-            this.dgvRelatorio.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvRelatorio.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvRelatorio.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.dgvMovimentos.AllowUserToAddRows = false;
+            this.dgvMovimentos.AllowUserToDeleteRows = false;
+            this.dgvMovimentos.AllowUserToResizeRows = false;
+            this.dgvMovimentos.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dgvMovimentos.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvMovimentos.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvMovimentos.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -144,8 +166,8 @@
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRelatorio.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvRelatorio.ColumnHeadersHeight = 40;
+            this.dgvMovimentos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvMovimentos.ColumnHeadersHeight = 40;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.WhiteSmoke;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -153,73 +175,102 @@
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Gainsboro;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvRelatorio.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgvRelatorio.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvRelatorio.EnableHeadersVisualStyles = false;
-            this.dgvRelatorio.GridColor = System.Drawing.Color.LightGray;
-            this.dgvRelatorio.Location = new System.Drawing.Point(0, 115);
-            this.dgvRelatorio.MultiSelect = false;
-            this.dgvRelatorio.Name = "dgvRelatorio";
-            this.dgvRelatorio.ReadOnly = true;
-            this.dgvRelatorio.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.dgvRelatorio.RowHeadersVisible = false;
+            this.dgvMovimentos.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvMovimentos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvMovimentos.EnableHeadersVisualStyles = false;
+            this.dgvMovimentos.GridColor = System.Drawing.Color.LightGray;
+            this.dgvMovimentos.Location = new System.Drawing.Point(0, 115);
+            this.dgvMovimentos.MultiSelect = false;
+            this.dgvMovimentos.Name = "dgvMovimentos";
+            this.dgvMovimentos.ReadOnly = true;
+            this.dgvMovimentos.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.dgvMovimentos.RowHeadersVisible = false;
             dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.dgvRelatorio.RowsDefaultCellStyle = dataGridViewCellStyle3;
-            this.dgvRelatorio.RowTemplate.Height = 35;
-            this.dgvRelatorio.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRelatorio.Size = new System.Drawing.Size(884, 401);
-            this.dgvRelatorio.TabIndex = 4;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.WhiteSmoke;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(52)))), ((int)(((byte)(54)))));
+            this.dgvMovimentos.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dgvMovimentos.RowTemplate.Height = 35;
+            this.dgvMovimentos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvMovimentos.Size = new System.Drawing.Size(884, 401);
+            this.dgvMovimentos.TabIndex = 4;
+            this.dgvMovimentos.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvMovimentos_CellFormatting);
             // 
             // pnlSaldos
             // 
             this.pnlSaldos.BackColor = System.Drawing.Color.White;
-            this.pnlSaldos.Controls.Add(this.lblTotalPeriodo);
+            this.pnlSaldos.Controls.Add(this.lblSaldoTotal);
+            this.pnlSaldos.Controls.Add(this.label5);
+            this.pnlSaldos.Controls.Add(this.lblSaldoPeriodo);
             this.pnlSaldos.Controls.Add(this.label3);
             this.pnlSaldos.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlSaldos.Location = new System.Drawing.Point(0, 516);
             this.pnlSaldos.Name = "pnlSaldos";
             this.pnlSaldos.Size = new System.Drawing.Size(884, 45);
-            this.pnlSaldos.TabIndex = 6;
+            this.pnlSaldos.TabIndex = 5;
             // 
-            // lblTotalPeriodo
+            // lblSaldoTotal
             // 
-            this.lblTotalPeriodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTotalPeriodo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalPeriodo.ForeColor = System.Drawing.Color.Firebrick;
-            this.lblTotalPeriodo.Location = new System.Drawing.Point(707, 12);
-            this.lblTotalPeriodo.Name = "lblTotalPeriodo";
-            this.lblTotalPeriodo.Size = new System.Drawing.Size(165, 21);
-            this.lblTotalPeriodo.TabIndex = 1;
-            this.lblTotalPeriodo.Text = "R$ 0,00";
-            this.lblTotalPeriodo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblSaldoTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSaldoTotal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSaldoTotal.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblSaldoTotal.Location = new System.Drawing.Point(707, 12);
+            this.lblSaldoTotal.Name = "lblSaldoTotal";
+            this.lblSaldoTotal.Size = new System.Drawing.Size(165, 21);
+            this.lblSaldoTotal.TabIndex = 3;
+            this.lblSaldoTotal.Text = "R$ 0,00";
+            this.lblSaldoTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(559, 12);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(142, 21);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "SALDO TOTAL (R$):";
+            // 
+            // lblSaldoPeriodo
+            // 
+            this.lblSaldoPeriodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSaldoPeriodo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSaldoPeriodo.ForeColor = System.Drawing.Color.DarkGreen;
+            this.lblSaldoPeriodo.Location = new System.Drawing.Point(198, 12);
+            this.lblSaldoPeriodo.Name = "lblSaldoPeriodo";
+            this.lblSaldoPeriodo.Size = new System.Drawing.Size(165, 21);
+            this.lblSaldoPeriodo.TabIndex = 1;
+            this.lblSaldoPeriodo.Text = "R$ 0,00";
+            this.lblSaldoPeriodo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(526, 12);
+            this.label3.Location = new System.Drawing.Point(17, 12);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(175, 21);
             this.label3.TabIndex = 0;
-            this.label3.Text = "TOTAL DO PERÍODO (R$):";
+            this.label3.Text = "SALDO DO PERÍODO (R$):";
             // 
-            // frmRelatorioCompras
+            // frmFluxoCaixa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Gainsboro;
             this.ClientSize = new System.Drawing.Size(884, 561);
-            this.Controls.Add(this.dgvRelatorio);
+            this.Controls.Add(this.dgvMovimentos);
             this.Controls.Add(this.pnlSaldos);
             this.Controls.Add(this.pnlFiltros);
             this.Controls.Add(this.pnlHeader);
-            this.Name = "frmRelatorioCompras";
-            this.Text = "Relatório de Compras";
-            this.Load += new System.EventHandler(this.frmRelatorioCompras_Load);
+            this.Name = "frmFluxoCaixa";
+            this.Text = "Fluxo de Caixa";
+            this.Load += new System.EventHandler(this.frmFluxoCaixa_Load);
             this.pnlHeader.ResumeLayout(false);
             this.pnlFiltros.ResumeLayout(false);
             this.pnlFiltros.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRelatorio)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMovimentos)).EndInit();
             this.pnlSaldos.ResumeLayout(false);
             this.pnlSaldos.PerformLayout();
             this.ResumeLayout(false);
@@ -230,15 +281,18 @@
 
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitulo;
+        private System.Windows.Forms.Button btnNovoLancamento;
         private System.Windows.Forms.Panel pnlFiltros;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.DateTimePicker dtpFinal;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker dtpInicial;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.DataGridView dgvRelatorio;
+        private System.Windows.Forms.DataGridView dgvMovimentos;
         private System.Windows.Forms.Panel pnlSaldos;
-        private System.Windows.Forms.Label lblTotalPeriodo;
+        private System.Windows.Forms.Label lblSaldoTotal;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblSaldoPeriodo;
         private System.Windows.Forms.Label label3;
     }
 }

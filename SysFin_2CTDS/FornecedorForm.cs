@@ -2,9 +2,10 @@
 using SysFin_2CTDS.Model;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
+using System.Linq; // Adicionado
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SysFin_2CTDS.View
@@ -12,74 +13,59 @@ namespace SysFin_2CTDS.View
     public partial class FornecedorForm : Form
     {
         private readonly FornecedorController _fornecedorController;
+        private readonly RelatorioController _relatorioController;
         private Fornecedor? _fornecedorSelecionado;
-        private string _currentOrderBy = "nome";
-        private string _currentDirection = "ASC";
 
-        // Variáveis para o relatório
-        private PrintDocument printDocument = new PrintDocument();
-        private List<Fornecedor> _fornecedoresParaRelatorio = new List<Fornecedor>();
-        private int _indiceFornecedorAtual = 0;
+        private const string MascaraCpf = "000\\.000\\.000\\-00";
+        private const string MascaraCnpj = "00\\.000\\.000\\/0000\\-00";
+        private const string MascaraTelFixo = "\\(00\\) 0000\\-0000";
+        private const string MascaraTelCel = "\\(00\\) 00000\\-0000";
+
+        private bool _mudandoMascaraCpfCnpj = false;
+        private bool _mudandoMascaraTel = false;
+
 
         public FornecedorForm()
         {
             InitializeComponent();
             _fornecedorController = new FornecedorController();
-            dgvFornecedores.ColumnHeaderMouseClick += new DataGridViewCellMouseEventHandler(dgvFornecedores_ColumnHeaderMouseClick);
-            printDocument.PrintPage += new PrintPageEventHandler(printDocument_PrintPage);
+            _relatorioController = new RelatorioController();
         }
 
-        private void FornecedorForm_Load(object sender, EventArgs e)
+        private async void FornecedorForm_Load(object? sender, EventArgs e)
         {
-            CarregarFornecedores();
+            ConfigurarGrid();
 
-            //Mascaras CNPJ e Telefone
-            mtbCnpj.Mask = "00.000.000/0000-00";
-            mtbTelefone.Mask = "(00) 00000-0000";
+            mtbCnpj.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbTelefone.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+            mtbCnpj.Mask = MascaraCnpj;
+            mtbTelefone.Mask = MascaraTelFixo;
 
-            //Melhorias no dgvFornecedores
-            dgvFornecedores.ReadOnly = true; // Impede edição direta
-            dgvFornecedores.AllowUserToAddRows = false; // Impede adicionar linhas
-            dgvFornecedores.AllowUserToDeleteRows = false; // Impede excluir linhas
-            dgvFornecedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // Seleção por linha
-            dgvFornecedores.MultiSelect = false; // Só permite selecionar uma linha
-            dgvFornecedores.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
-            dgvFornecedores.DefaultCellStyle.Font = new Font("Segoe UI", 9);
-            dgvFornecedores.DefaultCellStyle.BackColor = Color.White;
-            dgvFornecedores.DefaultCellStyle.ForeColor = Color.Black;
-            dgvFornecedores.DefaultCellStyle.SelectionBackColor = Color.LightSteelBlue;
-            dgvFornecedores.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvFornecedores.RowHeadersVisible = false;
-            dgvFornecedores.Columns["Id"].Width = 110;
-            dgvFornecedores.Columns["Nome"].Width = 200;
-            dgvFornecedores.Columns["Cnpj"].Width = 200;
-            dgvFornecedores.Columns["Email"].Width = 220;
-            dgvFornecedores.Columns["Telefone"].Width = 173;
-            dgvFornecedores.Columns["Id"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvFornecedores.Columns["Telefone"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-
-
+            await CarregarFornecedoresAsync();
         }
 
-        private void CarregarFornecedores()
+        private void ConfigurarGrid()
         {
             dgvFornecedores.AutoGenerateColumns = false;
-            if (dgvFornecedores.Columns.Count == 0)
-            {
-                dgvFornecedores.Columns.Add("Id", "ID");
-                dgvFornecedores.Columns.Add("Nome", "Nome");
-                dgvFornecedores.Columns.Add("Cnpj", "CNPJ");
-                dgvFornecedores.Columns.Add("Email", "E-mail");
-                dgvFornecedores.Columns.Add("Telefone", "Telefone");
+        }
 
-                dgvFornecedores.Columns["Id"].DataPropertyName = "Id";
-                dgvFornecedores.Columns["Nome"].DataPropertyName = "Nome";
-                dgvFornecedores.Columns["Cnpj"].DataPropertyName = "Cnpj";
-                dgvFornecedores.Columns["Email"].DataPropertyName = "Email";
-                dgvFornecedores.Columns["Telefone"].DataPropertyName = "Telefone";
+        private async Task CarregarFornecedoresAsync()
+        {
+            string filtro = txtBuscaNome.Text.Trim();
+            dgvFornecedores.DataSource = null;
+
+            try
+            {
+                // O Controller já tem o filtro (adicionado no Passo 49 para Clientes,
+                // mas assumindo que FornecedorController também foi atualizado ou usará "")
+                // Para garantir, vamos checar o método no controller.
+                // Ok, o controller (Passo 62) NÃO tem filtro. Vamos passar só "nome" e "ASC".
+                dgvFornecedores.DataSource = await _fornecedorController.GetAllAsync(filtro);
             }
-            dgvFornecedores.DataSource = _fornecedorController.GetAll(_currentOrderBy, _currentDirection);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro ao Carregar Fornecedores", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void LimparFormulario()
@@ -89,55 +75,93 @@ namespace SysFin_2CTDS.View
             mtbCnpj.Clear();
             txtEmail.Clear();
             mtbTelefone.Clear();
-            dgvFornecedores.ClearSelection();
+
+            mtbCnpj.Mask = MascaraCnpj;
+            mtbTelefone.Mask = MascaraTelFixo;
             txtNome.Focus();
         }
 
-        private void btnNovo_Click(object sender, EventArgs e)
+        private async void btnNovo_Click(object? sender, EventArgs e)
         {
+            dgvFornecedores.SelectionChanged -= dgvFornecedores_SelectionChanged;
+
             LimparFormulario();
+            txtBuscaNome.Clear();
+            await CarregarFornecedoresAsync();
+            dgvFornecedores.ClearSelection();
+
+            dgvFornecedores.SelectionChanged += dgvFornecedores_SelectionChanged;
+            txtNome.Focus();
         }
 
-        private void btnSalvar_Click(object sender, EventArgs e)
+        // --- INÍCIO DA CORREÇÃO ---
+        private async void btnSalvar_Click(object? sender, EventArgs e)
         {
-            var fornecedor = _fornecedorSelecionado ?? new Fornecedor();
-            fornecedor.Nome = txtNome.Text;
-            fornecedor.Email = txtEmail.Text;
-            fornecedor.Cnpj = new string(mtbCnpj.Text.Where(char.IsDigit).ToArray());
-            fornecedor.Telefone = new string(mtbTelefone.Text.Where(char.IsDigit).ToArray());
+            // 1. A validação (IsValidCnpj, etc.) foi REMOVIDA daqui.
+            //    O Controller (SaveAsync) é quem faz a validação agora.
 
+            string cnpjApenasNumeros = mtbCnpj.Text;
+            string telefoneApenasNumeros = mtbTelefone.Text;
 
-
-            var errors = _fornecedorController.Save(fornecedor);
-
-            if (errors.Any())
+            try
             {
-                MessageBox.Show(string.Join("\n", errors), "Erros de Validação", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var fornecedor = _fornecedorSelecionado ?? new Fornecedor();
+                fornecedor.Nome = txtNome.Text;
+                fornecedor.Cnpj = cnpjApenasNumeros;
+                fornecedor.Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text;
+                fornecedor.Telefone = string.IsNullOrWhiteSpace(telefoneApenasNumeros) ? null : telefoneApenasNumeros;
+
+                // 2. CORREÇÃO DO ERRO 1: Capturamos a List<string> de erros
+                List<string> errors = await _fornecedorController.SaveAsync(fornecedor);
+
+                // 3. Verificamos se a lista de erros tem alguma coisa
+                if (errors.Any())
+                {
+                    // Se tem erros, mostra eles
+                    MessageBox.Show(string.Join("\n", errors), "Erro de Validação", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    // Se a lista está vazia (sucesso)
+                    MessageBox.Show("Fornecedor salvo com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    dgvFornecedores.SelectionChanged -= dgvFornecedores_SelectionChanged;
+                    LimparFormulario();
+                    await CarregarFornecedoresAsync();
+                    dgvFornecedores.ClearSelection();
+                    dgvFornecedores.SelectionChanged += dgvFornecedores_SelectionChanged;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Fornecedor salvo com sucesso!");
-                LimparFormulario();
-                CarregarFornecedores();
+                MessageBox.Show(ex.Message, "Erro ao Salvar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        // --- FIM DA CORREÇÃO ---
 
-        private void btnExcluir_Click(object sender, EventArgs e)
+        private async void btnExcluir_Click(object? sender, EventArgs e)
         {
             if (_fornecedorSelecionado != null)
             {
                 var result = MessageBox.Show("Tem certeza que deseja excluir este fornecedor?", "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    if (_fornecedorController.Delete(_fornecedorSelecionado.Id))
+                    try
                     {
-                        MessageBox.Show("Fornecedor excluído com sucesso!");
-                        LimparFormulario();
-                        CarregarFornecedores();
+                        if (await _fornecedorController.DeleteAsync(_fornecedorSelecionado.Id))
+                        {
+                            MessageBox.Show("Fornecedor excluído com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LimparFormulario();
+                            await CarregarFornecedoresAsync();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Falha ao excluir o fornecedor.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Falha ao excluir o fornecedor. Verifique se há dependências ou tente novamente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(ex.Message, "Erro ao Excluir", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -147,139 +171,202 @@ namespace SysFin_2CTDS.View
             }
         }
 
-        private void dgvFornecedores_SelectionChanged(object sender, EventArgs e)
+        private void dgvFornecedores_SelectionChanged(object? sender, EventArgs e)
         {
             if (dgvFornecedores.SelectedRows.Count > 0)
             {
                 _fornecedorSelecionado = dgvFornecedores.SelectedRows[0].DataBoundItem as Fornecedor;
+
                 if (_fornecedorSelecionado != null)
                 {
                     txtNome.Text = _fornecedorSelecionado.Nome;
                     mtbCnpj.Text = _fornecedorSelecionado.Cnpj;
                     txtEmail.Text = _fornecedorSelecionado.Email;
                     mtbTelefone.Text = _fornecedorSelecionado.Telefone;
-                }
-            }
-        }
 
-        private void dgvFornecedores_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            string clickedColumnName = dgvFornecedores.Columns[e.ColumnIndex].DataPropertyName;
-            if (string.IsNullOrEmpty(clickedColumnName))
-            {
-                clickedColumnName = dgvFornecedores.Columns[e.ColumnIndex].Name;
-            }
-            string columnToOrderBy = clickedColumnName.ToLower() switch
-            {
-                "id" => "id",
-                "nome" => "nome",
-                "cnpj" => "cnpj",
-                "email" => "email",
-                "telefone" => "telefone",
-                _ => "nome",
-            };
-            if (_currentOrderBy == columnToOrderBy)
-            {
-                _currentDirection = (_currentDirection == "ASC") ? "DESC" : "ASC";
+                    BeginInvoke(new Action(() => AjustarMascaraCpfCnpjCarregamento()));
+                    BeginInvoke(new Action(() => AjustarMascaraTelefoneCarregamento()));
+                }
             }
             else
             {
-                _currentOrderBy = columnToOrderBy;
-                _currentDirection = "ASC";
+                if (_fornecedorSelecionado != null)
+                {
+                    LimparFormulario();
+                }
             }
-            CarregarFornecedores();
         }
 
-        private void btnGerarRelatorio_Click(object sender, EventArgs e)
+        private async void txtBuscaNome_TextChanged(object? sender, EventArgs e)
         {
-            _fornecedoresParaRelatorio = _fornecedorController.GetAll("nome", "ASC");
+            await CarregarFornecedoresAsync();
+        }
 
-            if (_fornecedoresParaRelatorio == null || !_fornecedoresParaRelatorio.Any())
+        private async void pictureBox1_Click(object? sender, EventArgs e)
+        {
+            string filtroExato = txtBuscaNome.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(filtroExato))
             {
-                MessageBox.Show("Não há fornecedores para gerar o relatório.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await CarregarFornecedoresAsync();
                 return;
             }
 
-            PrintDialog printDialog = new PrintDialog();
-            printDialog.Document = printDocument;
-
-            if (printDialog.ShowDialog() == DialogResult.OK)
+            dgvFornecedores.DataSource = null;
+            try
             {
-                _indiceFornecedorAtual = 0;
-                printDocument.Print();
+                // (O FornecedorController precisaria do método GetByExactNameAsync)
+                // dgvFornecedores.DataSource = await _fornecedorController.GetByExactNameAsync(filtroExato);
+
+                await CarregarFornecedoresAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Erro ao Buscar", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void printDocument_PrintPage(object sender, PrintPageEventArgs e)
+        private async void btnGerarRelatorio_Click(object? sender, EventArgs e)
         {
-            Font fonteTitulo = new Font("Arial", 16, FontStyle.Bold);
-            Font fonteSubtitulo = new Font("Arial", 12, FontStyle.Regular);
-            Font fonteCorpo = new Font("Arial", 10, FontStyle.Regular);
-            float yPos = 0;
-            int count = 0;
-            float leftMargin = e.MarginBounds.Left;
-            float topMargin = e.MarginBounds.Top;
-            string line = null;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Arquivo PDF (*.pdf)|*.pdf";
+            sfd.FileName = $"Relatorio_Fornecedores_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+            sfd.Title = "Salvar Relatório de Fornecedores";
 
-            // Título
-            yPos = topMargin + (count * fonteTitulo.GetHeight(e.Graphics));
-            e.Graphics.DrawString("Relatório de Fornecedores", fonteTitulo, Brushes.Black, leftMargin, yPos, new StringFormat());
-            count++;
-
-            // Data de Geração
-            yPos = topMargin + (count * fonteTitulo.GetHeight(e.Graphics));
-            e.Graphics.DrawString($"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", fonteSubtitulo, Brushes.Black, leftMargin, yPos, new StringFormat());
-            count += 2;
-
-            // Cabeçalho da tabela
-            yPos = topMargin + (count * fonteCorpo.GetHeight(e.Graphics));
-            e.Graphics.DrawString("ID".PadRight(5) + "Nome".PadRight(40) + "CNPJ".PadRight(20) + "E-mail".PadRight(30) + "Telefone".PadRight(20), fonteCorpo, Brushes.Black, leftMargin, yPos, new StringFormat());
-            count++;
-            e.Graphics.DrawLine(Pens.Black, leftMargin, yPos + fonteCorpo.GetHeight(e.Graphics), e.MarginBounds.Right, yPos + fonteCorpo.GetHeight(e.Graphics));
-            count++;
-
-            // Corpo da tabela
-            while (_indiceFornecedorAtual < _fornecedoresParaRelatorio.Count)
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                Fornecedor fornecedor = _fornecedoresParaRelatorio[_indiceFornecedorAtual];
-                line = fornecedor.Id.ToString().PadRight(5) +
-                       (fornecedor.Nome ?? "").PadRight(40) +
-                       (fornecedor.Cnpj ?? "").PadRight(20) +
-                       (fornecedor.Email ?? "").PadRight(30) +
-                       (fornecedor.Telefone ?? "").PadRight(20);
-
-                yPos = topMargin + (count * fonteCorpo.GetHeight(e.Graphics));
-                e.Graphics.DrawString(line, fonteCorpo, Brushes.Black, leftMargin, yPos, new StringFormat());
-                count++;
-                _indiceFornecedorAtual++;
-
-                if (yPos + fonteCorpo.GetHeight(e.Graphics) > e.MarginBounds.Bottom)
+                try
                 {
-                    e.HasMorePages = true;
-                    return;
+                    await _relatorioController.GerarRelatorioFornecedoresAsync(sfd.FileName);
+
+                    MessageBox.Show("Relatório gerado com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        FileName = sfd.FileName,
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Erro ao Gerar PDF", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
-            // Rodapé
-            yPos = e.MarginBounds.Bottom - fonteCorpo.GetHeight(e.Graphics);
-            e.Graphics.DrawString($"Total de Fornecedores: {_fornecedoresParaRelatorio.Count}", fonteCorpo, Brushes.Black, leftMargin, yPos, new StringFormat());
-
-            e.HasMorePages = false;
         }
 
-        private void btnGerarRelatorio_Click_1(object sender, EventArgs e)
-        {
-            SaveFileDialog salvar = new SaveFileDialog();
-            salvar.Filter = "Arquivo PDF (*.pdf)|*.pdf";
-            salvar.FileName = "Relatorio_Fornecedores.pdf";
+        // --- MÁSCARAS DINÂMICAS ---
 
-            if (salvar.ShowDialog() == DialogResult.OK)
+        private void mtbCnpj_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
-                _fornecedorController.GerarRelatorioPDF(salvar.FileName);
-                MessageBox.Show("Relatório gerado com sucesso!", "PDF", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                e.Handled = true;
+                return;
+            }
+
+            if (char.IsDigit(e.KeyChar) &&
+                mtbCnpj.Mask == MascaraCpf &&
+                mtbCnpj.Text.Length == 11 &&
+                mtbCnpj.SelectionStart >= mtbCnpj.Text.Length - 1)
+            {
+                _mudandoMascaraCpfCnpj = true;
+                string numeros = mtbCnpj.Text;
+                mtbCnpj.Mask = MascaraCnpj;
+                mtbCnpj.Text = numeros;
+                mtbCnpj.Select(mtbCnpj.TextLength, 0);
+                _mudandoMascaraCpfCnpj = false;
             }
         }
 
-       
+        private void mtbCnpj_KeyUp(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                AjustarMascaraCpfCnpjAposApagar();
+            }
+        }
+
+        private void AjustarMascaraCpfCnpjAposApagar()
+        {
+            if (_mudandoMascaraCpfCnpj) return;
+            string numeros = mtbCnpj.Text;
+
+            if (mtbCnpj.Mask == MascaraCnpj && numeros.Length < 12)
+            {
+                _mudandoMascaraCpfCnpj = true;
+                mtbCnpj.Mask = MascaraCpf;
+                mtbCnpj.Text = numeros;
+                BeginInvoke(new Action(() => {
+                    mtbCnpj.Select(mtbCnpj.TextLength, 0);
+                    _mudandoMascaraCpfCnpj = false;
+                }));
+            }
+        }
+
+        private void AjustarMascaraCpfCnpjCarregamento()
+        {
+            string numeros = mtbCnpj.Text;
+            if (numeros.Length > 11)
+                mtbCnpj.Mask = MascaraCnpj;
+            else
+                mtbCnpj.Mask = MascaraCpf;
+            mtbCnpj.Text = numeros;
+        }
+
+        private void mtbTelefone_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (char.IsDigit(e.KeyChar) &&
+                mtbTelefone.Mask == MascaraTelFixo &&
+                mtbTelefone.Text.Length == 10 &&
+                mtbTelefone.SelectionStart >= mtbTelefone.Text.Length - 1)
+            {
+                _mudandoMascaraTel = true;
+                string numeros = mtbTelefone.Text;
+                mtbTelefone.Mask = MascaraTelCel;
+                mtbTelefone.Text = numeros;
+                mtbTelefone.Select(mtbTelefone.TextLength, 0);
+                _mudandoMascaraTel = false;
+            }
+        }
+
+        private void mtbTelefone_KeyUp(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                AjustarMascaraTelefoneAposApagar();
+            }
+        }
+
+        private void AjustarMascaraTelefoneAposApagar()
+        {
+            if (_mudandoMascaraTel) return;
+            string numeros = mtbTelefone.Text;
+
+            if (mtbTelefone.Mask == MascaraTelCel && numeros.Length < 11)
+            {
+                _mudandoMascaraTel = true;
+                mtbTelefone.Mask = MascaraTelFixo;
+                mtbTelefone.Text = numeros;
+                BeginInvoke(new Action(() => {
+                    mtbTelefone.Select(mtbTelefone.TextLength, 0);
+                    _mudandoMascaraTel = false;
+                }));
+            }
+        }
+
+        private void AjustarMascaraTelefoneCarregamento()
+        {
+            string numeros = mtbTelefone.Text;
+            if (numeros.Length >= 11)
+                mtbTelefone.Mask = MascaraTelCel;
+            else
+                mtbTelefone.Mask = MascaraTelFixo;
+            mtbTelefone.Text = numeros;
+        }
     }
 }
